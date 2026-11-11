@@ -13,7 +13,8 @@
   function rp(n) { n = Math.round(Number(n) || 0); return (n < 0 ? "−Rp" : "Rp") + Math.abs(n).toLocaleString("id-ID"); }
   function digits(s) { return Number(String(s || "").replace(/\D/g, "")) || 0; }
   function todayWIB() { return new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10); }
-  function nowWIB() { return new Date(Date.now() + 7 * 3600e3).toISOString().slice(11, 16); }
+  function tzOff(t) { return { WIB: 7, WITA: 8, WIT: 9 }[(t && t.tz) || "WIB"] || 7; }
+  function nowIn(t) { return new Date(Date.now() + tzOff(t) * 3600e3).toISOString().slice(0, 16); }
   function dObj(d) { return new Date(d + "T00:00:00Z"); }
   function fmtDay(d, opt) { return dObj(d).toLocaleDateString("id-ID", Object.assign({ timeZone: "UTC" }, opt || { weekday: "short", day: "numeric", month: "short" })); }
   function addDays(d, n) { var x = dObj(d); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); }
@@ -357,7 +358,7 @@
   function mapsUrl(s) { return s.maps_url || (s.place ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(s.place) : ""); }
   function dirUrl(a, b) { return "https://www.google.com/maps/dir/?api=1&origin=" + encodeURIComponent(a) + "&destination=" + encodeURIComponent(b); }
   function renderRundown(t) {
-    var days = tripDays(t), today = todayWIB(), now = nowWIB();
+    var days = tripDays(t), today = nowIn(t).slice(0, 10), now = nowIn(t).slice(11, 16);
     var extra = t.stops.map(function (s) { return s.day; }).filter(function (d, i, a) { return days.indexOf(d) < 0 && a.indexOf(d) === i; });
     days = days.concat(extra).sort();
     if (!S.day || days.indexOf(S.day) < 0) S.day = days.indexOf(today) >= 0 ? today : days[0];
@@ -502,7 +503,7 @@
     var proofs = t.entries.reduce(function (a, e) { return a + (e.proofs || []).length; }, 0);
     var html = '<div class="sec" style="margin-top:4px">Laporan pertanggungjawaban</div><p class="muted" style="font-size:14px;line-height:1.55;margin:0 0 14px">Rekap transaksi + semua foto bukti sebagai lampiran. Buka laporan lalu pilih <b>Simpan sebagai PDF</b> di menu cetak, atau unduh CSV untuk Excel.</p>' +
       '<div class="cats"><div class="cat-row"><span>Dana masuk</span><span></span><b class="mono">' + rp(tot.in) + '</b></div><div class="cat-row"><span>Sudah dibayar</span><span></span><b class="mono">' + rp(tot.paid) + '</b></div><div class="cat-row"><span>Sisa dana</span><span></span><b class="mono" style="color:var(--kuning)">' + rp(tot.left) + '</b></div><div class="cat-row"><span>Foto bukti</span><span></span><b class="mono">' + proofs + "</b></div></div>" +
-      '<div class="btns" style="margin-top:14px"><a class="btn pri" href="#/lapor/' + t.id + '">' + ic("doc") + 'Buka laporan (PDF)</a><button class="btn" id="csv">' + ic("dl") + "Unduh CSV</button></div>";
+      '<div class="btns" style="margin-top:14px"><a class="btn pri" href="#/lapor/' + t.id + '">' + ic("doc") + 'Laporan PDF</a><button class="btn" id="csv">' + ic("dl") + "Unduh CSV</button></div>";
     if (tot.noProof.length) html += '<div class="sec">Belum ada bukti<span class="act muted mono" style="font-size:12px;font-weight:500">' + tot.noProof.length + "</span></div><div class=\"list\">" + tot.noProof.map(entryRow).join("") + "</div>";
     else if (paidOut.length) html += '<div class="note-card" style="margin-top:16px">Semua pengeluaran yang sudah dibayar punya bukti. Aman buat lapor.</div>';
     var unconf = t.entries.filter(function (e) { return e.flag; });
@@ -519,14 +520,14 @@
     var n = 0, att = [];
     function rows(list) { return list.map(function (e) {
       var refs = (e.proofs || []).map(function (p) { att.push({ e: e, p: p }); return "L" + att.length; }).join(", ");
-      return "<tr><td>" + (++n) + "</td><td>" + esc(e.date ? fmtDay(e.date, { day: "numeric", month: "short", year: "numeric" }) : "-") + "</td><td>" + esc(e.title) + (e.note ? '<br><span style="color:#666">' + esc(e.note) + "</span>" : "") + "</td><td>" + esc(e.category) + '</td><td class="n">' + rp(e.amount) + "</td><td>" + (refs || '<span style="color:#b00">belum ada</span>') + "</td></tr>";
+      return "<tr><td>" + (++n) + "</td><td>" + esc(e.date ? fmtDay(e.date, { day: "numeric", month: "short", year: "numeric" }) : "-") + "</td><td>" + esc(e.title) + (e.note ? '<br><span style="color:#666">' + esc(e.note) + "</span>" : "") + "</td><td>" + esc(e.category) + '</td><td class="n">' + rp(e.amount) + "</td><td>" + (refs || (e.kind === "in" ? "-" : '<span style="color:#b00">belum ada</span>')) + "</td></tr>";
     }).join(""); }
     var head = "<tr><th>No</th><th>Tanggal</th><th>Uraian</th><th>Kategori</th><th>Nominal</th><th>Bukti</th></tr>";
     var body = '<h1>Laporan Penggunaan Dana</h1><div class="meta"><b>' + esc(t.title) + "</b><br>" + esc(fmtDay(t.start_date, { day: "numeric", month: "long", year: "numeric" })) + " s/d " + esc(fmtDay(t.end_date, { day: "numeric", month: "long", year: "numeric" })) + (t.place ? " · " + esc(t.place) : "") + "<br>Disusun oleh: " + esc((S.me && S.me.name) || "") + "</div>" +
       '<div class="sum"><div>Dana diterima<b>' + rp(tot.in) + "</b></div><div>Total pengeluaran<b>" + rp(tot.paid) + "</b></div><div>Sisa dana<b>" + rp(tot.left) + "</b></div></div>" +
-      "<h2>A. Dana diterima</h2><table>" + head + rows(ins) + '<tr><td colspan="4"><b>Jumlah</b></td><td class="n"><b>' + rp(tot.in) + "</b></td><td></td></tr></table>" +
-      "<h2>B. Pengeluaran</h2><table>" + head + rows(paid) + '<tr><td colspan="4"><b>Jumlah</b></td><td class="n"><b>' + rp(tot.paid) + "</b></td><td></td></tr></table>" +
-      (plan.length ? "<h2>C. Belum dibayar (rencana)</h2><table>" + head + rows(plan) + '<tr><td colspan="4"><b>Jumlah</b></td><td class="n"><b>' + rp(tot.plan) + "</b></td><td></td></tr></table>" : "") +
+      "<h2>A. Dana diterima</h2><div class=\"tw\"><table>" + head + rows(ins) + '<tr><td colspan="4"><b>Jumlah</b></td><td class="n"><b>' + rp(tot.in) + "</b></td><td></td></tr></table></div>" +
+      "<h2>B. Pengeluaran</h2><div class=\"tw\"><table>" + head + rows(paid) + '<tr><td colspan="4"><b>Jumlah</b></td><td class="n"><b>' + rp(tot.paid) + "</b></td><td></td></tr></table></div>" +
+      (plan.length ? "<h2>C. Belum dibayar (rencana)</h2><div class=\"tw\"><table>" + head + rows(plan) + '<tr><td colspan="4"><b>Jumlah</b></td><td class="n"><b>' + rp(tot.plan) + "</b></td><td></td></tr></table></div>" : "") +
       '<div class="sign"><div>' + esc(fmtDay(todayWIB(), { day: "numeric", month: "long", year: "numeric" })) + "<br><br><br><br>( " + esc((S.me && S.me.name) || "....................") + " )</div></div>" +
       (att.length ? '<h2 style="break-before:page;page-break-before:always">Lampiran bukti</h2>' + att.map(function (a, i) { return '<div class="att"><p><b>L' + (i + 1) + "</b> · " + esc(a.e.title) + " · " + rp(a.e.amount) + (a.e.date ? " · " + esc(fmtDay(a.e.date, { day: "numeric", month: "short", year: "numeric" })) : "") + '</p><img src="' + esc(a.p.url) + '" alt="Lampiran L' + (i + 1) + '"></div>'; }).join("") : "");
     $app.innerHTML = '<div class="report"><div class="r-bar"><a class="back" style="color:var(--teks)" href="#/t/' + t.id + '/lapor">' + ic("back", ' width="18" height="18"') + 'Kembali</a><span class="sp"></span><button class="btn pri sm" id="pr">' + ic("print") + 'Cetak / Simpan PDF</button></div><div class="doc">' + body + "</div></div>";
