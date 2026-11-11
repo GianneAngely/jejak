@@ -187,7 +187,15 @@
       j.trips.map(function (t) { return '<a class="trip-link" href="#/t/' + t.id + '/dana">' + karcis(t, { in: t.total_in, paid: t.total_paid, plan: t.total_plan, left: t.total_in - t.total_paid }, false) + "</a>"; }).join("");
   }
   function accountSheet() {
-    var c = openSheet('<h2>Akun</h2><p class="muted" style="margin:-8px 0 18px">' + esc(S.me.name || "") + (S.me.email ? " · " + esc(S.me.email) : "") + '</p><div class="menu-list"><a class="btn ghost block" href="/">Halaman depan</a><button class="btn danger block" id="lo">Keluar</button></div>');
+    var c = openSheet('<h2>Akun</h2><p class="muted" style="margin:-8px 0 18px">' + esc(S.me.name || "") + (S.me.email ? " · " + esc(S.me.email) : "") + '</p><form id="cf" class="f"><label for="cc">Punya kode undangan?</label><div class="btns"><input class="in-t mono" id="cc" autocapitalize="characters" autocomplete="off" placeholder="Kode" style="flex:2"><button class="btn" type="submit">Pakai</button></div><span class="err" id="ce"></span></form>' +
+      '<div class="menu-list"><a class="btn ghost block" href="/">Halaman depan</a><button class="btn danger block" id="lo">Keluar</button></div>');
+    c.querySelector("#cf").onsubmit = async function (e) {
+      e.preventDefault();
+      var code = c.querySelector("#cc").value.trim();
+      if (!code) return;
+      try { await api("/api/auth", { method: "POST", body: { action: "claim", code: code } }); closeSheet(); toast("Kode dipakai. Data sudah masuk ke akunmu."); location.hash = "#/"; route(); }
+      catch (x) { c.querySelector("#ce").textContent = "Kode tidak dikenal atau sudah dipakai."; }
+    };
     c.querySelector("#lo").onclick = async function () { await api("/api/auth", { method: "POST", body: { action: "logout" } }); closeSheet(); S.me = null; location.hash = "#/"; renderAuth(); };
   }
   function tripSheet(t) {

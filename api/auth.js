@@ -19,6 +19,14 @@ module.exports = async function (req, res) {
     if (req.method !== "POST") { res.status(405).json({ error: "method" }); return; }
     const b = req.body || {};
     if (b.action === "logout") { await auth.endSession(req, res); res.json({ ok: true }); return; }
+    if (b.action === "claim") {                       // kode undangan setelah punya akun
+      const uid = await auth.requireUser(req, res);
+      if (!uid) return;
+      const ok = await db.mergeClaim(String(b.code || "").trim().toUpperCase(), uid);
+      if (!ok) { res.status(400).json({ error: "bad-code" }); return; }
+      res.json({ ok: true });
+      return;
+    }
     const email = String(b.email || "").trim().toLowerCase();
     const pw = String(b.password || "");
     if (b.action === "login") {
