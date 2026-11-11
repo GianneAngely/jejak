@@ -1,4 +1,4 @@
-/* Sangu: app satu halaman, tanpa framework. Rute lewat hash:
+/* Jejak: app satu halaman, tanpa framework. Rute lewat hash:
    #/                     daftar perjalanan
    #/t/:id/dana|rundown|diari|lapor
    #/t/:id/diari/:day     detail satu hari

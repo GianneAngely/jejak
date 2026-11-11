@@ -1,8 +1,8 @@
 {
-  "name": "sangu",
+  "name": "jejak",
   "version": "1.0.0",
   "private": true,
-  "description": "Sangu: catatan dana perjalanan dinas & lomba, bukti struk, rundown, diari foto.",
+  "description": "Jejak: catatan dana perjalanan dinas & lomba, bukti struk, rundown, diari foto.",
   "engines": { "node": ">=18" },
   "dependencies": {
     "@vercel/blob": "^1.1.1",

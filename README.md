@@ -1,4 +1,4 @@
-# Sangu
+# Jejak
 
 Catatan dana perjalanan dinas & lomba: pemasukan, pengeluaran per kategori (rencana vs sudah dibayar), foto bukti struk, rundown yang bisa diedit, diari foto per hari, dan laporan pertanggungjawaban (PDF lewat cetak browser + CSV).
 
