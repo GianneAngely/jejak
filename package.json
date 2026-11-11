@@ -1,0 +1,12 @@
+{
+  "name": "sangu",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sangu: catatan dana perjalanan dinas & lomba, bukti struk, rundown, diari foto.",
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.60.0",
+    "@vercel/blob": "^1.1.1",
+    "@vercel/postgres": "^0.10.0"
+  }
+}

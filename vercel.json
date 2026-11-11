@@ -1,0 +1,18 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/", "destination": "/landing/index.html" },
+    { "source": "/app", "destination": "/web/index.html" },
+    { "source": "/app.js", "destination": "/web/app.js" },
+    { "source": "/app.css", "destination": "/web/app.css" },
+    { "source": "/sw.js", "destination": "/web/sw.js" },
+    { "source": "/manifest.webmanifest", "destination": "/web/manifest.webmanifest" },
+    { "source": "/icon.svg", "destination": "/web/icon.svg" },
+    { "source": "/icon-512.png", "destination": "/web/icon-512.png" },
+    { "source": "/apple-touch-icon.png", "destination": "/web/apple-touch-icon.png" }
+  ],
+  "headers": [
+    { "source": "/(app.js|app.css|sw.js)", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] }
+  ],
+  "functions": { "api/**/*.js": { "maxDuration": 30 } }
+}
