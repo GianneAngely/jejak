@@ -16,7 +16,6 @@
     { "source": "/(app.js|app.css|sw.js)", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] }
   ],
   "functions": {
-    "api/**/*.js": { "maxDuration": 30 },
-    "api/brand.js": { "includeFiles": "{landing,web}/index.html" }
+    "api/**/*.js": { "maxDuration": 30, "includeFiles": "{landing,web}/index.html" }
   }
 }
