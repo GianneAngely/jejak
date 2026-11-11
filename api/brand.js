@@ -1,8 +1,32 @@
-/* /brand.js        -> window.BRAND untuk halaman
-   /manifest.webmanifest -> manifest PWA dengan nama dari lib/brand.js */
+/* /brand.js             -> window.BRAND untuk app.js
+   /manifest.webmanifest  -> manifest PWA
+   / dan /app             -> HTML dengan nama produk sudah terisi di server
+                             ({B} dan <span data-brand></span>), jadi judul tab,
+                             meta, dan preview share benar tanpa menunggu JS. */
+const fs = require("fs");
+const path = require("path");
 const brand = require("../lib/brand");
 
+const PAGES = { landing: "landing/index.html", app: "web/index.html" };
+const cache = {};
+function page(p) {
+  if (!cache[p]) {
+    const esc = brand.name.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    cache[p] = fs.readFileSync(path.join(process.cwd(), PAGES[p]), "utf8")
+      .split("{B}").join(esc)
+      .replace(/<(span|div)([^>]*) data-brand><\/\1>/g, "<$1$2 data-brand>" + esc + "</$1>");
+  }
+  return cache[p];
+}
+
 module.exports = function (req, res) {
+  const q = req.query || {};
+  if (q.f === "page" && PAGES[q.p]) {
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=0, s-maxage=300");
+    res.end(page(q.p));
+    return;
+  }
   res.setHeader("Cache-Control", "public, max-age=300");
   if ((req.query || {}).f === "manifest") {
     res.setHeader("Content-Type", "application/manifest+json");
@@ -19,7 +43,5 @@ module.exports = function (req, res) {
     return;
   }
   res.setHeader("Content-Type", "application/javascript; charset=utf-8");
-  res.end("window.BRAND=" + JSON.stringify(brand) + ";" +
-    "document.querySelectorAll('[data-brand]').forEach(function(e){e.textContent=window.BRAND.name});" +
-    "if(document.title.indexOf('{B}')>=0)document.title=document.title.replace('{B}',window.BRAND.name);");
+  res.end("window.BRAND=" + JSON.stringify(brand) + ";");
 };
