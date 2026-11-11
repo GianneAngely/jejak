@@ -6,7 +6,8 @@
     { "source": "/app.js", "destination": "/web/app.js" },
     { "source": "/app.css", "destination": "/web/app.css" },
     { "source": "/sw.js", "destination": "/web/sw.js" },
-    { "source": "/manifest.webmanifest", "destination": "/web/manifest.webmanifest" },
+    { "source": "/manifest.webmanifest", "destination": "/api/brand?f=manifest" },
+    { "source": "/brand.js", "destination": "/api/brand" },
     { "source": "/icon.svg", "destination": "/web/icon.svg" },
     { "source": "/icon-512.png", "destination": "/web/icon-512.png" },
     { "source": "/apple-touch-icon.png", "destination": "/web/apple-touch-icon.png" }

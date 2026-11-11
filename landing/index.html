@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0A1630">
-<title>Sangu: dana perjalanan, bukti, rundown</title>
+<title>{B}: dana perjalanan, bukti, rundown</title>
 <meta name="description" content="Catat dana perjalanan dinas dan lomba, simpan foto struk sebagai bukti, susun rundown, lalu cetak laporan pertanggungjawaban.">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -65,11 +65,11 @@ footer{margin-top:44px;color:var(--redup);font-size:13px}
 </head>
 <body>
 <div class="wrap">
-  <nav><a class="logo" href="/">Sangu<b>.</b></a><span class="sp"></span><a class="btn" href="/app">Masuk</a></nav>
+  <nav><a class="logo" href="/"><span data-brand></span><b>.</b></a><span class="sp"></span><a class="btn" href="/app">Masuk</a></nav>
   <section class="hero">
     <div>
       <h1>Dana lomba beres,<br><em>struknya</em> nggak tercecer.</h1>
-      <p class="lead">Sangu mencatat dana perjalananmu dari berangkat sampai pulang: uang masuk, pengeluaran, foto struk, dan rundown. Sepulang dinas, laporan pertanggungjawaban tinggal dicetak.</p>
+      <p class="lead"><span data-brand></span> mencatat dana perjalananmu dari berangkat sampai pulang: uang masuk, pengeluaran, foto struk, dan rundown. Sepulang dinas, laporan pertanggungjawaban tinggal dicetak.</p>
       <div class="cta"><a class="btn pri" href="/app?daftar">Buat akun gratis</a><a class="btn" href="/app">Sudah punya akun</a></div>
     </div>
     <div class="karcis" aria-hidden="true">
@@ -84,7 +84,7 @@ footer{margin-top:44px;color:var(--redup);font-size:13px}
   </section>
 
   <div class="for">
-    <div><h3>Mahasiswa yang ikut lomba</h3><p>Dana dari kampus wajib dilaporkan pakai struk. Foto tiap struk saat itu juga, Sangu yang menyusunnya jadi laporan.</p></div>
+    <div><h3>Mahasiswa yang ikut lomba</h3><p>Dana dari kampus wajib dilaporkan pakai struk. Foto tiap struk saat itu juga, <span data-brand></span> yang menyusunnya jadi laporan.</p></div>
     <div><h3>Yang sering dinas</h3><p>Pisahkan uang tiap perjalanan, lihat sisa dana dan jatah makan per hari, tanpa campur ke dompet pribadi.</p></div>
   </div>
 
@@ -96,7 +96,8 @@ footer{margin-top:44px;color:var(--redup);font-size:13px}
     <div><b>Diari foto</b><span>Kalender kegiatan per hari, catatan bisa ditulis belakangan.</span></div>
     <div><b>Laporan</b><span>PDF berisi rekap dan lampiran bukti, plus CSV untuk Excel.</span></div>
   </div>
-  <footer>Sangu · dibuat oleh Gianne Angely</footer>
+  <footer><span data-brand></span> · dibuat oleh Gianne Angely</footer>
 </div>
+<script src="/brand.js"></script>
 </body>
 </html>

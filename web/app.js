@@ -6,6 +6,7 @@
 (function () {
   "use strict";
   var $app = document.getElementById("app");
+  var BRAND = (window.BRAND && window.BRAND.name) || "";
   var S = { me: null, trips: null, trip: null, ai: false, day: null, files: {} };
 
   /* ---------- util ---------- */
@@ -89,9 +90,9 @@
       var file = S.files[url];
       if (!file) {
         var r = await fetch(url); var b = await r.blob();
-        file = new File([b], "sangu-" + Date.now() + ".jpg", { type: b.type || "image/jpeg" });
+        file = new File([b], "bukti-" + Date.now() + ".jpg", { type: b.type || "image/jpeg" });
       } else if (!file.name || file.name === "image.jpg") {
-        file = new File([file], "sangu-" + Date.now() + ".jpg", { type: file.type || "image/jpeg" });
+        file = new File([file], "bukti-" + Date.now() + ".jpg", { type: file.type || "image/jpeg" });
       }
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({ files: [file] });
@@ -139,7 +140,7 @@
     mode = mode || "login";
     var signup = mode === "signup";
     $app.innerHTML =
-      '<div class="auth"><div class="brand">Sangu<b>.</b></div>' +
+      '<div class="auth"><div class="brand">' + esc(BRAND) + '<b>.</b></div>' +
       '<p class="lead">Catat dana perjalanan, simpan bukti struk, dan susun rundown. Siap dilaporkan sepulang dinas atau lomba.</p>' +
       '<div class="seg" style="margin-bottom:20px"><button data-m="login" class="' + (!signup ? "on" : "") + '">Masuk</button><button data-m="signup" class="' + (signup ? "on" : "") + '">Daftar</button></div>' +
       '<form id="af">' +
@@ -175,7 +176,7 @@
       "</div></div>";
   }
   async function renderHome() {
-    $app.innerHTML = '<div class="wrap"><div class="top"><h1>Sangu<b>.</b></h1><button class="icon-btn" id="acc" aria-label="Akun">' + ic("menu") + '</button></div><div id="tl" class="muted">Memuat…</div></div>' +
+    $app.innerHTML = '<div class="wrap"><div class="top"><h1>' + esc(BRAND) + '<b>.</b></h1><button class="icon-btn" id="acc" aria-label="Akun">' + ic("menu") + '</button></div><div id="tl" class="muted">Memuat…</div></div>' +
       '<button class="fab" id="nt" aria-label="Perjalanan baru" style="bottom:calc(24px + var(--safe-b))">' + ic("plus") + "</button>";
     document.getElementById("acc").onclick = accountSheet;
     document.getElementById("nt").onclick = function () { tripSheet(null); };
@@ -186,7 +187,7 @@
       j.trips.map(function (t) { return '<a class="trip-link" href="#/t/' + t.id + '/dana">' + karcis(t, { in: t.total_in, paid: t.total_paid, plan: t.total_plan, left: t.total_in - t.total_paid }, false) + "</a>"; }).join("");
   }
   function accountSheet() {
-    var c = openSheet('<h2>Akun</h2><p class="muted" style="margin:-8px 0 18px">' + esc(S.me.name || "") + (S.me.email ? " · " + esc(S.me.email) : "") + '</p><div class="menu-list"><a class="btn ghost block" href="/">Halaman depan Sangu</a><button class="btn danger block" id="lo">Keluar</button></div>');
+    var c = openSheet('<h2>Akun</h2><p class="muted" style="margin:-8px 0 18px">' + esc(S.me.name || "") + (S.me.email ? " · " + esc(S.me.email) : "") + '</p><div class="menu-list"><a class="btn ghost block" href="/">Halaman depan</a><button class="btn danger block" id="lo">Keluar</button></div>');
     c.querySelector("#lo").onclick = async function () { await api("/api/auth", { method: "POST", body: { action: "logout" } }); closeSheet(); S.me = null; location.hash = "#/"; renderAuth(); };
   }
   function tripSheet(t) {
@@ -272,7 +273,7 @@
       '<div class="f"><span class="lbl">Kategori</span><div class="chips" id="ec"></div></div>' +
       '<div class="f" id="sw"><span class="lbl">Status</span><div class="seg" id="es"><button type="button" data-s="paid">Sudah dibayar</button><button type="button" data-s="plan">Rencana</button></div></div>' +
       '<div class="f"><label for="ed">Tanggal</label><input class="in-t" id="ed" type="date"></div>' +
-      '<div class="f"><span class="lbl">Bukti (struk, nota, tiket, bukti transfer)</span><div class="btns"><button type="button" class="btn sm" id="pc">' + ic("cam") + 'Kamera</button><button type="button" class="btn sm" id="pg">' + ic("img") + "Galeri</button>" + (S.ai ? '<button type="button" class="btn sm" id="ps">' + ic("scan") + "Scan struk</button>" : "") + '</div><div class="proofs" id="pp"></div><span class="hint" id="ph"></span></div>' +
+      '<div class="f"><span class="lbl">Bukti (struk, nota, tiket, bukti transfer)</span><div class="btns"><button type="button" class="btn sm" id="pc">' + ic("cam") + 'Kamera</button><button type="button" class="btn sm" id="pg">' + ic("img") + "Galeri</button>" + (S.ai ? '<button type="button" class="btn sm" id="ps">' + ic("scan") + "Scan struk</button>" : "") + '</div>' + (S.ai ? "" : '<span class="hint">Baca struk otomatis belum aktif. Isi nominalnya manual dulu ya.</span>') + '<div class="proofs" id="pp"></div><span class="hint" id="ph"></span></div>' +
       '<div class="f"><label for="en">Catatan</label><textarea class="in-t" id="en" placeholder="Opsional"></textarea></div>' +
       (e && e.flag ? '<div class="f"><label for="ef2">Tanda</label><input class="in-t" id="ef2"><span class="hint">Kosongkan kalau sudah beres.</span></div>' : "") +
       '<div class="err" id="ee"></div><button class="btn pri block" type="submit">Simpan</button>' + (isNew ? "" : '<button type="button" class="btn danger block" id="edel" style="margin-top:10px">Hapus transaksi</button>') + "</form>");
@@ -539,7 +540,7 @@
   async function route() {
     if (!S.me) return renderAuth();
     closeSheet();
-    document.title = "Sangu";
+    document.title = BRAND;
     var h = location.hash.replace(/^#\/?/, "").split("/");
     try {
       if (h[0] === "t" && h[1]) {
