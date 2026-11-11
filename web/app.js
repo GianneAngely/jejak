@@ -46,6 +46,62 @@
   var IN_CATS = ["Dana kampus", "Sponsor", "Pribadi", "Lain-lain"];
   var CAT_IC = { Transport: "bus", Penginapan: "bed", Makan: "food", Cetak: "print" };
 
+  /* ---------- karakter visual: warna kategori, ikon ilustratif, ilustrasi ---------- */
+  var N = "#0E1F45";
+  var CAT = {
+    Transport: { c: "#2F7FD0", bg: "#DDEBFB" }, Penginapan: { c: "#E0604A", bg: "#FDE4DE" },
+    Makan: { c: "#F0A21C", bg: "#FFF0CC" }, Cetak: { c: "#17998A", bg: "#D6F3EF" }, "Lain-lain": { c: "#7A88AA", bg: "#E8ECF4" }
+  };
+  var INC = { c: "#1E9E6A", bg: "#DCF3E8" };
+  function catOf(e) { return e && e.kind === "in" ? INC : (CAT[e.category || e] || CAT["Lain-lain"]); }
+  function catIcon(e) {
+    var k = typeof e === "string" ? e : (e.kind === "in" ? "_in" : e.category), c = (k === "_in" ? INC : (CAT[k] || CAT["Lain-lain"])).c, p;
+    if (k === "_in") p = '<circle cx="12" cy="12" r="9" fill="' + c + '"/><circle cx="12" cy="12" r="6.3" fill="none" stroke="#fff" stroke-width="1.3" stroke-dasharray="2 1.8"/><path d="M12 8.5v7M8.5 12h7" stroke="#fff" stroke-width="2" stroke-linecap="round"/>';
+    else if (k === "Transport") p = '<rect x="4" y="3" width="16" height="15" rx="3.5" fill="' + c + '"/><rect x="6.5" y="5.5" width="11" height="5" rx="1.3" fill="#fff"/><circle cx="8" cy="14.3" r="1.4" fill="#fff"/><circle cx="16" cy="14.3" r="1.4" fill="#fff"/><rect x="6" y="17.5" width="3" height="3.5" rx="1" fill="' + N + '"/><rect x="15" y="17.5" width="3" height="3.5" rx="1" fill="' + N + '"/>';
+    else if (k === "Penginapan") p = '<rect x="3" y="11" width="18" height="6.5" rx="2" fill="' + c + '"/><rect x="3" y="5" width="3" height="15" rx="1.3" fill="' + N + '"/><rect x="7.5" y="7.5" width="6" height="3.5" rx="1.6" fill="#fff" stroke="' + c + '" stroke-width="1.4"/><rect x="18.3" y="15" width="2.7" height="5" rx="1.1" fill="' + N + '"/>';
+    else if (k === "Makan") p = '<path d="M3 11.5h18a9 8 0 01-18 0z" fill="' + c + '"/><rect x="8" y="19.2" width="8" height="2" rx="1" fill="' + N + '"/><path d="M9 9c0-2 2-2.3 2-4.5M13.5 9c0-2 2-2.3 2-4.5" stroke="' + N + '" stroke-width="1.6" fill="none" stroke-linecap="round"/>';
+    else if (k === "Cetak") p = '<rect x="6.5" y="3" width="11" height="6" rx="1" fill="#fff" stroke="' + N + '" stroke-width="1.5"/><rect x="3" y="8" width="18" height="9" rx="2.6" fill="' + c + '"/><rect x="7" y="13" width="10" height="8" rx="1" fill="#fff" stroke="' + N + '" stroke-width="1.5"/><path d="M9 16h6M9 18.5h4" stroke="' + N + '" stroke-width="1.2"/><circle cx="17.6" cy="11" r="1" fill="#fff"/>';
+    else p = '<path d="M3 8l9-4.2L21 8v9l-9 4.2L3 17z" fill="' + c + '"/><path d="M3 8l9 4.2L21 8M12 12.2V21" stroke="#fff" stroke-width="1.5" fill="none"/>';
+    return '<svg viewBox="0 0 24 24" aria-hidden="true">' + p + "</svg>";
+  }
+  /* ilustrasi kecil (dibuat sendiri, garis navy + isian palet) */
+  var ART = {
+    koper: '<rect x="40" y="34" width="80" height="58" rx="10" fill="#DDEBFB" stroke="#0E1F45" stroke-width="3"/><path d="M64 34v-8a6 6 0 016-6h20a6 6 0 016 6v8" fill="none" stroke="#0E1F45" stroke-width="3"/><path d="M58 34v58M102 34v58" stroke="#0E1F45" stroke-width="3"/><rect x="66" y="48" width="22" height="14" rx="3" fill="#FFD60A" stroke="#0E1F45" stroke-width="2.5" transform="rotate(-8 77 55)"/><circle cx="112" cy="76" r="8" fill="#FDE4DE" stroke="#0E1F45" stroke-width="2.5"/><circle cx="52" cy="96" r="4" fill="#0E1F45"/><circle cx="108" cy="96" r="4" fill="#0E1F45"/>',
+    struk: '<path d="M52 18h52v74l-6.5-5-6.5 5-6.5-5-6.5 5-6.5-5-6.5 5-6.5-5-6.5 5z" fill="#fff" stroke="#0E1F45" stroke-width="3" stroke-linejoin="round"/><path d="M62 34h32M62 44h24M62 54h28M62 70h32" stroke="#0E1F45" stroke-width="2.5" stroke-linecap="round" opacity=".55"/><circle cx="114" cy="74" r="16" fill="#FFD60A" stroke="#0E1F45" stroke-width="3"/><path d="M114 66v16M108 74h12" stroke="#0E1F45" stroke-width="3" stroke-linecap="round"/>',
+    peta: '<path d="M28 26l34-8 36 10 34-8v70l-34 8-36-10-34 8z" fill="#D6F3EF" stroke="#0E1F45" stroke-width="3" stroke-linejoin="round"/><path d="M62 18v70M98 28v70" stroke="#0E1F45" stroke-width="2" opacity=".35"/><path d="M42 74c14-4 18-24 34-22s20 14 40-8" fill="none" stroke="#2F7FD0" stroke-width="3" stroke-dasharray="6 6" stroke-linecap="round"/><circle cx="42" cy="74" r="5" fill="#fff" stroke="#0E1F45" stroke-width="2.5"/><path d="M116 50s-11-11-11-19a11 11 0 0122 0c0 8-11 19-11 19z" fill="#E0604A" stroke="#0E1F45" stroke-width="2.5"/><circle cx="116" cy="31" r="4" fill="#fff"/>',
+    kamera: '<rect x="34" y="34" width="92" height="58" rx="12" fill="#FDE4DE" stroke="#0E1F45" stroke-width="3"/><path d="M60 34l7-12h26l7 12" fill="#fff" stroke="#0E1F45" stroke-width="3" stroke-linejoin="round"/><circle cx="80" cy="63" r="18" fill="#fff" stroke="#0E1F45" stroke-width="3"/><circle cx="80" cy="63" r="9" fill="#2F7FD0"/><circle cx="76" cy="59" r="3" fill="#fff"/><rect x="108" y="42" width="10" height="6" rx="2" fill="#FFD60A" stroke="#0E1F45" stroke-width="2"/><path d="M128 18l2.5 7 7 2.5-7 2.5-2.5 7-2.5-7-7-2.5 7-2.5z" fill="#FFD60A" stroke="#0E1F45" stroke-width="2" stroke-linejoin="round"/>'
+  };
+  function art(n, cls) { return '<svg class="art ' + (cls || "") + '" viewBox="0 0 160 110" aria-hidden="true">' + ART[n] + "</svg>"; }
+  function emptyArt(n, text, btn) { return '<div class="empty art-empty">' + art(n) + "<p>" + text + "</p>" + (btn || "") + "</div>"; }
+  function tabHero(n, title, sub) { return '<div class="tab-hero">' + art(n, "sm") + '<div><h2 class="disp">' + title + "</h2><p>" + sub + "</p></div></div>"; }
+  /* cincin pemakaian dana per kategori */
+  function ring(tot) {
+    var keys = OUT_CATS.concat(Object.keys(tot.cats).filter(function (k) { return OUT_CATS.indexOf(k) < 0; })).filter(function (k) { return tot.cats[k]; });
+    var base = Math.max(tot.in, tot.paid + tot.plan, 1), R = 42, C = 2 * Math.PI * R, off = 0, arcs = "";
+    keys.forEach(function (k) {
+      var col = (CAT[k] || CAT["Lain-lain"]).c, a = tot.cats[k].paid / base * C, b = tot.cats[k].plan / base * C;
+      if (a > 0) { arcs += '<circle r="' + R + '" cx="55" cy="55" fill="none" stroke="' + col + '" stroke-width="14" stroke-dasharray="' + a + " " + (C - a) + '" stroke-dashoffset="' + (-off) + '"/>'; off += a; }
+      if (b > 0) { arcs += '<circle r="' + R + '" cx="55" cy="55" fill="none" stroke="' + col + '" stroke-opacity=".35" stroke-width="14" stroke-dasharray="' + b + " " + (C - b) + '" stroke-dashoffset="' + (-off) + '"/>'; off += b; }
+    });
+    var pct = tot.in ? Math.round(tot.paid / tot.in * 100) : 0;
+    return '<div class="ring-card"><svg class="ring" viewBox="0 0 110 110" aria-hidden="true"><g transform="rotate(-90 55 55)"><circle r="' + R + '" cx="55" cy="55" fill="none" stroke="#E6ECF5" stroke-width="14"/>' + arcs + '</g><text x="55" y="53" text-anchor="middle" class="ring-n">' + pct + '%</text><text x="55" y="68" text-anchor="middle" class="ring-l">terpakai</text></svg>' +
+      '<ul class="ring-leg">' + keys.map(function (k) { var c = tot.cats[k]; return '<li><span class="ci" style="background:' + (CAT[k] || CAT["Lain-lain"]).bg + '">' + catIcon(k) + "</span><span>" + esc(k) + '</span><b class="mono">' + rp(c.paid + c.plan) + "</b></li>"; }).join("") + '</ul></div><p class="hint" style="margin-top:8px">Warna pudar pada cincin menandai rencana yang belum dibayar.</p>';
+  }
+  /* cap pos untuk tanggal diari */
+  function postmark(day) {
+    var d = dObj(day), top = d.toLocaleDateString("id-ID", { month: "short", timeZone: "UTC" }).toUpperCase().replace(".", "") + " " + d.getUTCFullYear();
+    return '<svg class="postmark" viewBox="0 0 120 84" aria-hidden="true"><g fill="none" stroke="#C23B22" stroke-width="2"><circle cx="42" cy="42" r="34"/><circle cx="42" cy="42" r="27" stroke-dasharray="3 3"/>' +
+      '<path d="M80 26c6-4 12 4 18 0s12 4 18 0M80 38c6-4 12 4 18 0s12 4 18 0M80 50c6-4 12 4 18 0s12 4 18 0M80 62c6-4 12 4 18 0s12 4 18 0"/></g>' +
+      '<text x="42" y="40" text-anchor="middle" class="pm-d">' + d.getUTCDate() + '</text><text x="42" y="56" text-anchor="middle" class="pm-m">' + esc(top) + "</text></svg>";
+  }
+  /* angka sisa dana bergerak saat berubah */
+  var lastLeft = {};
+  function countUp(el, from, to) {
+    if (!el || from === to || from == null || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var t0 = performance.now(), d = 650;
+    (function step(now) { var k = Math.min(1, (now - t0) / d), e = 1 - Math.pow(1 - k, 3); el.textContent = rp(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); })(t0);
+  }
+
   function toast(msg, ms) {
     var t = document.getElementById("toast");
     t.textContent = msg; t.hidden = false;
@@ -171,7 +227,7 @@
   function karcis(t, tot, big) {
     var days = tripDays(t).length;
     return '<div class="karcis"><div class="k-top"><div class="k-eyebrow"><span>' + esc(fmtDay(t.start_date, { day: "numeric", month: "short" })) + " – " + esc(fmtDay(t.end_date, { day: "numeric", month: "short", year: "numeric" })) + '</span><span>' + days + " hari · " + esc(t.tz || "WIB") + '</span></div>' +
-      '<div class="k-title">' + esc(t.title) + '</div>' + (t.place ? '<div class="k-route">' + ic("pin", ' width="14" height="14"') + esc(t.place) + '</div>' : "") + '</div>' +
+      '<div class="k-title disp">' + esc(t.title) + '</div>' + (t.place ? '<div class="k-route">' + ic("pin", ' width="14" height="14"') + esc(t.place) + '</div>' : "") + '<span class="barcode" aria-hidden="true"></span></div>' +
       '<div class="k-bot"><div class="k-eyebrow"><span>Sisa dana</span></div><div class="k-big' + (tot.left < 0 ? " neg" : "") + '">' + rp(tot.left) + '</div>' +
       '<div class="k-sub">Dana masuk ' + rp(tot.in) + " · terpakai " + rp(tot.paid) + "</div>" +
       (big && tot.plan ? '<div class="k-after">Setelah semua rencana dibayar: <b class="mono' + (tot.after < 0 ? " neg" : "") + '">' + rp(tot.after) + "</b></div>" : "") +
@@ -190,7 +246,7 @@
     var j = await api("/api/trips"); S.trips = j.trips;
     var el = document.getElementById("tl");
     if (!j.trips.length) {
-      el.innerHTML = '<div class="welcome"><h2>Selamat datang' + (S.me && S.me.name ? ", " + esc(S.me.name) : "") + '.</h2><p>Mulai dalam tiga langkah berikut.</p>' +
+      el.innerHTML = '<div class="welcome">' + art("koper") + '<h2 class="disp">Selamat datang' + (S.me && S.me.name ? ", " + esc(S.me.name) : "") + '.</h2><p>Mulai dalam tiga langkah berikut.</p>' +
         stepsHTML([{ t: "Buat perjalanan", d: "Nama acara, kota, dan tanggal.", btn: "Buat perjalanan", pri: true }, { t: "Catat dana masuk", d: "Dana dari kampus, kantor, atau sponsor." }, { t: "Foto struk setiap membayar", d: "Bukti langsung tersimpan untuk laporan." }]) + "</div>" +
         '<p class="hint" style="margin-top:14px">Punya kode undangan? Buka menu <b>Akun</b> di kanan atas.</p>';
       el.querySelector("[data-step]").onclick = function () { tripSheet(null); };
@@ -242,7 +298,7 @@
   async function loadTrip(id) { var j = await api("/api/trips?id=" + id); S.trip = j.trip; S.trip.day_notes = S.trip.day_notes || {}; return S.trip; }
   function shell(t, tab, inner, fab) {
     var tabs = [["dana", "Dana", "wallet"], ["rundown", "Jadwal", "route"], ["diari", "Diari", "img"], ["lapor", "Laporan", "doc"]];
-    $app.innerHTML = '<div class="wrap"><div class="top"><a class="back" href="#/" aria-label="Semua perjalanan">' + ic("back", ' width="18" height="18"') + '</a><span class="top-t">' + esc(t.title) + '</span><button class="btn sm ghost" id="te">Ubah</button></div>' + inner + "</div>" +
+    $app.innerHTML = '<div class="wrap"><div class="top"><a class="back" href="#/" aria-label="Semua perjalanan">' + ic("back", ' width="18" height="18"') + '</a><span class="top-t">' + esc(t.title) + '</span><button class="btn sm ghost" id="te">Ubah</button></div><div class="view">' + inner + "</div></div>" +
       (fab ? '<button class="fab" id="fab">' + ic("plus") + "<span>" + esc(fab) + "</span></button>" : "") +
       '<nav class="tabbar" aria-label="Menu perjalanan"><div class="in">' + tabs.map(function (x) { return '<a href="#/t/' + t.id + "/" + x[0] + '" class="' + (tab === x[0] ? "on" : "") + '"' + (tab === x[0] ? ' aria-current="page"' : "") + ">" + ic(x[2]) + x[1] + "</a>"; }).join("") + "</div></nav>";
     document.getElementById("te").onclick = function () { tripSheet(t); };
@@ -250,15 +306,16 @@
 
   /* ---------- DANA ---------- */
   function entryRow(e) {
-    var isIn = e.kind === "in", n = (e.proofs || []).length, plan = e.status === "plan";
+    var isIn = e.kind === "in", n = (e.proofs || []).length, plan = e.status === "plan", cc = catOf(e);
     var proof = isIn ? "" : (n ? '<span class="tag ok">' + ic("clip") + n + " foto bukti</span>" : (plan ? "" : '<span class="tag warn">' + ic("clip") + "Belum ada foto bukti</span>"));
-    return '<button class="row" data-e="' + e.id + '"><span class="ic' + (isIn ? " in" : "") + '">' + ic(isIn ? "coin" : (CAT_IC[e.category] || "dot")) + '</span><span class="mid"><span class="t">' + esc(e.title) + '</span><span class="s">' +
+    var stamp = isIn ? '<span class="stamp in">Diterima</span>' : '<span class="stamp ' + (plan ? "plan" : "paid") + (S.pop === e.id ? " pop" : "") + '">' + (plan ? "Rencana" : "Lunas") + "</span>";
+    return '<button class="row" data-e="' + e.id + '"><span class="ci" style="background:' + cc.bg + '">' + catIcon(e) + '</span><span class="mid"><span class="t">' + esc(e.title) + '</span><span class="s">' +
       "<span>" + esc(e.category) + (e.date ? " · " + esc(fmtDay(e.date, { day: "numeric", month: "short" })) : "") + "</span>" + proof +
-      (e.flag ? '<span class="flag">' + esc(e.flag) + "</span>" : "") + '</span></span><span class="amt' + (isIn ? " in" : "") + '">' + (isIn ? "+" : "") + rp(e.amount) + "</span></button>";
+      (e.flag ? '<span class="flag">' + esc(e.flag) + "</span>" : "") + '</span></span><span class="amt-col"><span class="amt' + (isIn ? " in" : "") + '">' + (isIn ? "+" : "") + rp(e.amount) + "</span>" + stamp + "</span></button>";
   }
   function listBlock(title, list, empty) {
     var sum = list.reduce(function (a, e) { return a + e.amount; }, 0);
-    return '<div class="sec">' + title + '<span class="act mono">' + (list.length ? rp(sum) : "") + "</span></div>" + (list.length ? '<div class="list">' + list.map(entryRow).join("") + "</div>" : '<div class="empty">' + empty + "</div>");
+    return '<div class="sec">' + title + '<span class="act mono">' + (list.length ? rp(sum) : "") + "</span></div>" + (list.length ? '<div class="list">' + list.map(entryRow).join("") + "</div>" : (empty ? emptyArt(arguments[3] || "struk", empty) : ""));
   }
   function renderDana(t) {
     var tot = totals(t), days = tripDays(t), today = nowIn(t).slice(0, 10);
@@ -279,20 +336,20 @@
     if (left && tot.in) {
       var makanPlan = (tot.cats.Makan || {}).plan || 0;
       var perDay = Math.max(0, Math.floor((tot.after + makanPlan) / left / 1000) * 1000);
-      html += '<div class="note-card"><div class="cb-h">Batas aman makan</div><b class="mono big-n">' + rp(perDay) + '</b> per hari selama ' + left + " hari tersisa.<div class=\"hint\" style=\"margin-top:6px\">Angka ini sudah memperhitungkan semua rencana selain makan.</div>" +
-        (S.ai ? '<div><button class="btn sm ghost" id="adv" style="margin-top:10px">' + ic("spark") + 'Minta saran anggaran</button></div><div class="ai-out" id="advo"></div>' : "") + "</div>";
+      var inTrip = days.indexOf(today) >= 0;
+      var eatToday = outs.filter(function (e) { return e.category === "Makan" && e.status !== "plan" && e.date === today; }).reduce(function (a, e) { return a + e.amount; }, 0);
+      var pctEat = perDay ? Math.min(100, Math.round(eatToday / perDay * 100)) : 0;
+      html += '<div class="meal"><span class="ci big" style="background:' + CAT.Makan.bg + '">' + catIcon("Makan") + '</span><div class="meal-t"><div class="cb-h">' + (inTrip ? "Jatah makan hari ini" : "Jatah makan per hari") + '</div><b class="mono">' + rp(inTrip ? Math.max(0, perDay - eatToday) : perDay) + "</b><small>" + (inTrip ? "tersisa dari " + rp(perDay) + " · terpakai " + rp(eatToday) : "untuk " + left + " hari perjalanan, setelah rencana lain dibayar") + "</small>" +
+        (inTrip ? '<span class="meal-bar' + (eatToday > perDay ? " over" : "") + '"><i style="width:' + pctEat + '%"></i></span>' : "") + "</div></div>" +
+        (S.ai ? '<div><button class="btn sm ghost" id="adv" style="margin-top:10px">' + ic("spark") + 'Minta saran anggaran</button></div><div class="ai-out" id="advo"></div>' : "");
     }
+    if (Object.keys(tot.cats).length) html += '<div class="sec">Pemakaian dana</div>' + ring(tot);
     html += listBlock("Sudah dibayar", paid, "Belum ada pengeluaran yang dibayar. Ketuk <b>Foto struk</b> setiap kali membayar.");
     if (plan.length) html += listBlock("Rencana, belum dibayar", plan, "");
-    html += listBlock("Dana masuk", ins, "Catat dana dari kampus, kantor, atau sponsor agar sisa dana terhitung.");
-    if (Object.keys(tot.cats).length) {
-      var maxCat = Math.max.apply(null, [1].concat(Object.keys(tot.cats).map(function (k) { return tot.cats[k].paid + tot.cats[k].plan; })));
-      html += '<div class="sec">Per kategori</div><div class="cats">' + OUT_CATS.concat(Object.keys(tot.cats).filter(function (k) { return OUT_CATS.indexOf(k) < 0; })).filter(function (k) { return tot.cats[k]; }).map(function (k) {
-        var c = tot.cats[k];
-        return '<div class="cat-row"><span>' + esc(k) + '</span><span class="bar"><i class="p" style="width:' + (c.paid / maxCat * 100) + '%"></i><i class="r" style="width:' + (c.plan / maxCat * 100) + '%"></i></span><span class="mono" style="font-size:12.5px">' + rp(c.paid + c.plan) + "</span></div>";
-      }).join("") + '<div class="legend"><span><i class="p"></i>Sudah dibayar</span><span><i class="r"></i>Rencana</span></div></div>';
-    }
+    html += listBlock("Dana masuk", ins, "Catat dana dari kampus, kantor, atau sponsor agar sisa dana terhitung.", "koper");
     shell(t, "dana", html, "");
+    countUp($app.querySelector(".k-big"), lastLeft[t.id], tot.left); lastLeft[t.id] = tot.left;
+    if (S.pop) setTimeout(function () { S.pop = null; }, 50);
     document.getElementById("qPhoto").onclick = quickPhoto;
     document.getElementById("qManual").onclick = function () { entrySheet(null, "out"); };
     $app.querySelectorAll("[data-step]").forEach(function (b) { b.onclick = steps[+b.dataset.step].act; });
@@ -398,8 +455,8 @@
       if (!body.title) { er.textContent = "Keterangan belum diisi."; c.querySelector("#et").focus(); return; }
       ev.target.querySelector("button[type=submit]").disabled = true;
       try {
-        if (isNew) { body.trip_id = t.id; var j = await api("/api/items?t=entries", { method: "POST", body: body }); t.entries.push(j.item); }
-        else { var j2 = await api("/api/items?t=entries&id=" + e.id, { method: "PATCH", body: body }); Object.assign(e, j2.item); }
+        if (isNew) { body.trip_id = t.id; var j = await api("/api/items?t=entries", { method: "POST", body: body }); t.entries.push(j.item); S.pop = j.item.id; }
+        else { var j2 = await api("/api/items?t=entries&id=" + e.id, { method: "PATCH", body: body }); if (e.status !== j2.item.status || isNew) S.pop = e.id; Object.assign(e, j2.item); }
         removed.forEach(function (u) { api("/api/upload?url=" + encodeURIComponent(u), { method: "DELETE" }).catch(function () {}); });
         closeSheet(); renderDana(t); toast(isNew ? "Transaksi tercatat" : "Perubahan tersimpan");
       } catch (x) { er.textContent = "Gagal menyimpan. Periksa sinyal, lalu coba lagi."; ev.target.querySelector("button[type=submit]").disabled = false; }
@@ -423,8 +480,8 @@
     var list = t.stops.filter(function (s) { return s.day === S.day; }).sort(function (a, b) { return (a.start_t || "99").localeCompare(b.start_t || "99") || a.sort - b.sort; });
     var nowIdx = -1;
     if (S.day === today) list.forEach(function (s, i) { if (s.start_t && s.start_t <= now) nowIdx = i; });
-    var html = '<div class="days">' + days.map(function (d) { return '<button class="day-chip' + (d === S.day ? " on" : "") + '" data-d="' + d + '"><b>' + esc(fmtDay(d, { weekday: "long" })) + "</b><small>" + esc(fmtDay(d, { day: "numeric", month: "short" })) + "</small></button>"; }).join("") + "</div>";
-    if (!list.length) html += '<div class="empty" style="margin-top:12px">Belum ada agenda pada hari ini.<br><br><button class="btn pri" id="addFirst">' + ic("plus") + "Tambah agenda</button></div>";
+    var html = tabHero("peta", "Jadwal perjalanan", "Agenda per jam, lengkap dengan lokasi dan petunjuk arah.") + '<div class="days">' + days.map(function (d) { return '<button class="day-chip' + (d === S.day ? " on" : "") + '" data-d="' + d + '"><b>' + esc(fmtDay(d, { weekday: "long" })) + "</b><small>" + esc(fmtDay(d, { day: "numeric", month: "short" })) + "</small></button>"; }).join("") + "</div>";
+    if (!list.length) html += emptyArt("peta", "Belum ada agenda pada hari ini.", '<button class="btn pri" id="addFirst">' + ic("plus") + "Tambah agenda</button>");
     else html += '<div class="route">' + list.map(function (s, i) {
       var cls = i === nowIdx ? " now" : (S.day < today || (S.day === today && i < nowIdx) ? " past" : "");
       var prev = list[i - 1], leg = "";
@@ -479,14 +536,14 @@
     var months = [];
     days.concat(Object.keys(by)).forEach(function (d) { var m = d.slice(0, 7); if (months.indexOf(m) < 0) months.push(m); });
     months.sort();
-    var html = '<p class="muted" style="margin:0 0 14px;font-size:14px;line-height:1.55">Diari menyimpan foto kegiatan per hari. Ketuk tanggal untuk menambah foto; ceritanya boleh ditulis belakangan.</p>';
+    var html = tabHero("kamera", "Album perjalanan", "Ketuk tanggal untuk menambah foto. Ceritanya boleh ditulis belakangan.");
     html += months.map(function (m) {
       var first = dObj(m + "-01"), dim = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + 1, 0)).getUTCDate(), pad = (first.getUTCDay() + 6) % 7;
       var cells = ["Sn", "Sl", "Rb", "Km", "Jm", "Sb", "Mg"].map(function (w) { return '<div class="wd">' + w + "</div>"; }).join("");
       for (var i = 0; i < pad; i++) cells += '<div class="cell blank"></div>';
       for (var d = 1; d <= dim; d++) {
         var ds = m + "-" + (d < 10 ? "0" : "") + d, ph = by[ds] || [];
-        cells += '<button class="cell' + (ph.length ? " has" : "") + (days.indexOf(ds) >= 0 ? " trip" : "") + (ds === today ? " today" : "") + '" data-day="' + ds + '" aria-label="' + esc(fmtDay(ds, { day: "numeric", month: "long" })) + (ph.length ? ", " + ph.length + " foto" : "") + '">' + (ph.length ? '<img src="' + esc(ph[0].url) + '" alt="" loading="lazy"><em>' + ph.length + "</em>" : "") + "<span>" + d + "</span></button>";
+        cells += '<button class="cell' + (ph.length ? " has" : "") + (days.indexOf(ds) >= 0 ? " trip" : "") + (ds === today ? " today" : "") + '" data-day="' + ds + '" aria-label="' + esc(fmtDay(ds, { day: "numeric", month: "long" })) + (ph.length ? ", " + ph.length + " foto" : "") + '">' + (ph.length ? '<img src="' + esc(ph[0].url) + '" alt="" loading="lazy"><em>' + ph.length + '</em><i class="pm" aria-hidden="true"></i>' : "") + "<span>" + d + "</span></button>";
       }
       return '<div class="cal" style="margin-bottom:14px"><h3>' + esc(first.toLocaleDateString("id-ID", { month: "long", year: "numeric", timeZone: "UTC" })) + '</h3><div class="cal-g">' + cells + '</div><div class="legend" style="margin-top:10px"><span><i class="tripd"></i>Hari perjalanan</span></div></div>';
     }).join("");
@@ -500,9 +557,9 @@
   function renderDay(t, day) {
     var ms = t.moments.filter(function (m) { return m.day === day; });
     var runs = t.stops.filter(function (s) { return s.day === day; }).sort(function (a, b) { return (a.start_t || "99").localeCompare(b.start_t || "99"); });
-    var html = '<a class="link-back" href="#/t/' + t.id + '/diari">' + ic("back", ' width="16" height="16"') + 'Kembali ke kalender</a><div class="day-head">' + esc(fmtDay(day, { weekday: "long", day: "numeric", month: "long" })) + '</div><p class="muted mono" style="margin:0 0 16px;font-size:12px">' + ms.length + " foto</p>" +
+    var html = '<a class="link-back" href="#/t/' + t.id + '/diari">' + ic("back", ' width="16" height="16"') + 'Kembali ke kalender</a><div class="day-top">' + postmark(day) + '<div><div class="day-head disp">' + esc(fmtDay(day, { weekday: "long" })) + '</div><p class="muted" style="margin:2px 0 0;font-size:14px">' + esc(fmtDay(day, { day: "numeric", month: "long", year: "numeric" })) + " · " + ms.length + " foto</p></div></div>" +
       '<div class="btns" style="margin-bottom:16px"><button class="btn pri" id="dc">' + ic("cam") + 'Ambil foto</button><button class="btn" id="dg">' + ic("img") + "Pilih dari galeri</button></div>" +
-      (ms.length ? '<div class="photos" id="pl">' + ms.map(function (m) { return '<button class="ph" data-m="' + m.id + '"><img src="' + esc(m.url) + '" alt="" loading="lazy"><p class="' + (m.caption ? "" : "later") + '">' + (m.caption ? esc(m.caption) : "Belum ada catatan. Ketuk untuk menulis.") + "</p></button>"; }).join("") + "</div>" : '<div class="empty">Belum ada foto pada hari ini. Foto kegiatan, teman satu tim, atau tempat yang dikunjungi.</div>') +
+      (ms.length ? '<div class="photos" id="pl">' + ms.map(function (m, i) { return '<button class="ph" style="--r:' + [-2.2, 1.6, -1, 2.4][i % 4] + 'deg" data-m="' + m.id + '"><img src="' + esc(m.url) + '" alt="" loading="lazy"><p class="' + (m.caption ? "" : "later") + '">' + (m.caption ? esc(m.caption) : "Belum ada catatan. Ketuk untuk menulis.") + "</p></button>"; }).join("") + "</div>" : emptyArt("kamera", "Belum ada foto pada hari ini. Foto kegiatan, teman satu tim, atau tempat yang dikunjungi.")) +
       '<div class="sec">Cerita hari ini</div><textarea class="in-t" id="dn" placeholder="Apa saja yang terjadi hari ini? Boleh diisi nanti.">' + esc((t.day_notes || {})[day] || "") + "</textarea><p class=\"hint\" id=\"dns\">Cerita tersimpan otomatis.</p>" +
       (runs.length ? '<div class="sec">Agenda hari ini</div><div class="mini-run">' + runs.map(function (s) { return "<div><b>" + esc(hhmm(s.start_t) || "–") + "</b>" + esc(s.title) + "</div>"; }).join("") + "</div>" : "");
     shell(t, "diari", html, "");
@@ -561,7 +618,7 @@
   function renderLapor(t) {
     var tot = totals(t), paidOut = t.entries.filter(function (e) { return e.kind === "out" && e.status === "paid"; });
     var proofs = t.entries.reduce(function (a, e) { return a + (e.proofs || []).length; }, 0);
-    var html = '<div class="sec" style="margin-top:4px">Laporan pertanggungjawaban</div><p class="muted" style="font-size:14px;line-height:1.55;margin:0 0 14px">Laporan berisi rekap transaksi dan semua foto bukti sebagai lampiran. Buka laporan, lalu pilih <b>Simpan sebagai PDF</b> pada menu cetak. Format CSV dapat dibuka di Excel.</p>' +
+    var html = tabHero("struk", "Laporan pertanggungjawaban", "Rekap transaksi dengan foto bukti sebagai lampiran.") + '<p class="muted" style="font-size:14px;line-height:1.55;margin:0 0 14px">Laporan berisi rekap transaksi dan semua foto bukti sebagai lampiran. Buka laporan, lalu pilih <b>Simpan sebagai PDF</b> pada menu cetak. Format CSV dapat dibuka di Excel.</p>' +
       '<div class="cats"><div class="cat-row"><span>Dana masuk</span><span></span><b class="mono">' + rp(tot.in) + '</b></div><div class="cat-row"><span>Sudah dibayar</span><span></span><b class="mono">' + rp(tot.paid) + '</b></div><div class="cat-row"><span>Sisa dana</span><span></span><b class="mono">' + rp(tot.left) + '</b></div><div class="cat-row"><span>Foto bukti</span><span></span><b class="mono">' + proofs + "</b></div></div>" +
       '<div class="btns" style="margin-top:14px"><a class="btn pri" href="#/lapor/' + t.id + '">' + ic("doc") + 'Buka laporan PDF</a><button class="btn" id="csv">' + ic("dl") + "Unduh CSV</button></div>";
     if (tot.noProof.length) html += '<div class="sec">Belum ada foto bukti<span class="act mono">' + tot.noProof.length + "</span></div><p class=\"hint\" style=\"margin:-4px 0 10px\">Ketuk transaksi untuk melampirkan foto.</p><div class=\"list\">" + tot.noProof.map(entryRow).join("") + "</div>";
