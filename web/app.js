@@ -172,7 +172,7 @@
     return '<div class="karcis"><div class="k-top"><div class="k-eyebrow"><span>' + esc(fmtDay(t.start_date, { day: "numeric", month: "short" })) + " – " + esc(fmtDay(t.end_date, { day: "numeric", month: "short", year: "numeric" })) + '</span><span>' + days + " hari · " + esc(t.tz || "WIB") + '</span></div>' +
       '<div class="k-title">' + esc(t.title) + '</div>' + (t.place ? '<div class="k-route">' + ic("pin", ' width="14" height="14"') + esc(t.place) + '</div>' : "") + '</div>' +
       '<div class="k-bot"><div class="k-eyebrow"><span>Sisa dana</span><span>masuk − terpakai</span></div><div class="k-big' + (tot.left < 0 ? " neg" : "") + '">' + rp(tot.left) + '</div>' +
-      (big ? '<div class="k-grid"><div><small>Dana masuk</small><b>' + rp(tot.in) + '</b></div><div><small>Terpakai</small><b>' + rp(tot.paid) + '</b></div><div><small>Kalau rencana dibayar</small><b style="color:' + (tot.after < 0 ? "var(--merah)" : "var(--teks)") + '">' + rp(tot.after) + "</b></div></div>" : "") +
+      (big ? '<div class="k-grid"><div><small>Dana masuk</small><b>' + rp(tot.in) + '</b></div><div><small>Terpakai</small><b>' + rp(tot.paid) + '</b></div><div><small>Kalau rencana dibayar</small><b style="color:' + (tot.after < 0 ? "#9E1F0B" : "var(--teks)") + '">' + rp(tot.after) + "</b></div></div>" : "") +
       "</div></div>";
   }
   async function renderHome() {
@@ -427,7 +427,7 @@
       for (var i = 0; i < pad; i++) cells += '<div class="cell blank"></div>';
       for (var d = 1; d <= dim; d++) {
         var ds = m + "-" + (d < 10 ? "0" : "") + d, ph = by[ds] || [];
-        cells += '<button class="cell' + (days.indexOf(ds) >= 0 ? " trip" : "") + (ds === today ? " today" : "") + '" data-day="' + ds + '" aria-label="' + esc(fmtDay(ds, { day: "numeric", month: "long" })) + (ph.length ? ", " + ph.length + " foto" : "") + '">' + (ph.length ? '<img src="' + esc(ph[0].url) + '" alt="" loading="lazy"><em>' + ph.length + "</em>" : "") + "<span>" + d + "</span></button>";
+        cells += '<button class="cell' + (ph.length ? " has" : "") + (days.indexOf(ds) >= 0 ? " trip" : "") + (ds === today ? " today" : "") + '" data-day="' + ds + '" aria-label="' + esc(fmtDay(ds, { day: "numeric", month: "long" })) + (ph.length ? ", " + ph.length + " foto" : "") + '">' + (ph.length ? '<img src="' + esc(ph[0].url) + '" alt="" loading="lazy"><em>' + ph.length + "</em>" : "") + "<span>" + d + "</span></button>";
       }
       return '<div class="cal" style="margin-bottom:14px"><h3>' + esc(first.toLocaleDateString("id-ID", { month: "long", year: "numeric", timeZone: "UTC" })) + '</h3><div class="cal-g">' + cells + "</div></div>";
     }).join("");
@@ -503,7 +503,7 @@
     var tot = totals(t), paidOut = t.entries.filter(function (e) { return e.kind === "out" && e.status === "paid"; });
     var proofs = t.entries.reduce(function (a, e) { return a + (e.proofs || []).length; }, 0);
     var html = '<div class="sec" style="margin-top:4px">Laporan pertanggungjawaban</div><p class="muted" style="font-size:14px;line-height:1.55;margin:0 0 14px">Rekap transaksi + semua foto bukti sebagai lampiran. Buka laporan lalu pilih <b>Simpan sebagai PDF</b> di menu cetak, atau unduh CSV untuk Excel.</p>' +
-      '<div class="cats"><div class="cat-row"><span>Dana masuk</span><span></span><b class="mono">' + rp(tot.in) + '</b></div><div class="cat-row"><span>Sudah dibayar</span><span></span><b class="mono">' + rp(tot.paid) + '</b></div><div class="cat-row"><span>Sisa dana</span><span></span><b class="mono" style="color:var(--kuning)">' + rp(tot.left) + '</b></div><div class="cat-row"><span>Foto bukti</span><span></span><b class="mono">' + proofs + "</b></div></div>" +
+      '<div class="cats"><div class="cat-row"><span>Dana masuk</span><span></span><b class="mono">' + rp(tot.in) + '</b></div><div class="cat-row"><span>Sudah dibayar</span><span></span><b class="mono">' + rp(tot.paid) + '</b></div><div class="cat-row"><span>Sisa dana</span><span></span><b class="mono">' + rp(tot.left) + '</b></div><div class="cat-row"><span>Foto bukti</span><span></span><b class="mono">' + proofs + "</b></div></div>" +
       '<div class="btns" style="margin-top:14px"><a class="btn pri" href="#/lapor/' + t.id + '">' + ic("doc") + 'Laporan PDF</a><button class="btn" id="csv">' + ic("dl") + "Unduh CSV</button></div>";
     if (tot.noProof.length) html += '<div class="sec">Belum ada bukti<span class="act muted mono" style="font-size:12px;font-weight:500">' + tot.noProof.length + "</span></div><div class=\"list\">" + tot.noProof.map(entryRow).join("") + "</div>";
     else if (paidOut.length) html += '<div class="note-card" style="margin-top:16px">Semua pengeluaran yang sudah dibayar punya bukti. Aman buat lapor.</div>';

@@ -33,7 +33,7 @@ module.exports = function (req, res) {
     res.end(JSON.stringify({
       name: brand.name, short_name: brand.name,
       description: "Catat dana perjalanan, bukti struk, rundown, dan diari foto.",
-      start_url: "/app", display: "standalone", background_color: "#0A1630", theme_color: "#0A1630",
+      start_url: "/app", display: "standalone", background_color: "#EEF3FA", theme_color: "#EEF3FA",
       icons: [
         { src: "/icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any" },
         { src: "/icon-512.png", sizes: "512x512", type: "image/png" },

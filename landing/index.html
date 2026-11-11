@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0A1630">
+<meta name="theme-color" content="#EEF3FA">
 <title>{B}: dana perjalanan, bukti, rundown</title>
 <meta name="description" content="Catat dana perjalanan dinas dan lomba, simpan foto struk sebagai bukti, susun rundown, lalu cetak laporan pertanggungjawaban.">
 <meta property="og:title" content="{B}: dana perjalanan, bukti, rundown">
@@ -17,44 +17,45 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--malam:#0A1630;--malam-2:#10234A;--garis:rgba(157,178,217,.22);--garis-2:rgba(157,178,217,.36);--teks:#EDF3FF;--redup:#97ABD2;--kuning:#FFD60A;--hijau:#5ED3A8;--oranye:#F7B32B;
+:root{--malam:#EEF3FA;--malam-2:#FFFFFF;--garis:rgba(14,31,69,.1);--garis-2:rgba(14,31,69,.2);--teks:#0E1F45;--redup:#4A5D88;--kuning:#FFD60A;--emas:#8A6400;--hijau:#0B7A52;--oranye:#9A5B00;
   --sans:"Plus Jakarta Sans",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--malam);color:var(--teks);font-family:var(--sans);font-weight:500;-webkit-font-smoothing:antialiased}
-body{background:radial-gradient(800px 460px at 90% -10%,rgba(76,125,216,.24),transparent 70%),var(--malam)}
+body{background:radial-gradient(800px 460px at 90% -10%,rgba(76,125,216,.14),transparent 70%),radial-gradient(600px 360px at -10% 100%,rgba(255,214,10,.16),transparent 70%),var(--malam)}
 a{color:inherit}
-:focus-visible{outline:2px solid var(--kuning);outline-offset:3px;border-radius:8px}
+:focus-visible{outline:2px solid var(--emas);outline-offset:3px;border-radius:8px}
 .wrap{max-width:1080px;margin:0 auto;padding:22px 20px 40px}
 nav{display:flex;align-items:center;gap:12px}
 .logo{font-weight:800;font-size:20px;letter-spacing:.02em;text-decoration:none}
-.logo b{color:var(--kuning)}
+.logo b{color:var(--emas)}
 nav .sp{flex:1}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:13px;padding:12px 18px;font-weight:700;font-size:15px;border:1px solid var(--garis-2);text-decoration:none;min-height:46px}
-.btn.pri{background:var(--kuning);color:#0A1630;border-color:var(--kuning)}
+.btn.pri{background:var(--kuning);color:#0E1F45;border-color:rgba(160,120,0,.5)}
 .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding:56px 0 40px}
 h1{font-size:clamp(34px,5.4vw,58px);line-height:1.08;font-weight:800;letter-spacing:.005em;margin:0 0 18px}
-h1 em{font-style:normal;color:var(--kuning)}
+h1 em{font-style:normal;background:linear-gradient(transparent 58%,var(--kuning) 58%,var(--kuning) 92%,transparent 92%);padding:0 .08em}
 .lead{font-size:17px;line-height:1.6;color:var(--redup);margin:0 0 26px;max-width:34em}
 .cta{display:flex;gap:10px;flex-wrap:wrap}
 /* karcis */
-.karcis{background:linear-gradient(160deg,#14295A,#0F2148 60%,#0E1E42);border:1px solid var(--garis-2);border-radius:22px;overflow:hidden;transform:rotate(-2.5deg);box-shadow:0 40px 80px -40px rgba(0,0,0,.7);max-width:380px;justify-self:center;width:100%}
+.karcis{background:var(--malam-2);border:1px solid var(--garis-2);border-radius:22px;overflow:hidden;transform:rotate(-2.5deg);box-shadow:0 40px 70px -40px rgba(14,31,69,.5);max-width:380px;justify-self:center;width:100%}
 .k-top{padding:20px 20px 18px}
-.k-bot{padding:16px 20px 18px;border-top:2px dashed var(--garis-2);position:relative}
+.k-bot{padding:16px 20px 18px;border-top:2px dashed rgba(14,31,69,.35);position:relative;background:var(--kuning)}
+.k-bot .eb{color:rgba(14,31,69,.72)}
 .k-bot:before,.k-bot:after{content:"";position:absolute;top:-13px;width:24px;height:24px;border-radius:50%;background:var(--malam);border:1px solid var(--garis-2)}
 .k-bot:before{left:-13px}.k-bot:after{right:-13px}
 .eb{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--redup);display:flex;justify-content:space-between}
 .kt{font-size:21px;font-weight:800;margin:7px 0 3px}
 .kr{color:var(--redup);font-size:13px}
-.big{font-family:var(--mono);font-weight:700;font-size:34px;color:var(--kuning);margin-top:4px}
+.big{font-family:var(--mono);font-weight:700;font-size:34px;color:var(--teks);margin-top:4px}
 .ln{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;padding:9px 0;border-top:1px solid var(--garis)}
 .ln:first-of-type{border-top:0}
 .ln .m{font-family:var(--mono);font-weight:700}
 .stamp{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;padding:2px 6px;border-radius:5px;border:1.5px solid;transform:rotate(-3deg);display:inline-block;margin-right:8px}
-.paid{color:var(--hijau);border-color:rgba(94,211,168,.6)}.plan{color:var(--oranye);border-color:rgba(247,179,43,.6);border-style:dashed}
+.paid{color:var(--hijau);border-color:rgba(11,122,82,.55)}.plan{color:var(--oranye);border-color:rgba(154,91,0,.55);border-style:dashed}
 .lines{padding:4px 20px 14px}
 /* untuk siapa + fitur */
 .for{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px}
-.for div{border:1px solid var(--garis);border-radius:18px;padding:18px 20px;background:rgba(16,35,74,.5)}
+.for div{border:1px solid var(--garis);border-radius:18px;padding:18px 20px;background:var(--malam-2)}
 .for h3{margin:0 0 6px;font-size:16px;font-weight:800}
 .for p{margin:0;color:var(--redup);font-size:14.5px;line-height:1.55}
 .feat{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:30px;border-top:2px dashed var(--garis-2)}
