@@ -22,9 +22,11 @@ module.exports = async function (req, res) {
     if (b.action === "claim") {                       // kode undangan setelah punya akun
       const uid = await auth.requireUser(req, res);
       if (!uid) return;
-      const ok = await db.mergeClaim(String(b.code || "").trim().toUpperCase(), uid);
-      if (!ok) { res.status(400).json({ error: "bad-code" }); return; }
-      res.json({ ok: true });
+      const code = String(b.code || "").trim().toUpperCase();
+      if (await db.mergeClaim(code, uid)) { res.json({ ok: true }); return; }
+      const tripId = await db.joinByCode(code, uid);         // kode ajakan perjalanan bersama
+      if (!tripId) { res.status(400).json({ error: "bad-code" }); return; }
+      res.json({ ok: true, trip_id: tripId });
       return;
     }
     const email = String(b.email || "").trim().toLowerCase();
@@ -45,9 +47,13 @@ module.exports = async function (req, res) {
       let uid;
       if (code) {                                   // kode undangan: ambil alih akun yang sudah disiapkan
         const pre = await db.getUserByClaim(code);
-        if (!pre) { res.status(400).json({ error: "bad-code" }); return; }
-        await db.claimUser(pre.id, { email: email, pw_hash: auth.hashPassword(pw), name: name });
-        uid = pre.id;
+        if (pre) {
+          await db.claimUser(pre.id, { email: email, pw_hash: auth.hashPassword(pw), name: name });
+          uid = pre.id;
+        } else if (await db.inviteExists(code)) {   // kode ajakan perjalanan bersama
+          uid = (await db.createUser({ email: email, pw_hash: auth.hashPassword(pw), name: name })).id;
+          await db.joinByCode(code, uid);
+        } else { res.status(400).json({ error: "bad-code" }); return; }
       } else {
         uid = (await db.createUser({ email: email, pw_hash: auth.hashPassword(pw), name: name })).id;
       }

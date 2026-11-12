@@ -3,7 +3,8 @@
    GET ?id=       -> satu perjalanan lengkap (entries, stops, moments)
    POST {..}      -> buat perjalanan
    PATCH ?id= {..}-> ubah (judul, tanggal, tempat, day_notes)
-   DELETE ?id=    -> hapus beserta isinya */
+   DELETE ?id=    -> hapus beserta isinya (hanya pemilik)
+   POST ?id= {action:"invite"|"revoke"|"kick"|"leave", user_id} -> kelola anggota */
 const db = require("../lib/db");
 const auth = require("../lib/auth");
 
@@ -18,6 +19,14 @@ module.exports = async function (req, res) {
       if (!t) { res.status(404).json({ error: "not-found" }); return; }
       res.json({ trip: t });
       return;
+    }
+    if (req.method === "POST" && id) {                      // aksi berbagi
+      const b = req.body || {};
+      if (b.action === "invite") { res.json({ code: await db.setInvite(uid, id, true) }); return; }
+      if (b.action === "revoke") { await db.setInvite(uid, id, false); res.json({ ok: true }); return; }
+      if (b.action === "kick") { await db.removeMember(uid, id, String(b.user_id || "")); res.json({ ok: true }); return; }
+      if (b.action === "leave") { await db.leaveTrip(uid, id); res.json({ ok: true }); return; }
+      res.status(400).json({ error: "bad-action" }); return;
     }
     if (req.method === "POST") { res.json(await db.createTrip(uid, req.body || {})); return; }
     if (req.method === "PATCH" && id) { await db.updateTrip(uid, id, req.body || {}); res.json({ ok: true }); return; }

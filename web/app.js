@@ -203,7 +203,7 @@
       (signup ? '<div class="f"><label for="nm">Nama</label><input class="in-t" id="nm" autocomplete="name" placeholder="Nama yang tercantum di laporan"></div>' : "") +
       '<div class="f"><label for="em">Email</label><input class="in-t" id="em" type="email" autocomplete="email" required></div>' +
       '<div class="f"><label for="pw">Kata sandi</label><input class="in-t" id="pw" type="password" autocomplete="' + (signup ? "new-password" : "current-password") + '" required minlength="' + (signup ? 8 : 1) + '">' + (signup ? '<span class="hint">Minimal 8 karakter.</span>' : "") + '</div>' +
-      (signup ? '<div id="codeBox" hidden class="f"><label for="cd">Kode undangan</label><input class="in-t mono" id="cd" autocapitalize="characters" autocomplete="off" placeholder="Boleh dikosongkan"><span class="hint">Kode undangan berisi data perjalanan yang sudah disiapkan untukmu.</span></div><button type="button" class="link-btn" id="codeT">Punya kode undangan?</button>' : "") +
+      (signup ? '<div id="codeBox" hidden class="f"><label for="cd">Kode undangan</label><input class="in-t mono" id="cd" autocapitalize="characters" autocomplete="off" placeholder="Boleh dikosongkan"><span class="hint">Masukkan kode undangan atau kode ajakan dari rekan setim agar perjalanannya langsung muncul.</span></div><button type="button" class="link-btn" id="codeT">Punya kode undangan atau kode ajakan?</button>' : "") +
       '<div class="err" id="ae"></div><button class="btn pri block" type="submit">' + (signup ? "Buat akun" : "Masuk") + '</button></form>' +
       '<p class="hint" style="margin-top:18px">' + (signup ? 'Sudah punya akun? <button type="button" class="link-btn" data-m="login">Masuk di sini</button>' : 'Belum punya akun? <button type="button" class="link-btn" data-m="signup">Daftar gratis</button>') + "</p></div>";
     $app.querySelectorAll("[data-m]").forEach(function (b) { b.onclick = function () { renderAuth(b.dataset.m); }; });
@@ -253,19 +253,19 @@
       return;
     }
     el.innerHTML = '<div class="sec" style="margin-top:4px">Perjalanan saya</div>' +
-      j.trips.map(function (t) { return '<a class="trip-link" href="#/t/' + t.id + '/dana">' + karcis(t, { in: t.total_in, paid: t.total_paid, plan: t.total_plan, left: t.total_in - t.total_paid }, false) + "</a>"; }).join("") +
+      j.trips.map(function (t) { return '<a class="trip-link" href="#/t/' + t.id + '/dana">' + (t.role === "member" ? '<span class="shared-tag">Dibagikan oleh ' + esc(t.owner_name || "pemilik") + "</span>" : "") + karcis(t, { in: t.total_in, paid: t.total_paid, plan: t.total_plan, left: t.total_in - t.total_paid }, false) + "</a>"; }).join("") +
       '<button class="btn block" id="nt">' + ic("plus") + "Buat perjalanan baru</button>";
     document.getElementById("nt").onclick = function () { tripSheet(null); };
   }
   function accountSheet() {
     var c = openSheet('<h2>Akun</h2><p class="muted" style="margin:-8px 0 18px">' + esc(S.me.name || "") + (S.me.email ? " · " + esc(S.me.email) : "") + "</p>" +
-      '<form id="cf" class="f"><label for="cc">Kode undangan</label><div class="btns"><input class="in-t mono" id="cc" autocapitalize="characters" autocomplete="off" placeholder="Masukkan kode" style="flex:2"><button class="btn" type="submit">Pakai kode</button></div><span class="hint">Data perjalanan dari kode akan dipindahkan ke akun ini.</span><span class="err" id="ce"></span></form>' +
+      '<form id="cf" class="f"><label for="cc">Kode undangan atau kode ajakan</label><div class="btns"><input class="in-t mono" id="cc" autocapitalize="characters" autocomplete="off" placeholder="Masukkan kode" style="flex:2"><button class="btn" type="submit">Pakai kode</button></div><span class="hint">Kode ajakan dari rekan setim membuat perjalanan mereka muncul di berandamu.</span><span class="err" id="ce"></span></form>' +
       '<div class="menu-list"><a class="btn ghost block" href="/">Buka halaman depan</a><button class="btn danger block" id="lo">Keluar dari akun</button></div>');
     c.querySelector("#cf").onsubmit = async function (e) {
       e.preventDefault();
       var code = c.querySelector("#cc").value.trim();
       if (!code) return;
-      try { await api("/api/auth", { method: "POST", body: { action: "claim", code: code } }); closeSheet(); toast("Kode berhasil dipakai. Datanya sudah masuk ke akunmu."); location.hash = "#/"; route(); }
+      try { var cj = await api("/api/auth", { method: "POST", body: { action: "claim", code: code } }); closeSheet(); toast(cj.trip_id ? "Kamu sudah bergabung ke perjalanan" : "Kode berhasil dipakai. Datanya sudah masuk ke akunmu."); S.trip = null; location.hash = cj.trip_id ? "#/t/" + cj.trip_id + "/dana" : "#/"; route(); }
       catch (x) { c.querySelector("#ce").textContent = "Kode tidak dikenal atau sudah dipakai."; }
     };
     c.querySelector("#lo").onclick = async function () { await api("/api/auth", { method: "POST", body: { action: "logout" } }); closeSheet(); S.me = null; location.hash = "#/"; renderAuth(); };
@@ -277,7 +277,8 @@
       '<div class="two"><div class="f"><label for="ts">Tanggal mulai</label><input class="in-t" id="ts" type="date" required value="' + esc(t ? t.start_date : todayWIB()) + '"></div><div class="f"><label for="te">Tanggal selesai</label><input class="in-t" id="te" type="date" required value="' + esc(t ? t.end_date : todayWIB()) + '"></div></div>' +
       '<div class="f"><span class="lbl">Zona waktu di tujuan</span><div class="seg" id="tz">' + ["WIB", "WITA", "WIT"].map(function (z) { return '<button type="button" data-z="' + z + '" class="' + ((t ? t.tz : "WIB") === z ? "on" : "") + '">' + z + "</button>"; }).join("") + "</div></div>" +
       '<div class="err" id="te2"></div><button class="btn pri block" type="submit">' + (t ? "Simpan perubahan" : "Buat perjalanan") + "</button>" +
-      (t ? '<button type="button" class="btn danger block" id="td" style="margin-top:10px">Hapus perjalanan</button>' : "") + "</form>");
+      (t ? shareHTML(t) + '<button type="button" class="btn danger block" id="td" style="margin-top:22px">Hapus perjalanan</button>' : "") + "</form>");
+    if (t) bindShare(c, t);
     var tz = t ? t.tz : "WIB";
     c.querySelectorAll("[data-z]").forEach(function (b) { b.onclick = function () { tz = b.dataset.z; c.querySelectorAll("[data-z]").forEach(function (x) { x.classList.toggle("on", x === b); }); }; });
     c.querySelector("#tf").onsubmit = async function (e) {
@@ -294,14 +295,58 @@
     };
   }
 
+  /* ---------- berbagi perjalanan ---------- */
+  function shared() { return S.trip && (S.trip.members || []).length > 1; }
+  function canDel(item) { return !item || !S.trip || S.trip.role === "owner" || item.user_id === S.trip.me; }
+  function byLine(item) {
+    if (!shared() || !item || !item.user_id) return "";
+    if (item.user_id === S.trip.me) return "dicatat oleh kamu";
+    var m = (S.trip.members || []).find(function (x) { return x.id === item.user_id; });
+    return "dicatat oleh " + (item.by_name || (m && m.name) || "anggota lain");
+  }
+  function membersHTML(t, owner) {
+    return '<div class="members">' + (t.members || []).map(function (m) {
+      return '<div class="mem"><span class="av">' + esc((m.name || "?").trim().charAt(0).toUpperCase()) + '</span><span class="mn">' + esc(m.name) + (m.id === t.me ? " (kamu)" : "") + "<small>" + (m.role === "owner" ? "Pemilik" : "Anggota") + "</small></span>" +
+        (owner && m.role !== "owner" ? '<button type="button" class="btn sm danger" data-kick="' + esc(m.id) + '">Keluarkan</button>' : "") + "</div>";
+    }).join("") + "</div>";
+  }
+  function shareHTML(t) {
+    return '<div class="sec" style="margin-top:22px">Anggota perjalanan</div>' + membersHTML(t, true) +
+      '<div class="invite"><div class="cb-h">Ajak anggota</div>' +
+      (t.invite_code ? '<div class="code mono" id="ivc">' + esc(t.invite_code) + '</div><p class="hint">Kirim kode ini ke rekan setim. Mereka membuka <b>Akun</b>, lalu memasukkan kode pada kolom <b>Kode undangan atau kode ajakan</b>. Anggota bisa melihat, menambah, dan mengubah isi perjalanan ini.</p>' +
+        '<div class="btns"><button type="button" class="btn sm pri" id="ivs">' + ic("dl") + 'Bagikan kode</button><button type="button" class="btn sm" id="ivn">Buat kode baru</button><button type="button" class="btn sm danger" id="ivr">Cabut kode</button></div>'
+      : '<p class="hint">Buat kode ajakan agar rekan setim bisa masuk dengan akunnya sendiri dan mengisi perjalanan ini bersama.</p><button type="button" class="btn sm pri" id="ivn">Buat kode ajakan</button>') + "</div>";
+  }
+  function bindShare(c, t) {
+    var act = async function (body) { var j = await api("/api/trips?id=" + t.id, { method: "POST", body: body }); await loadTrip(t.id); return j; };
+    var reopen = function () { tripSheet(S.trip); };
+    var n = c.querySelector("#ivn"); if (n) n.onclick = async function () { if (t.invite_code && !confirm("Buat kode baru? Kode lama tidak bisa dipakai lagi.")) return; await act({ action: "invite" }); reopen(); toast("Kode ajakan siap dibagikan"); };
+    var r = c.querySelector("#ivr"); if (r) r.onclick = async function () { if (!confirm("Cabut kode ajakan? Anggota yang sudah bergabung tetap menjadi anggota.")) return; await act({ action: "revoke" }); reopen(); toast("Kode ajakan dicabut"); };
+    var sh = c.querySelector("#ivs"); if (sh) sh.onclick = async function () {
+      var text = "Ayo isi catatan perjalanan \"" + t.title + "\" bersama di " + BRAND + ". Buka " + location.origin + "/app, masuk atau daftar, lalu buka Akun dan masukkan kode ajakan: " + t.invite_code;
+      try { if (navigator.share) { await navigator.share({ text: text }); return; } } catch (e) { if (e && e.name === "AbortError") return; }
+      try { await navigator.clipboard.writeText(text); toast("Pesan ajakan tersalin"); } catch (e) { toast("Salin kode secara manual"); }
+    };
+    c.querySelectorAll("[data-kick]").forEach(function (b) { b.onclick = async function () { if (!confirm("Keluarkan anggota ini dari perjalanan?")) return; await act({ action: "kick", user_id: b.dataset.kick }); reopen(); toast("Anggota dikeluarkan"); }; });
+  }
+  function memberSheet(t) {
+    var c = openSheet('<h2>Anggota perjalanan</h2><p class="muted" style="margin:-8px 0 14px">' + esc(t.title) + "</p>" + membersHTML(t, false) +
+      '<p class="hint" style="margin-top:12px">Kamu bisa melihat, menambah, dan mengubah isi perjalanan ini. Judul, tanggal, kode ajakan, dan daftar anggota diatur oleh pemilik.</p>' +
+      '<button class="btn danger block" id="lv" style="margin-top:14px">Keluar dari perjalanan ini</button>');
+    c.querySelector("#lv").onclick = async function () {
+      if (!confirm("Keluar dari perjalanan ini? Kamu perlu kode ajakan baru untuk bergabung lagi.")) return;
+      await api("/api/trips?id=" + t.id, { method: "POST", body: { action: "leave" } }); closeSheet(); S.trip = null; location.hash = "#/"; toast("Kamu sudah keluar dari perjalanan");
+    };
+  }
+
   /* ---------- kerangka perjalanan ---------- */
   async function loadTrip(id) { var j = await api("/api/trips?id=" + id); S.trip = j.trip; S.trip.day_notes = S.trip.day_notes || {}; return S.trip; }
   function shell(t, tab, inner, fab) {
     var tabs = [["dana", "Dana", "wallet"], ["rundown", "Jadwal", "route"], ["diari", "Diari", "img"], ["lapor", "Laporan", "doc"]];
-    $app.innerHTML = '<div class="wrap"><div class="top"><a class="back" href="#/" aria-label="Semua perjalanan">' + ic("back", ' width="18" height="18"') + '</a><span class="top-t">' + esc(t.title) + '</span><button class="btn sm ghost" id="te">Ubah</button></div><div class="view">' + inner + "</div></div>" +
+    $app.innerHTML = '<div class="wrap"><div class="top"><a class="back" href="#/" aria-label="Semua perjalanan">' + ic("back", ' width="18" height="18"') + '</a><span class="top-t">' + esc(t.title) + '</span><button class="btn sm ghost" id="te">' + (t.role === "owner" ? "Ubah" : "Anggota") + '</button></div><div class="view">' + inner + "</div></div>" +
       (fab ? '<button class="fab" id="fab">' + ic("plus") + "<span>" + esc(fab) + "</span></button>" : "") +
       '<nav class="tabbar" aria-label="Menu perjalanan"><div class="in">' + tabs.map(function (x) { return '<a href="#/t/' + t.id + "/" + x[0] + '" class="' + (tab === x[0] ? "on" : "") + '"' + (tab === x[0] ? ' aria-current="page"' : "") + ">" + ic(x[2]) + x[1] + "</a>"; }).join("") + "</div></nav>";
-    document.getElementById("te").onclick = function () { tripSheet(t); };
+    document.getElementById("te").onclick = function () { if (t.role === "owner") tripSheet(t); else memberSheet(t); };
   }
 
   /* ---------- DANA ---------- */
@@ -310,7 +355,7 @@
     var proof = isIn ? "" : (n ? '<span class="tag ok">' + ic("clip") + n + " foto bukti</span>" : (plan ? "" : '<span class="tag warn">' + ic("clip") + "Belum ada foto bukti</span>"));
     var stamp = isIn ? '<span class="stamp in">Diterima</span>' : '<span class="stamp ' + (plan ? "plan" : "paid") + (S.pop === e.id ? " pop" : "") + '">' + (plan ? "Rencana" : "Lunas") + "</span>";
     return '<button class="row" data-e="' + e.id + '"><span class="ci" style="background:' + cc.bg + '">' + catIcon(e) + '</span><span class="mid"><span class="t">' + esc(e.title) + '</span><span class="s">' +
-      "<span>" + esc(e.category) + (e.date ? " · " + esc(fmtDay(e.date, { day: "numeric", month: "short" })) : "") + "</span>" + proof +
+      "<span>" + esc(e.category) + (e.date ? " · " + esc(fmtDay(e.date, { day: "numeric", month: "short" })) : "") + (byLine(e) ? " · " + esc(byLine(e)) : "") + "</span>" + proof +
       (e.flag ? '<span class="flag">' + esc(e.flag) + "</span>" : "") + '</span></span><span class="amt-col"><span class="amt' + (isIn ? " in" : "") + '">' + (isIn ? "+" : "") + rp(e.amount) + "</span>" + stamp + "</span></button>";
   }
   function listBlock(title, list, empty) {
@@ -385,7 +430,7 @@
       '<div class="f"><label for="ed">Tanggal</label><input class="in-t" id="ed" type="date"></div>' +
       '<div class="f"><label for="en">Catatan</label><textarea class="in-t" id="en" placeholder="Boleh dikosongkan"></textarea></div>' +
       (e && e.flag ? '<div class="f"><label for="ef2">Tanda perlu dicek</label><input class="in-t" id="ef2"><span class="hint">Kosongkan jika sudah beres.</span></div>' : "") + "</details>" +
-      '<div class="err" id="ee"></div><div class="save-bar"><button class="btn pri block" type="submit">Simpan</button></div>' + (isNew ? "" : '<button type="button" class="btn danger block" id="edel" style="margin-top:10px">Hapus transaksi</button>') + "</form>");
+      '<div class="err" id="ee"></div><div class="save-bar"><button class="btn pri block" type="submit">Simpan</button></div>' + (isNew || !canDel(e) ? "" : '<button type="button" class="btn danger block" id="edel" style="margin-top:10px">Hapus transaksi</button>') + (!isNew && byLine(e) ? '<p class="hint" style="margin-top:10px;text-align:center">Transaksi ini ' + esc(byLine(e)) + ".</p>" : "") + "</form>");
     var $a = c.querySelector("#ea");
     function setAmt(v) { $a.value = v ? "Rp" + Number(v).toLocaleString("id-ID") : ""; }
     $a.oninput = function () { var p = $a.selectionStart, L = $a.value.length; setAmt(digits($a.value)); var d = $a.value.length - L; try { $a.setSelectionRange(p + d, p + d); } catch (x) {} };
@@ -461,7 +506,7 @@
         closeSheet(); renderDana(t); toast(isNew ? "Transaksi tercatat" : "Perubahan tersimpan");
       } catch (x) { er.textContent = "Gagal menyimpan. Periksa sinyal, lalu coba lagi."; ev.target.querySelector("button[type=submit]").disabled = false; }
     };
-    if (!isNew) c.querySelector("#edel").onclick = async function () {
+    if (c.querySelector("#edel")) c.querySelector("#edel").onclick = async function () {
       if (!confirm('Hapus "' + e.title + '"? Foto buktinya ikut terhapus.')) return;
       await api("/api/items?t=entries&id=" + e.id, { method: "DELETE" });
       (e.proofs || []).forEach(function (p) { api("/api/upload?url=" + encodeURIComponent(p.url), { method: "DELETE" }).catch(function () {}); });
@@ -512,7 +557,7 @@
       '<details class="more"' + (s.maps_url || s.note ? " open" : "") + '><summary>Tautan peta dan catatan</summary>' +
       '<div class="f"><label for="su">Tautan Google Maps</label><input class="in-t" id="su" type="url" placeholder="https://maps.app.goo.gl/…"></div>' +
       '<div class="f"><label for="sn">Catatan</label><textarea class="in-t" id="sn"></textarea></div></details>' +
-      '<div class="save-bar"><button class="btn pri block" type="submit">Simpan agenda</button></div>' + (isNew ? "" : '<button type="button" class="btn danger block" id="sdel" style="margin-top:10px">Hapus agenda</button>') + "</form>");
+      '<div class="save-bar"><button class="btn pri block" type="submit">Simpan agenda</button></div>' + (isNew || !canDel(s) ? "" : '<button type="button" class="btn danger block" id="sdel" style="margin-top:10px">Hapus agenda</button>') + "</form>");
     c.querySelector("#st").value = s.title; c.querySelector("#s1").value = s.start_t; c.querySelector("#s2").value = s.end_t;
     c.querySelector("#sp").value = s.place; c.querySelector("#su").value = s.maps_url; c.querySelector("#sn").value = s.note;
     c.querySelector("#sf").onsubmit = async function (ev) {
@@ -522,7 +567,7 @@
       else Object.assign(s, (await api("/api/items?t=stops&id=" + s.id, { method: "PATCH", body: body })).item);
       S.day = body.day; closeSheet(); renderRundown(t); toast("Agenda tersimpan");
     };
-    if (!isNew) c.querySelector("#sdel").onclick = async function () {
+    if (c.querySelector("#sdel")) c.querySelector("#sdel").onclick = async function () {
       if (!confirm('Hapus agenda "' + s.title + '"?')) return;
       await api("/api/items?t=stops&id=" + s.id, { method: "DELETE" });
       t.stops = t.stops.filter(function (x) { return x.id !== s.id; }); closeSheet(); renderRundown(t);
@@ -559,7 +604,7 @@
     var runs = t.stops.filter(function (s) { return s.day === day; }).sort(function (a, b) { return (a.start_t || "99").localeCompare(b.start_t || "99"); });
     var html = '<a class="link-back" href="#/t/' + t.id + '/diari">' + ic("back", ' width="16" height="16"') + 'Kembali ke kalender</a><div class="day-top">' + postmark(day) + '<div><div class="day-head disp">' + esc(fmtDay(day, { weekday: "long" })) + '</div><p class="muted" style="margin:2px 0 0;font-size:14px">' + esc(fmtDay(day, { day: "numeric", month: "long", year: "numeric" })) + " · " + ms.length + " foto</p></div></div>" +
       '<div class="btns" style="margin-bottom:16px"><button class="btn pri" id="dc">' + ic("cam") + 'Ambil foto</button><button class="btn" id="dg">' + ic("img") + "Pilih dari galeri</button></div>" +
-      (ms.length ? '<div class="photos" id="pl">' + ms.map(function (m, i) { return '<button class="ph" style="--r:' + [-2.2, 1.6, -1, 2.4][i % 4] + 'deg" data-m="' + m.id + '"><img src="' + esc(m.url) + '" alt="" loading="lazy"><p class="' + (m.caption ? "" : "later") + '">' + (m.caption ? esc(m.caption) : "Belum ada catatan. Ketuk untuk menulis.") + "</p></button>"; }).join("") + "</div>" : emptyArt("kamera", "Belum ada foto pada hari ini. Foto kegiatan, teman satu tim, atau tempat yang dikunjungi.")) +
+      (ms.length ? '<div class="photos" id="pl">' + ms.map(function (m, i) { return '<button class="ph" style="--r:' + [-2.2, 1.6, -1, 2.4][i % 4] + 'deg" data-m="' + m.id + '"><img src="' + esc(m.url) + '" alt="" loading="lazy"><p class="' + (m.caption ? "" : "later") + '">' + (m.caption ? esc(m.caption) : "Belum ada catatan. Ketuk untuk menulis.") + "</p>" + (byLine(m) ? '<small class="by">' + esc(byLine(m)) + "</small>" : "") + "</button>"; }).join("") + "</div>" : emptyArt("kamera", "Belum ada foto pada hari ini. Foto kegiatan, teman satu tim, atau tempat yang dikunjungi.")) +
       '<div class="sec">Cerita hari ini</div><textarea class="in-t" id="dn" placeholder="Apa saja yang terjadi hari ini? Boleh diisi nanti.">' + esc((t.day_notes || {})[day] || "") + "</textarea><p class=\"hint\" id=\"dns\">Cerita tersimpan otomatis.</p>" +
       (runs.length ? '<div class="sec">Agenda hari ini</div><div class="mini-run">' + runs.map(function (s) { return "<div><b>" + esc(hhmm(s.start_t) || "–") + "</b>" + esc(s.title) + "</div>"; }).join("") + "</div>" : "");
     shell(t, "diari", html, "");
@@ -593,13 +638,13 @@
     var c = openSheet('<div class="viewer"><img src="' + esc(m.url) + '" alt=""></div>' +
       (justShot ? '<p class="hint" style="margin:10px 0 0">Foto dari kamera browser tidak otomatis masuk galeri HP. Ketuk "Simpan ke galeri" jika ingin menyimpan cadangan.</p>' : "") +
       '<div class="f" style="margin-top:14px"><label for="mc">Catatan foto</label><textarea class="in-t" id="mc" placeholder="Siapa, di mana, sedang apa">' + esc(m.caption) + "</textarea></div>" +
-      '<div class="btns"><button class="btn pri" id="ms">Simpan catatan</button><button class="btn" id="mg">' + ic("dl") + 'Simpan ke galeri</button></div><button class="btn danger block" id="md" style="margin-top:10px">Hapus foto</button>');
+      '<div class="btns"><button class="btn pri" id="ms">Simpan catatan</button><button class="btn" id="mg">' + ic("dl") + 'Simpan ke galeri</button></div>' + (canDel(m) ? '<button class="btn danger block" id="md" style="margin-top:10px">Hapus foto</button>' : "") + (byLine(m) ? '<p class="hint" style="margin-top:10px;text-align:center">Foto ini ' + esc(byLine(m)) + ".</p>" : ""));
     c.querySelector("#ms").onclick = async function () {
       var j = await api("/api/items?t=moments&id=" + m.id, { method: "PATCH", body: { caption: c.querySelector("#mc").value } });
       Object.assign(m, j.item); closeSheet(); renderDay(t, m.day); toast("Catatan tersimpan");
     };
     c.querySelector("#mg").onclick = function () { saveToGallery(m.url); };
-    c.querySelector("#md").onclick = async function () {
+    if (c.querySelector("#md")) c.querySelector("#md").onclick = async function () {
       if (!confirm("Hapus foto ini dari diari?")) return;
       await api("/api/items?t=moments&id=" + m.id, { method: "DELETE" });
       api("/api/upload?url=" + encodeURIComponent(m.url), { method: "DELETE" }).catch(function () {});
@@ -680,7 +725,13 @@
   window.addEventListener("hashchange", route);
 
   async function boot() {
-    try { S.me = await api("/api/auth"); } catch (e) { S.me = null; }
+    try { S.me = await api("/api/auth"); } catch (e) {
+      S.me = null;
+      if (e.status !== 401) {                  // gangguan server/sinyal: jangan tampilkan layar masuk
+        $app.innerHTML = '<div class="wrap"><div class="empty">Koneksi ke server gagal. Periksa sinyal, lalu coba lagi.<br><br><button class="btn pri" onclick="location.reload()">Muat ulang</button></div></div>';
+        return;
+      }
+    }
     if (!S.me) { renderAuth(/daftar|signup/.test(location.search) ? "signup" : "login"); return; }
     try { S.ai = !!(await api("/api/ai")).enabled; } catch (e) {}
     if (!location.hash || location.hash === "#/") {
