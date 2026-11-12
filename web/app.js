@@ -490,7 +490,7 @@
       return leg + '<div class="stop' + cls + '"><div class="tm">' + esc(hhmm(s.start_t) || "–") + (s.end_t ? "<small>" + esc(hhmm(s.end_t)) + "</small>" : "") + '</div><div class="rail"><span class="dot"></span></div><div class="card" role="button" tabindex="0" data-s="' + s.id + '"><div class="t">' + esc(s.title) + (i === nowIdx ? '<span class="now-tag">SEKARANG</span>' : "") + "</div>" +
         (s.place ? '<a class="pl" href="' + esc(mu) + '" target="_blank" rel="noopener">' + ic("pin") + esc(s.place) + "</a>" : "") + (s.note ? '<div class="nt">' + esc(s.note) + "</div>" : "") + "</div></div>";
     }).join("") + "</div>";
-    html += '<p class="hint" style="margin-top:16px">Semua jam memakai ' + esc(t.tz || "WIB") + '. Ketuk agenda untuk mengubahnya. Tombol "Petunjuk arah" membuka rute dan perkiraan waktu tempuh di Google Maps.</p>';
+    html += '<p class="hint" style="margin-top:16px">Jam memakai ' + esc(t.tz || "WIB") + ', kecuali disebutkan lain pada agenda. Ketuk agenda untuk mengubahnya. Tombol "Petunjuk arah" membuka rute dan perkiraan waktu tempuh di Google Maps.</p>';
     shell(t, "rundown", html, "Agenda");
     document.getElementById("fab").onclick = function () { stopSheet(null); };
     var af = document.getElementById("addFirst"); if (af) af.onclick = function () { stopSheet(null); };
@@ -688,6 +688,6 @@
     }
     route();
   }
-  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(function () {});
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" }).then(function (r) { r.update(); }).catch(function () {});
   boot();
 })();
