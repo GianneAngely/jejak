@@ -38,7 +38,7 @@
     bed: '<path d="M3 18V7M3 14h18v4M21 14v-3a3 3 0 00-3-3h-7v6"/><circle cx="7" cy="11" r="2"/>',
     food: '<path d="M7 3v8a2 2 0 002 2v8M11 3v8M7 7h4M17 21V3c-2 1-3 4-3 8h3"/>',
     print: '<path d="M7 9V3h10v6M7 17H4v-7h16v7h-3"/><rect x="7" y="14" width="10" height="7"/>',
-    check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>', dot: '<circle cx="12" cy="12" r="3"/>', coin: '<circle cx="12" cy="12" r="8"/><path d="M9.5 9.5c0-1 1-1.7 2.5-1.7s2.5.7 2.5 1.7-1 1.5-2.5 1.8-2.5.8-2.5 1.9 1 1.8 2.5 1.8 2.5-.7 2.5-1.7M12 6.5v1.3M12 16.2v1.3"/>'
+    check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>', note: '<path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 11h7M9 15h7M9 19h4"/>', dot: '<circle cx="12" cy="12" r="3"/>', coin: '<circle cx="12" cy="12" r="8"/><path d="M9.5 9.5c0-1 1-1.7 2.5-1.7s2.5.7 2.5 1.7-1 1.5-2.5 1.8-2.5.8-2.5 1.9 1 1.8 2.5 1.8 2.5-.7 2.5-1.7M12 6.5v1.3M12 16.2v1.3"/>'
   };
   function ic(n, extra) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"' + (extra || "") + ">" + I[n] + "</svg>"; }
 
@@ -71,6 +71,7 @@
     peta: '<path d="M28 26l34-8 36 10 34-8v70l-34 8-36-10-34 8z" fill="#D6F3EF" stroke="#0E1F45" stroke-width="3" stroke-linejoin="round"/><path d="M62 18v70M98 28v70" stroke="#0E1F45" stroke-width="2" opacity=".35"/><path d="M42 74c14-4 18-24 34-22s20 14 40-8" fill="none" stroke="#2F7FD0" stroke-width="3" stroke-dasharray="6 6" stroke-linecap="round"/><circle cx="42" cy="74" r="5" fill="#fff" stroke="#0E1F45" stroke-width="2.5"/><path d="M116 50s-11-11-11-19a11 11 0 0122 0c0 8-11 19-11 19z" fill="#E0604A" stroke="#0E1F45" stroke-width="2.5"/><circle cx="116" cy="31" r="4" fill="#fff"/>',
     kamera: '<rect x="34" y="34" width="92" height="58" rx="12" fill="#FDE4DE" stroke="#0E1F45" stroke-width="3"/><path d="M60 34l7-12h26l7 12" fill="#fff" stroke="#0E1F45" stroke-width="3" stroke-linejoin="round"/><circle cx="80" cy="63" r="18" fill="#fff" stroke="#0E1F45" stroke-width="3"/><circle cx="80" cy="63" r="9" fill="#2F7FD0"/><circle cx="76" cy="59" r="3" fill="#fff"/><rect x="108" y="42" width="10" height="6" rx="2" fill="#FFD60A" stroke="#0E1F45" stroke-width="2"/><path d="M128 18l2.5 7 7 2.5-7 2.5-2.5 7-2.5-7-7-2.5 7-2.5z" fill="#FFD60A" stroke="#0E1F45" stroke-width="2" stroke-linejoin="round"/>'
   };
+  ART.buku = '<rect x="42" y="16" width="70" height="84" rx="6" fill="#FFF0CC" stroke="#0E1F45" stroke-width="3"/><path d="M54 16v84" stroke="#0E1F45" stroke-width="3"/><path d="M64 36h36M64 48h36M64 60h26" stroke="#0E1F45" stroke-width="2.5" stroke-linecap="round" opacity=".55"/><rect x="96" y="10" width="12" height="26" fill="#E0604A" stroke="#0E1F45" stroke-width="2.5"/><path d="M96 36l6-6 6 6" fill="#E0604A" stroke="#0E1F45" stroke-width="2.5" stroke-linejoin="round"/><circle cx="122" cy="80" r="14" fill="#DDEBFB" stroke="#0E1F45" stroke-width="3"/><path d="M116 80h12M122 74v12" stroke="#2F7FD0" stroke-width="3" stroke-linecap="round"/>';
   function art(n, cls) { return '<svg class="art ' + (cls || "") + '" viewBox="0 0 160 110" aria-hidden="true">' + ART[n] + "</svg>"; }
   function emptyArt(n, text, btn) { return '<div class="empty art-empty">' + art(n) + "<p>" + text + "</p>" + (btn || "") + "</div>"; }
   function tabHero(n, title, sub) { return '<div class="tab-hero">' + art(n, "sm") + '<div><h2 class="disp">' + title + "</h2><p>" + sub + "</p></div></div>"; }
@@ -268,7 +269,7 @@
       try { var cj = await api("/api/auth", { method: "POST", body: { action: "claim", code: code } }); closeSheet(); toast(cj.trip_id ? "Kamu sudah bergabung ke perjalanan" : "Kode berhasil dipakai. Datanya sudah masuk ke akunmu."); S.trip = null; location.hash = cj.trip_id ? "#/t/" + cj.trip_id + "/dana" : "#/"; route(); }
       catch (x) { c.querySelector("#ce").textContent = "Kode tidak dikenal atau sudah dipakai."; }
     };
-    c.querySelector("#lo").onclick = async function () { await api("/api/auth", { method: "POST", body: { action: "logout" } }); closeSheet(); S.me = null; location.hash = "#/"; renderAuth(); };
+    c.querySelector("#lo").onclick = async function () { await api("/api/auth", { method: "POST", body: { action: "logout" } }); offClear(); closeSheet(); S.me = null; location.hash = "#/"; renderAuth(); };
   }
   function tripSheet(t) {
     var c = openSheet("<h2>" + (t ? "Ubah perjalanan" : "Perjalanan baru") + '</h2><form id="tf">' +
@@ -340,9 +341,9 @@
   }
 
   /* ---------- kerangka perjalanan ---------- */
-  async function loadTrip(id) { var j = await api("/api/trips?id=" + id); S.trip = j.trip; S.trip.day_notes = S.trip.day_notes || {}; return S.trip; }
+  async function loadTrip(id) { var j = await api("/api/trips?id=" + id); S.trip = j.trip; S.trip.day_notes = S.trip.day_notes || {}; S.trip.notes = S.trip.notes || []; saveOffline(S.trip); return S.trip; }
   function shell(t, tab, inner, fab) {
-    var tabs = [["dana", "Dana", "wallet"], ["rundown", "Jadwal", "route"], ["diari", "Diari", "img"], ["lapor", "Laporan", "doc"]];
+    var tabs = [["dana", "Dana", "wallet"], ["rundown", "Jadwal", "route"], ["diari", "Diari", "img"], ["catatan", "Catatan", "note"], ["lapor", "Laporan", "doc"]];
     $app.innerHTML = '<div class="wrap"><div class="top"><a class="back" href="#/" aria-label="Semua perjalanan">' + ic("back", ' width="18" height="18"') + '</a><span class="top-t">' + esc(t.title) + '</span><button class="btn sm ghost" id="te">' + (t.role === "owner" ? "Ubah" : "Anggota") + '</button></div><div class="view">' + inner + "</div></div>" +
       (fab ? '<button class="fab" id="fab">' + ic("plus") + "<span>" + esc(fab) + "</span></button>" : "") +
       '<nav class="tabbar" aria-label="Menu perjalanan"><div class="in">' + tabs.map(function (x) { return '<a href="#/t/' + t.id + "/" + x[0] + '" class="' + (tab === x[0] ? "on" : "") + '"' + (tab === x[0] ? ' aria-current="page"' : "") + ">" + ic(x[2]) + x[1] + "</a>"; }).join("") + "</div></nav>";
@@ -652,6 +653,137 @@
     };
   }
 
+  /* ---------- CATATAN ----------
+     Format teks sederhana, satu perintah per baris:
+       # Judul besar          ## Subjudul (masuk daftar isi)       === Penanda babak
+       [ANGEL] Judul | 0.15   blok pembicara (ANGEL/YOGA/nama lain) sampai baris --- atau blok berikutnya
+       [YOGA]                 penanda pembicara untuk paragraf berikutnya
+       > Yoga: ketuk ...      baris aksi/demo (tidak diucapkan)
+       ??? Pertanyaan         tanya jawab yang bisa dilipat
+       - butir daftar         | sel | sel |  tabel      ! kotak penting      **tebal** */
+  function inlineMd(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>"); }
+  function spkClass(n) { n = String(n || "").toUpperCase(); return n === "ANGEL" ? "a" : (n === "YOGA" ? "y" : "o"); }
+  function parseNote(body) {
+    var out = [], toc = [], open = null, list = false, table = null, box = false, chip = "", n = 0, qs = 0;
+    function closeList() { if (list) { out.push("</ul>"); list = false; } if (table) { out.push(table + "</table></div>"); table = null; } if (box) { out.push("</div>"); box = false; } }
+    function closeBlock() { closeList(); if (open) { out.push(open === "q" ? "</div></details>" : "</div>"); open = null; } }
+    String(body || "").split("\n").forEach(function (raw) {
+      var l = raw.replace(/\s+$/, ""), m;
+      if (!l.trim()) { closeList(); return; }
+      if ((m = l.match(/^##\s+(.*)/))) { closeBlock(); var id = "c" + (++n); toc.push({ id: id, t: m[1] }); out.push('<h3 class="nt-h" id="' + id + '">' + inlineMd(m[1]) + "</h3>"); return; }
+      if ((m = l.match(/^#\s+(.*)/))) { closeBlock(); out.push('<h2 class="nt-title disp">' + inlineMd(m[1]) + "</h2>"); return; }
+      if ((m = l.match(/^===\s*(.*)/))) { closeBlock(); out.push('<div class="nt-babak ' + spkClass(m[1].split(/\s/)[1]) + '">' + inlineMd(m[1]) + "</div>"); return; }
+      if (l.trim() === "---") { closeBlock(); return; }
+      if ((m = l.match(/^\[([^\]]+)\]\s*(.*)$/))) {
+        if (!m[2]) { chip = m[1]; return; }
+        closeBlock(); var p = m[2].split(" | "), id2 = "c" + (++n);
+        toc.push({ id: id2, t: p[0], who: m[1] });
+        out.push('<div class="nt-spk ' + spkClass(m[1]) + '" id="' + id2 + '"><div class="nt-kepala"><span>' + esc(m[1]) + " · " + inlineMd(p[0]) + "</span>" + (p[1] ? '<span class="mono">' + esc(p[1]) + "</span>" : "") + "</div>");
+        open = "spk"; return;
+      }
+      if ((m = l.match(/^\?\?\?\s*(.*)/))) { closeBlock(); qs++; out.push('<details class="nt-q"><summary>' + inlineMd(m[1]) + '</summary><div class="nt-a">'); open = "q"; return; }
+      if ((m = l.match(/^>\s?(.*)/))) { closeList(); out.push('<p class="nt-aksi"><span>AKSI</span>' + inlineMd(m[1]) + "</p>"); return; }
+      if ((m = l.match(/^!\s?(.*)/))) { if (list || table) closeList(); if (!box) { out.push('<div class="nt-box">'); box = true; } out.push("<p>" + inlineMd(m[1]) + "</p>"); return; }
+      if ((m = l.match(/^-\s+(.*)/))) { if (box || table) closeList(); if (!list) { out.push("<ul>"); list = true; } out.push("<li>" + inlineMd(m[1]) + "</li>"); return; }
+      if (/^\|.*\|$/.test(l.trim())) {
+        if (list || box) closeList();
+        var cells = l.trim().slice(1, -1).split("|").map(function (c) { return c.trim(); });
+        if (!table) { table = '<div class="tw"><table class="nt-t"><tr>' + cells.map(function (c) { return "<th>" + inlineMd(c) + "</th>"; }).join("") + "</tr>"; return; }
+        table += "<tr>" + cells.map(function (c) { return "<td>" + inlineMd(c) + "</td>"; }).join("") + "</tr>"; return;
+      }
+      closeList();
+      out.push("<p>" + (chip ? '<span class="nt-chip ' + spkClass(chip) + '">' + esc(chip) + "</span>" : "") + inlineMd(l) + "</p>"); chip = "";
+    });
+    closeBlock();
+    return { html: out.join(""), toc: toc, qs: qs };
+  }
+  function noteSnippet(b) { var l = String(b || "").split("\n").filter(function (x) { return x.trim() && !/^(#|===|---|\||!|\[)/.test(x.trim()) && x.trim() !== x.trim().toUpperCase(); })[0] || ""; return l.replace(/^(\?\?\?|>|-|\[[^\]]+\])\s*/, "").replace(/\*\*/g, "").slice(0, 110); }
+  function renderNotes(t) {
+    var ns = (t.notes || []).slice().sort(function (a, b) { return a.sort - b.sort; });
+    var html = tabHero("buku", "Catatan perjalanan", "Naskah, daftar periksa, dan tanya jawab. Bisa dibaca saat sinyal hilang setelah pernah dibuka.") +
+      (ns.length ? '<div class="nt-list">' + ns.map(function (n, i) { return '<a class="nt-card" href="#/t/' + t.id + "/catatan/" + n.id + '"><span class="nt-no mono">' + (i + 1 < 10 ? "0" : "") + (i + 1) + '</span><span class="nt-mid"><b>' + esc(n.title) + "</b><small>" + esc(noteSnippet(n.body)) + "</small>" + (byLine(n) ? '<em>' + esc(byLine(n)) + "</em>" : "") + "</span></a>"; }).join("") + "</div>"
+        : emptyArt("buku", "Belum ada catatan. Simpan naskah presentasi, daftar barang bawaan, atau catatan rapat di sini.", '<button class="btn pri" id="nf">' + ic("plus") + "Tulis catatan</button>"));
+    shell(t, "catatan", html, "Catatan");
+    document.getElementById("fab").onclick = function () { noteSheet(null); };
+    var nf = document.getElementById("nf"); if (nf) nf.onclick = function () { noteSheet(null); };
+  }
+  function noteView(n, opts) {
+    var r = parseNote(n.body);
+    return '<article class="nt-doc">' + '<h1 class="nt-h1 disp">' + esc(n.title) + "</h1>" +
+      (r.toc.length > 1 ? '<nav class="nt-toc" aria-label="Daftar isi">' + r.toc.map(function (x) { return '<a href="#' + x.id + '" data-toc="' + x.id + '"' + (x.who ? ' class="' + spkClass(x.who) + '"' : "") + ">" + esc(x.t.replace(/^SLIDE\s+/i, "Slide ")) + "</a>"; }).join("") + "</nav>" : "") +
+      (r.qs ? '<div class="btns" style="margin:0 0 12px"><button class="btn sm" id="qAll">Buka semua jawaban</button></div>' : "") +
+      r.html + "</article>";
+  }
+  function bindNoteView(root) {
+    root.querySelectorAll("[data-toc]").forEach(function (a) { a.onclick = function (e) { e.preventDefault(); var el = document.getElementById(a.dataset.toc); if (el) el.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); }; });
+    var qa = root.querySelector("#qAll");
+    if (qa) qa.onclick = function () { var ds = root.querySelectorAll("details.nt-q"), anyClosed = Array.prototype.some.call(ds, function (d) { return !d.open; }); ds.forEach(function (d) { d.open = anyClosed; }); qa.textContent = anyClosed ? "Tutup semua jawaban" : "Buka semua jawaban"; };
+  }
+  function renderNote(t, id) {
+    var n = (t.notes || []).find(function (x) { return x.id === id; });
+    if (!n) { location.hash = "#/t/" + t.id + "/catatan"; return; }
+    var html = '<a class="link-back" href="#/t/' + t.id + '/catatan">' + ic("back", ' width="16" height="16"') + "Semua catatan</a>" + noteView(n) +
+      '<div class="btns" style="margin-top:22px"><button class="btn" id="ne">Ubah catatan</button></div>' + (byLine(n) ? '<p class="hint" style="margin-top:10px">Catatan ini ' + esc(byLine(n)) + ".</p>" : "");
+    shell(t, "catatan", html, "");
+    bindNoteView($app);
+    document.getElementById("ne").onclick = function () { noteSheet(n); };
+  }
+  function noteSheet(n) {
+    var t = S.trip, isNew = !n;
+    n = n || { title: "", body: "", sort: (t.notes || []).length };
+    var c = openSheet("<h2>" + (isNew ? "Catatan baru" : "Ubah catatan") + '</h2><form id="nfm">' +
+      '<div class="f"><label for="ntt">Judul</label><input class="in-t" id="ntt" required placeholder="Contoh: Naskah presentasi"></div>' +
+      '<div class="f"><label for="ntb">Isi</label><textarea class="in-t nt-edit" id="ntb" rows="14" placeholder="Tulis di sini. Lihat cara memformat di bawah."></textarea></div>' +
+      '<details class="more"><summary>Cara memformat</summary><div class="hint nt-help">' +
+      "<p><b>## Subjudul</b>: masuk daftar isi.</p><p><b>[ANGEL] Slide 1 | 0.15</b>: blok bicara Angel dengan durasi; tutup dengan <b>---</b>.</p><p><b>&gt; Yoga: ketuk tombol</b>: baris aksi demo, tidak diucapkan.</p>" +
+      "<p><b>??? Pertanyaan</b>: tanya jawab yang bisa dilipat; baris <b>[YOGA]</b> menandai penjawab.</p><p><b>- butir</b>, <b>| sel | sel |</b> untuk tabel, <b>! teks</b> untuk kotak penting, <b>**tebal**</b>.</p></div></details>" +
+      '<div class="err" id="nte"></div><div class="save-bar"><button class="btn pri block" type="submit">Simpan catatan</button></div>' +
+      (!isNew && canDel(n) ? '<button type="button" class="btn danger block" id="ntd" style="margin-top:10px">Hapus catatan</button>' : "") + "</form>");
+    c.querySelector("#ntt").value = n.title; c.querySelector("#ntb").value = n.body;
+    c.querySelector("#nfm").onsubmit = async function (ev) {
+      ev.preventDefault();
+      var body = { title: c.querySelector("#ntt").value.trim(), body: c.querySelector("#ntb").value };
+      if (!body.title) { c.querySelector("#nte").textContent = "Judul belum diisi."; return; }
+      ev.target.querySelector("button[type=submit]").disabled = true;
+      try {
+        if (isNew) { body.trip_id = t.id; body.sort = n.sort; var j = await api("/api/items?t=notes", { method: "POST", body: body }); t.notes = (t.notes || []).concat(j.item); saveOffline(t); closeSheet(); location.hash = "#/t/" + t.id + "/catatan/" + j.item.id; }
+        else { var j2 = await api("/api/items?t=notes&id=" + n.id, { method: "PATCH", body: body }); Object.assign(n, j2.item); saveOffline(t); closeSheet(); renderNote(t, n.id); }
+        toast("Catatan tersimpan");
+      } catch (x) { c.querySelector("#nte").textContent = "Gagal menyimpan. Periksa sinyal, lalu coba lagi."; ev.target.querySelector("button[type=submit]").disabled = false; }
+    };
+    if (c.querySelector("#ntd")) c.querySelector("#ntd").onclick = async function () {
+      if (!confirm('Hapus catatan "' + n.title + '"?')) return;
+      await api("/api/items?t=notes&id=" + n.id, { method: "DELETE" });
+      t.notes = t.notes.filter(function (x) { return x.id !== n.id; }); saveOffline(t); closeSheet(); location.hash = "#/t/" + t.id + "/catatan";
+    };
+  }
+
+  /* ---------- baca luring: catatan disalin ke penyimpanan HP (baca saja) ---------- */
+  var OFF = "jejak-luring";
+  function offRead() { try { return JSON.parse(localStorage.getItem(OFF) || "{}"); } catch (e) { return {}; } }
+  function saveOffline(t) {
+    try {
+      var all = offRead();
+      if (!(t.notes || []).length) { delete all[t.id]; }
+      else all[t.id] = { title: t.title, at: new Date().toISOString(), notes: t.notes.slice().sort(function (a, b) { return a.sort - b.sort; }).map(function (n) { return { id: n.id, title: n.title, body: n.body }; }) };
+      localStorage.setItem(OFF, JSON.stringify(all));
+    } catch (e) {}
+  }
+  function offClear() { try { localStorage.removeItem(OFF); } catch (e) {} }
+  function renderOffline(noteKey) {
+    var all = offRead(), keys = Object.keys(all);
+    var bar = '<div class="off-bar">Mode luring. Catatan di bawah ini salinan terakhir dan hanya bisa dibaca. <button class="link-btn" onclick="location.reload()">Coba sambung lagi</button></div>';
+    if (noteKey) {
+      var p = noteKey.split("/"), tr = all[p[0]], n = tr && tr.notes.find(function (x) { return x.id === p[1]; });
+      if (n) { $app.innerHTML = '<div class="wrap">' + bar + '<a class="link-back" href="#" id="offBack">' + ic("back", ' width="16" height="16"') + "Semua catatan</a>" + noteView(n) + "</div>"; bindNoteView($app); document.getElementById("offBack").onclick = function (e) { e.preventDefault(); renderOffline(); }; window.scrollTo(0, 0); return; }
+    }
+    $app.innerHTML = '<div class="wrap">' + bar + keys.map(function (k) {
+      var tr = all[k];
+      return '<div class="sec">' + esc(tr.title) + '</div><div class="nt-list">' + tr.notes.map(function (n, i) { return '<a class="nt-card" href="#" data-off="' + esc(k + "/" + n.id) + '"><span class="nt-no mono">' + (i + 1 < 10 ? "0" : "") + (i + 1) + '</span><span class="nt-mid"><b>' + esc(n.title) + "</b><small>" + esc(noteSnippet(n.body)) + "</small></span></a>"; }).join("") + "</div>";
+    }).join("") + "</div>";
+    $app.querySelectorAll("[data-off]").forEach(function (a) { a.onclick = function (e) { e.preventDefault(); renderOffline(a.dataset.off); }; });
+  }
+
   /* ---------- LAPORAN ---------- */
   function csv(t) {
     var rows = [["No", "Tanggal", "Jenis", "Kategori", "Keterangan", "Status", "Nominal", "Jumlah bukti", "Tautan bukti", "Catatan"]];
@@ -711,6 +843,8 @@
         else if (tab === "diari" && h[3]) renderDay(t, h[3]);
         else if (tab === "diari") renderDiari(t);
         else if (tab === "lapor") renderLapor(t);
+        else if (tab === "catatan" && h[3]) renderNote(t, h[3]);
+        else if (tab === "catatan") renderNotes(t);
         else renderDana(t);
         if (!h[3]) window.scrollTo(0, 0);
         return;
@@ -728,6 +862,7 @@
     try { S.me = await api("/api/auth"); } catch (e) {
       S.me = null;
       if (e.status !== 401) {                  // gangguan server/sinyal: jangan tampilkan layar masuk
+        if (Object.keys(offRead()).length) { renderOffline(); return; }
         $app.innerHTML = '<div class="wrap"><div class="empty">Koneksi ke server gagal. Periksa sinyal, lalu coba lagi.<br><br><button class="btn pri" onclick="location.reload()">Muat ulang</button></div></div>';
         return;
       }

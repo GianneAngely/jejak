@@ -31,6 +31,7 @@ async function mkUser(tag) {
     const t2 = (await call("trips", A, "POST", {}, { title: "Trip pribadi", start_date: "2026-12-01", end_date: "2026-12-02" })).body.id;
     const eA = (await call("items", A, "POST", { t: "entries" }, { trip_id: t1, title: "Bus", amount: 590000, proofs: [{ url: "https://x.public.blob.vercel-storage.com/u/" + A.id + "/bukti/a.jpg" }] })).body.item;
     const sA = (await call("items", A, "POST", { t: "stops" }, { trip_id: t1, day: "2026-11-13", title: "Registrasi" })).body.item;
+    const nA = (await call("items", A, "POST", { t: "notes" }, { trip_id: t1, title: "Naskah", body: "## Pembuka\n[ANGEL] Slide 1 | 0.15\nSelamat sore." })).body.item;
 
     console.log("Bukan anggota (C):");
     ok((await call("trips", C, "GET", { id: t1 })).code === 404, "tidak bisa membaca perjalanan");
@@ -42,6 +43,11 @@ async function mkUser(tag) {
     ok((await call("trips", C, "POST", { id: t1 }, { action: "invite" })).code === 403, "tidak bisa membuat kode ajakan");
     ok((await call("upload", C, "DELETE", { url: eA.proofs[0].url })).code === 403, "tidak bisa menghapus foto bukti");
     ok((await call("trips", null, "GET", { id: t1 })).code === 401, "tanpa login ditolak");
+    ok((await call("items", C, "POST", { t: "notes" }, { trip_id: t1, title: "x", body: "x" })).code === 404, "tidak bisa menambah catatan");
+    ok((await call("items", C, "PATCH", { t: "notes", id: nA.id }, { body: "diubah" })).code === 404, "tidak bisa mengubah catatan");
+    ok((await call("items", C, "DELETE", { t: "notes", id: nA.id })).code === 404, "tidak bisa menghapus catatan");
+    ok((await call("items", null, "POST", { t: "notes" }, { trip_id: t1, title: "x" })).code === 401, "tanpa login tidak bisa menambah catatan");
+    ok((await call("items", null, "PATCH", { t: "notes", id: nA.id }, { body: "x" })).code === 401, "tanpa login tidak bisa mengubah catatan");
 
     console.log("Kode ajakan:");
     const code = (await call("trips", A, "POST", { id: t1 }, { action: "invite" })).body.code;
@@ -64,6 +70,12 @@ async function mkUser(tag) {
     ok((await call("items", B, "PATCH", { t: "stops", id: sA.id }, { note: "lt 5" })).code === 200, "bisa mengubah jadwal");
     ok((await call("trips", B, "PATCH", { id: t1 }, { day_notes: { "2026-11-13": "seru" } })).code === 200, "bisa menulis cerita harian");
     ok((await call("trips", B, "PATCH", { id: t1 }, { title: "Ganti" })).code === 403, "tidak bisa mengubah judul/tanggal");
+    ok(gB && gB.notes.length === 1 && gB.notes[0].body.indexOf("Selamat sore.") > 0, "bisa membaca catatan");
+    const nB = (await call("items", B, "POST", { t: "notes" }, { trip_id: t1, title: "Tanya jawab", body: "??? 1. Data dari mana?\n[YOGA]\nDari simulasi." })).body.item;
+    ok(nB && nB.user_id === B.id, "bisa menambah catatan");
+    ok((await call("items", B, "PATCH", { t: "notes", id: nA.id }, { body: "## Pembuka\nDiubah anggota." })).body.item.body === "## Pembuka\nDiubah anggota.", "bisa mengubah catatan pemilik");
+    ok((await call("items", B, "DELETE", { t: "notes", id: nA.id })).code === 403, "tidak bisa menghapus catatan pemilik");
+    ok((await call("items", B, "DELETE", { t: "notes", id: nB.id })).code === 200, "bisa menghapus catatannya sendiri");
     ok((await call("items", B, "DELETE", { t: "entries", id: eA.id })).code === 403, "tidak bisa menghapus catatan pemilik");
     ok((await call("items", B, "DELETE", { t: "entries", id: eB.id })).code === 200, "bisa menghapus catatannya sendiri");
     ok((await call("trips", B, "DELETE", { id: t1 })).code === 403, "tidak bisa menghapus perjalanan");
@@ -80,6 +92,8 @@ async function mkUser(tag) {
     await call("trips", A, "POST", { id: t1 }, { action: "kick", user_id: B.id });
     ok((await call("trips", B, "GET", { id: t1 })).code === 404, "anggota yang dikeluarkan kehilangan akses");
     ok((await call("items", B, "POST", { t: "stops" }, { trip_id: t1, day: "2026-11-13", title: "x" })).code === 404, "anggota yang dikeluarkan tidak bisa menulis");
+    ok((await call("items", B, "PATCH", { t: "notes", id: nA.id }, { body: "x" })).code === 404, "anggota yang dikeluarkan tidak bisa mengubah catatan");
+    ok((await call("items", A, "DELETE", { t: "notes", id: nA.id })).code === 200, "pemilik bisa menghapus catatan");
     ok((await call("trips", A, "DELETE", { id: t1 })).code === 200, "pemilik bisa menghapus perjalanan");
     await call("trips", A, "DELETE", { id: t2 });
   } catch (e) { fail++; console.error("ERROR", e); }
@@ -87,6 +101,7 @@ async function mkUser(tag) {
     for (const u of users) {
       for (const t of await db.q("SELECT id FROM trips WHERE user_id=$1", [u.id])) await db.deleteTrip(u.id, t.id);
       await db.q("DELETE FROM trip_members WHERE user_id=$1", [u.id]);
+      await db.q("DELETE FROM notes WHERE user_id=$1", [u.id]);
       await db.q("DELETE FROM sessions WHERE user_id=$1", [u.id]);
       await db.q("DELETE FROM users WHERE id=$1", [u.id]);
     }
