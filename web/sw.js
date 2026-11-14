@@ -2,18 +2,33 @@
    Strategi "jaringan dulu": halaman app dan berkasnya SELALU diambil dari server bila
    tersambung (jadi versi terbaru tetap termuat). Salinan hanya dipakai ketika jaringan
    gagal, supaya catatan yang pernah dibuka tetap bisa dibaca saat luring.
-   Permintaan API tidak pernah disimpan di sini. */
+   Permintaan API tidak pernah disimpan di sini, kecuali gambar catatan (/api/img):
+   isinya tidak pernah berubah untuk satu id, jadi disimpan supaya ikut terbaca saat luring.
+   Salinan gambar dihapus ketika pengguna keluar dari akun. */
 var CACHE = "jejak-luring-v1";
+var IMG = "jejak-gambar-v1";
 var SHELL = /^\/(app|app\.js|app\.css|brand\.js|manifest\.webmanifest|icon\.svg|icon-512\.png|apple-touch-icon\.png)$/;
 
 self.addEventListener("install", function () { self.skipWaiting(); });
 self.addEventListener("activate", function (e) {
   e.waitUntil(caches.keys().then(function (ks) {
-    return Promise.all(ks.filter(function (k) { return k !== CACHE; }).map(function (k) { return caches.delete(k); }));
+    return Promise.all(ks.filter(function (k) { return k !== CACHE && k !== IMG; }).map(function (k) { return caches.delete(k); }));
   }).then(function () { return self.clients.claim(); }));
 });
 self.addEventListener("fetch", function (e) {
   var req = e.request, url = new URL(req.url);
+  if (req.method === "GET" && url.origin === self.location.origin && url.pathname === "/api/img") {
+    e.respondWith(caches.open(IMG).then(function (c) {
+      return c.match(req.url).then(function (hit) {
+        if (hit) return hit;
+        return fetch(req).then(function (res) {
+          if (res && res.ok) c.put(req.url, res.clone());
+          return res;
+        });
+      });
+    }));
+    return;
+  }
   if (req.method !== "GET" || url.origin !== self.location.origin || !SHELL.test(url.pathname)) return;
   var isPage = url.pathname === "/app";
   e.respondWith(fetch(req).then(function (res) {

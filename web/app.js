@@ -660,44 +660,63 @@
        [YOGA]                 penanda pembicara untuk paragraf berikutnya
        > Yoga: ketuk ...      baris aksi/demo (tidak diucapkan)
        ??? Pertanyaan         tanya jawab yang bisa dilipat
-       - butir daftar         | sel | sel |  tabel      ! kotak penting      **tebal** */
+       - butir daftar         | sel | sel |  tabel      ! kotak penting      **tebal**
+       >[ANGEL] klik tombol   baris aksi untuk orang tertentu       ~ muncul angka   baris kecil "tekan spasi"
+       %% Kategori            kategori tanya jawab (jadi tombol saring di atas)
+       @gambar <id> 1280x720 | keterangan    gambar anggota-saja dari /api/img (|| = tanpa keterangan) */
   function inlineMd(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>"); }
   function spkClass(n) { n = String(n || "").toUpperCase(); return n === "ANGEL" ? "a" : (n === "YOGA" ? "y" : "o"); }
   function parseNote(body) {
     var out = [], toc = [], open = null, list = false, table = null, box = false, chip = "", n = 0, qs = 0;
+    var who = "", cats = [], cat = -1, qIdx = -1, spk = {}, imgs = [];
+    function dw(w) { return w === "a" || w === "y" ? ' data-w="' + w + '"' : ""; }
+    function tagged(s) { var x = s.match(/^\[([^\]]+)\]\s*(.*)$/); return x ? { who: x[1], w: spkClass(x[1]), t: x[2] } : { who: "", w: "", t: s }; }
     function closeList() { if (list) { out.push("</ul>"); list = false; } if (table) { out.push(table + "</table></div>"); table = null; } if (box) { out.push("</div>"); box = false; } }
-    function closeBlock() { closeList(); if (open) { out.push(open === "q" ? "</div></details>" : "</div>"); open = null; } }
+    function closeBlock() { closeList(); if (open) { out.push(open === "q" ? "</div></details>" : "</div>"); open = null; } who = ""; qIdx = -1; }
     String(body || "").split("\n").forEach(function (raw) {
-      var l = raw.replace(/\s+$/, ""), m;
+      var l = raw.replace(/\s+$/, ""), m, g;
       if (!l.trim()) { closeList(); return; }
       if ((m = l.match(/^##\s+(.*)/))) { closeBlock(); var id = "c" + (++n); toc.push({ id: id, t: m[1] }); out.push('<h3 class="nt-h" id="' + id + '">' + inlineMd(m[1]) + "</h3>"); return; }
       if ((m = l.match(/^#\s+(.*)/))) { closeBlock(); out.push('<h2 class="nt-title disp">' + inlineMd(m[1]) + "</h2>"); return; }
       if ((m = l.match(/^===\s*(.*)/))) { closeBlock(); out.push('<div class="nt-babak ' + spkClass(m[1].split(/\s/)[1]) + '">' + inlineMd(m[1]) + "</div>"); return; }
       if (l.trim() === "---") { closeBlock(); return; }
+      if ((m = l.match(/^%%\s*(.+)/))) { closeBlock(); cat = cats.length; cats.push({ t: m[1], n: 0 }); out.push('<h4 class="nt-kat">' + inlineMd(m[1]) + "</h4>"); return; }
+      if ((m = l.match(/^@gambar\s+([a-f0-9]{16,64})(?:\s+(\d{1,5})x(\d{1,5}))?\s*(?:\|(\|)?\s*(.*))?$/))) {
+        closeList();
+        var cap = m[5] || "";
+        out.push('<figure class="nt-img"' + dw(who) + '><button type="button" class="nt-img-b" data-zoom="' + m[1] + '" aria-label="Perbesar gambar' + (cap ? ": " + esc(cap) : "") + '"><img data-ni="' + m[1] + '" src="/api/img?id=' + m[1] + '" alt="' + esc(cap) + '" loading="lazy" decoding="async"' + (m[2] && m[3] ? ' width="' + m[2] + '" height="' + m[3] + '"' : "") + "></button>" + (cap && !m[4] ? "<figcaption>" + inlineMd(cap) + "</figcaption>" : "") + "</figure>");
+        imgs.push(m[1]); return;
+      }
       if ((m = l.match(/^\[([^\]]+)\]\s*(.*)$/))) {
-        if (!m[2]) { chip = m[1]; return; }
+        if (!m[2]) {
+          if (open === "q" && qIdx >= 0) { out[qIdx] = out[qIdx].replace("</span></summary>", '</span><span class="nt-chip ' + spkClass(m[1]) + '">' + esc(m[1]) + "</span></summary>"); qIdx = -1; return; }
+          chip = m[1]; return;
+        }
         closeBlock(); var p = m[2].split(" | "), id2 = "c" + (++n);
+        who = spkClass(m[1]); spk[who] = 1;
         toc.push({ id: id2, t: p[0], who: m[1] });
-        out.push('<div class="nt-spk ' + spkClass(m[1]) + '" id="' + id2 + '"><div class="nt-kepala"><span>' + esc(m[1]) + " · " + inlineMd(p[0]) + "</span>" + (p[1] ? '<span class="mono">' + esc(p[1]) + "</span>" : "") + "</div>");
+        out.push('<div class="nt-spk ' + who + '" id="' + id2 + '"><div class="nt-kepala"><span><b class="nt-who">' + esc(m[1]) + "</b>" + inlineMd(p[0]) + "</span>" + (p[1] ? '<span class="mono">' + esc(p[1]) + "</span>" : "") + "</div>");
         open = "spk"; return;
       }
-      if ((m = l.match(/^\?\?\?\s*(.*)/))) { closeBlock(); qs++; out.push('<details class="nt-q"><summary>' + inlineMd(m[1]) + '</summary><div class="nt-a">'); open = "q"; return; }
-      if ((m = l.match(/^>\s?(.*)/))) { closeList(); out.push('<p class="nt-aksi"><span>AKSI</span>' + inlineMd(m[1]) + "</p>"); return; }
-      if ((m = l.match(/^!\s?(.*)/))) { if (list || table) closeList(); if (!box) { out.push('<div class="nt-box">'); box = true; } out.push("<p>" + inlineMd(m[1]) + "</p>"); return; }
-      if ((m = l.match(/^-\s+(.*)/))) { if (box || table) closeList(); if (!list) { out.push("<ul>"); list = true; } out.push("<li>" + inlineMd(m[1]) + "</li>"); return; }
+      if ((m = l.match(/^\?\?\?\s*(.*)/))) { closeBlock(); qs++; if (cat >= 0) cats[cat].n++; out.push('<details class="nt-q"' + (cat >= 0 ? ' data-k="' + cat + '"' : "") + '><summary><span class="nt-qt">' + inlineMd(m[1]) + '</span></summary><div class="nt-a">'); qIdx = out.length - 1; open = "q"; return; }
+      if ((m = l.match(/^>\s?(.*)/))) { closeList(); g = tagged(m[1]); out.push('<p class="nt-aksi' + (g.w ? " " + g.w : "") + '"' + dw(g.w) + "><span>AKSI" + (g.who ? " · " + esc(g.who.toUpperCase()) : "") + "</span>" + inlineMd(g.t) + "</p>"); qIdx = -1; return; }
+      if ((m = l.match(/^~(?=\s|\[)\s?(.*)/))) { closeList(); g = tagged(m[1]); var kw = g.w || who; out.push('<p class="nt-klik' + (kw ? " " + kw : "") + '"' + dw(kw) + "><span>SPASI</span>" + inlineMd(g.t) + "</p>"); return; }
+      if ((m = l.match(/^!\s?(.*)/))) { if (list || table) closeList(); if (!box) { out.push('<div class="nt-box"' + dw(who) + ">"); box = true; } out.push("<p>" + inlineMd(m[1]) + "</p>"); return; }
+      if ((m = l.match(/^-\s+(.*)/))) { if (box || table) closeList(); if (!list) { out.push("<ul" + dw(who) + ">"); list = true; } out.push("<li>" + inlineMd(m[1]) + "</li>"); return; }
       if (/^\|.*\|$/.test(l.trim())) {
         if (list || box) closeList();
         var cells = l.trim().slice(1, -1).split("|").map(function (c) { return c.trim(); });
-        if (!table) { table = '<div class="tw"><table class="nt-t"><tr>' + cells.map(function (c) { return "<th>" + inlineMd(c) + "</th>"; }).join("") + "</tr>"; return; }
+        if (!table) { table = '<div class="tw"' + dw(who) + '><table class="nt-t"><tr>' + cells.map(function (c) { return "<th>" + inlineMd(c) + "</th>"; }).join("") + "</tr>"; return; }
         table += "<tr>" + cells.map(function (c) { return "<td>" + inlineMd(c) + "</td>"; }).join("") + "</tr>"; return;
       }
       closeList();
-      out.push("<p>" + (chip ? '<span class="nt-chip ' + spkClass(chip) + '">' + esc(chip) + "</span>" : "") + inlineMd(l) + "</p>"); chip = "";
+      var pw = chip ? spkClass(chip) : who;
+      out.push("<p" + dw(pw) + ">" + (chip ? '<span class="nt-chip ' + spkClass(chip) + '">' + esc(chip) + "</span>" : "") + inlineMd(l) + "</p>"); chip = ""; qIdx = -1;
     });
     closeBlock();
-    return { html: out.join(""), toc: toc, qs: qs };
+    return { html: out.join(""), toc: toc, qs: qs, cats: cats, spk: spk, imgs: imgs };
   }
-  function noteSnippet(b) { var l = String(b || "").split("\n").filter(function (x) { return x.trim() && !/^(#|===|---|\||!|\[)/.test(x.trim()) && x.trim() !== x.trim().toUpperCase(); })[0] || ""; return l.replace(/^(\?\?\?|>|-|\[[^\]]+\])\s*/, "").replace(/\*\*/g, "").slice(0, 110); }
+  function noteSnippet(b) { var l = String(b || "").split("\n").filter(function (x) { return x.trim() && !/^(#|===|---|\||!|\[|@gambar|%%|~)/.test(x.trim()) && x.trim() !== x.trim().toUpperCase(); })[0] || ""; return l.replace(/^(\?\?\?|>|-|\[[^\]]+\])\s*/, "").replace(/^\[[^\]]+\]\s*/, "").replace(/\*\*/g, "").slice(0, 110); }
   function renderNotes(t) {
     var ns = (t.notes || []).slice().sort(function (a, b) { return a.sort - b.sort; });
     var html = tabHero("buku", "Catatan perjalanan", "Naskah, daftar periksa, dan tanya jawab. Bisa dibaca saat sinyal hilang setelah pernah dibuka.") +
@@ -706,18 +725,78 @@
     shell(t, "catatan", html, "Catatan");
     document.getElementById("fab").onclick = function () { noteSheet(null); };
     var nf = document.getElementById("nf"); if (nf) nf.onclick = function () { noteSheet(null); };
+    warmImages(t.notes);
   }
   function noteView(n, opts) {
-    var r = parseNote(n.body);
-    return '<article class="nt-doc">' + '<h1 class="nt-h1 disp">' + esc(n.title) + "</h1>" +
-      (r.toc.length > 1 ? '<nav class="nt-toc" aria-label="Daftar isi">' + r.toc.map(function (x) { return '<a href="#' + x.id + '" data-toc="' + x.id + '"' + (x.who ? ' class="' + spkClass(x.who) + '"' : "") + ">" + esc(x.t.replace(/^SLIDE\s+/i, "Slide ")) + "</a>"; }).join("") + "</nav>" : "") +
+    var r = parseNote(n.body), fil = "";
+    if (r.spk.a && r.spk.y) fil = '<div class="nt-fil" role="group" aria-label="Saring menurut pembicara">' + [["", "Semua"], ["a", "Angel"], ["y", "Yoga"]].map(function (x, i) { return '<button type="button" class="chip' + (x[0] ? " " + x[0] : "") + (i ? "" : " on") + '" data-fw="' + x[0] + '" aria-pressed="' + (i ? "false" : "true") + '">' + x[1] + "</button>"; }).join("") + "</div>";
+    else if (r.cats.length > 1) fil = '<div class="nt-fil" role="group" aria-label="Saring menurut kategori"><button type="button" class="chip on" data-fk="" aria-pressed="true">Semua<i>' + r.qs + "</i></button>" + r.cats.map(function (c, i) { return '<button type="button" class="chip" data-fk="' + i + '" aria-pressed="false">' + esc(c.t) + "<i>" + c.n + "</i></button>"; }).join("") + "</div>";
+    var toc = r.toc.length > 1 ? '<nav class="nt-toc" aria-label="Daftar isi">' + r.toc.map(function (x) { return '<a href="#' + x.id + '" data-toc="' + x.id + '"' + (x.who ? ' class="' + spkClass(x.who) + '"' : "") + ">" + esc(x.t.replace(/^SLIDE\s+/i, "Slide ")) + "</a>"; }).join("") + "</nav>" : "";
+    return '<article class="nt-doc' + (fil && toc ? " dua" : "") + '">' + '<h1 class="nt-h1 disp">' + esc(n.title) + "</h1>" +
+      (fil || toc ? '<div class="nt-bar">' + fil + toc + "</div>" : "") +
       (r.qs ? '<div class="btns" style="margin:0 0 12px"><button class="btn sm" id="qAll">Buka semua jawaban</button></div>' : "") +
       r.html + "</article>";
   }
+  /* saring naskah menurut pembicara: yang tampil adalah ucapan dan tugas orang itu */
+  function setWho(doc, w) {
+    if (w) doc.dataset.f = w; else delete doc.dataset.f;
+    doc.querySelectorAll("[data-fw]").forEach(function (b) { var on = b.dataset.fw === w; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false"); });
+    doc.querySelectorAll(".nt-spk").forEach(function (blk) {
+      var keep = !w || Array.prototype.some.call(blk.children, function (c) { return !c.classList.contains("nt-kepala") && (!c.dataset.w || c.dataset.w === w); });
+      blk.hidden = !keep;
+      var a = doc.querySelector('[data-toc="' + blk.id + '"]'); if (a) a.hidden = !keep;
+    });
+  }
+  function setCat(doc, k) {
+    doc.querySelectorAll("[data-fk]").forEach(function (b) { var on = b.dataset.fk === k; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false"); });
+    doc.querySelectorAll(".nt-kat").forEach(function (h) { h.hidden = k !== ""; });
+    doc.querySelectorAll("details.nt-q").forEach(function (d) { d.hidden = k !== "" && d.dataset.k !== k; });
+  }
+  /* gambar catatan: hanya untuk anggota (lewat /api/img); salinannya disimpan service worker untuk dibaca luring */
+  function imgGone(im) {
+    var f = im.closest(".nt-img"); if (!f || f.classList.contains("x")) return;
+    var b = f.querySelector(".nt-img-b"); f.classList.add("x"); b.disabled = true;
+    b.innerHTML = '<span class="nt-img-x">' + ic("img") + (navigator.onLine === false ? "Gambar ini belum tersimpan di HP. Buka catatan ini sekali saat ada sinyal." : "Gambar belum bisa dimuat. Periksa sinyal, lalu buka lagi catatan ini.") + "</span>";
+  }
+  var warmed = {};
+  function warmImages(notes) {
+    try {
+      if (!("serviceWorker" in navigator) || !navigator.serviceWorker.controller || navigator.onLine === false || (navigator.connection && navigator.connection.saveData)) return;
+      var ids = [];
+      (notes || []).forEach(function (n) { String(n.body || "").replace(/^@gambar\s+([a-f0-9]{16,64})/gm, function (x, id) { if (!warmed[id]) { warmed[id] = 1; ids.push(id); } return x; }); });
+      (function next() { var id = ids.shift(); if (!id) return; fetch("/api/img?id=" + id, { credentials: "same-origin" }).then(function (r) { if (!r.ok) throw 0; return r.blob(); }).catch(function () { delete warmed[id]; }).then(function () { setTimeout(next, 120); }); })();
+    } catch (e) {}
+  }
+  function closeZoom(fromPop) {
+    var z = document.getElementById("ntz"); if (!z) return;
+    z.remove(); document.body.style.overflow = "";
+    if (!fromPop && history.state && history.state.ntz) history.back();
+  }
+  function zoomImg(id, alt) {
+    closeZoom(true);
+    var z = document.createElement("div"); z.className = "nt-zoom"; z.id = "ntz"; z.dataset.lv = "0";
+    z.setAttribute("role", "dialog"); z.setAttribute("aria-modal", "true"); z.setAttribute("aria-label", "Gambar diperbesar");
+    z.innerHTML = '<div class="nt-zoom-s"><img src="/api/img?id=' + id + '" alt="' + esc(alt) + '"></div><div class="nt-zoom-bar"><button type="button" class="btn sm" id="ntzt">Perbesar</button><button type="button" class="btn sm pri" id="ntzx">Tutup</button></div>';
+    document.body.appendChild(z); document.body.style.overflow = "hidden";
+    try { history.pushState({ ntz: 1 }, ""); } catch (e) {}
+    var lv = 0, bt = z.querySelector("#ntzt");
+    function tog() { lv = (lv + 1) % 3; z.dataset.lv = String(lv); bt.textContent = lv === 2 ? "Kecilkan" : "Perbesar"; }
+    z.querySelector("img").onclick = tog; bt.onclick = tog;
+    z.querySelector("#ntzx").onclick = function () { closeZoom(); };
+    z.querySelector("#ntzx").focus();
+  }
+  window.addEventListener("popstate", function () { closeZoom(true); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeZoom(); });
   function bindNoteView(root) {
+    var doc = root.querySelector(".nt-doc");
     root.querySelectorAll("[data-toc]").forEach(function (a) { a.onclick = function (e) { e.preventDefault(); var el = document.getElementById(a.dataset.toc); if (el) el.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); }; });
     var qa = root.querySelector("#qAll");
-    if (qa) qa.onclick = function () { var ds = root.querySelectorAll("details.nt-q"), anyClosed = Array.prototype.some.call(ds, function (d) { return !d.open; }); ds.forEach(function (d) { d.open = anyClosed; }); qa.textContent = anyClosed ? "Tutup semua jawaban" : "Buka semua jawaban"; };
+    if (qa) qa.onclick = function () { var ds = root.querySelectorAll("details.nt-q:not([hidden])"), anyClosed = Array.prototype.some.call(ds, function (d) { return !d.open; }); ds.forEach(function (d) { d.open = anyClosed; }); qa.textContent = anyClosed ? "Tutup semua jawaban" : "Buka semua jawaban"; };
+    if (!doc) return;
+    root.querySelectorAll("[data-fw]").forEach(function (b) { b.onclick = function () { setWho(doc, b.dataset.fw); }; });
+    root.querySelectorAll("[data-fk]").forEach(function (b) { b.onclick = function () { setCat(doc, b.dataset.fk); }; });
+    root.querySelectorAll("img[data-ni]").forEach(function (im) { im.onerror = function () { imgGone(im); }; });
+    root.querySelectorAll("[data-zoom]").forEach(function (b) { b.onclick = function () { var im = b.querySelector("img"); if (im) zoomImg(b.dataset.zoom, im.alt); }; });
   }
   function renderNote(t, id) {
     var n = (t.notes || []).find(function (x) { return x.id === id; });
@@ -727,6 +806,7 @@
     shell(t, "catatan", html, "");
     bindNoteView($app);
     document.getElementById("ne").onclick = function () { noteSheet(n); };
+    warmImages(t.notes);
   }
   function noteSheet(n) {
     var t = S.trip, isNew = !n;
@@ -736,7 +816,7 @@
       '<div class="f"><label for="ntb">Isi</label><textarea class="in-t nt-edit" id="ntb" rows="14" placeholder="Tulis di sini. Lihat cara memformat di bawah."></textarea></div>' +
       '<details class="more"><summary>Cara memformat</summary><div class="hint nt-help">' +
       "<p><b>## Subjudul</b>: masuk daftar isi.</p><p><b>[ANGEL] Slide 1 | 0.15</b>: blok bicara Angel dengan durasi; tutup dengan <b>---</b>.</p><p><b>&gt; Yoga: ketuk tombol</b>: baris aksi demo, tidak diucapkan.</p>" +
-      "<p><b>??? Pertanyaan</b>: tanya jawab yang bisa dilipat; baris <b>[YOGA]</b> menandai penjawab.</p><p><b>- butir</b>, <b>| sel | sel |</b> untuk tabel, <b>! teks</b> untuk kotak penting, <b>**tebal**</b>.</p></div></details>" +
+      "<p><b>&gt;[ANGEL] klik tombol</b>: aksi untuk orang tertentu. <b>~ teks</b>: baris kecil tekan spasi.</p><p><b>??? Pertanyaan</b>: tanya jawab yang bisa dilipat; baris <b>[YOGA]</b> menandai penjawab, baris <b>%% Kategori</b> membuat tombol kategori.</p><p><b>- butir</b>, <b>| sel | sel |</b> untuk tabel, <b>! teks</b> untuk kotak penting, <b>**tebal**</b>.</p></div></details>" +
       '<div class="err" id="nte"></div><div class="save-bar"><button class="btn pri block" type="submit">Simpan catatan</button></div>' +
       (!isNew && canDel(n) ? '<button type="button" class="btn danger block" id="ntd" style="margin-top:10px">Hapus catatan</button>' : "") + "</form>");
     c.querySelector("#ntt").value = n.title; c.querySelector("#ntb").value = n.body;
@@ -769,7 +849,7 @@
       localStorage.setItem(OFF, JSON.stringify(all));
     } catch (e) {}
   }
-  function offClear() { try { localStorage.removeItem(OFF); } catch (e) {} }
+  function offClear() { try { localStorage.removeItem(OFF); } catch (e) {} try { if (window.caches) caches.delete("jejak-gambar-v1"); } catch (e) {} }
   function renderOffline(noteKey) {
     var all = offRead(), keys = Object.keys(all);
     var bar = '<div class="off-bar">Mode luring. Catatan di bawah ini salinan terakhir dan hanya bisa dibaca. <button class="link-btn" onclick="location.reload()">Coba sambung lagi</button></div>';
@@ -832,7 +912,7 @@
   /* ---------- router ---------- */
   async function route() {
     if (!S.me) return renderAuth();
-    closeSheet();
+    closeSheet(); closeZoom(true);
     document.title = BRAND;
     var h = location.hash.replace(/^#\/?/, "").split("/");
     try {

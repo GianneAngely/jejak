@@ -430,3 +430,48 @@ details.more[open] summary{margin-bottom:6px}
 .nt-help p{margin:0 0 6px}
 .off-bar{background:#FFF1EC;border:1px solid rgba(194,59,34,.3);color:#7A2414;border-radius:14px;padding:10px 12px;font-size:13.5px;margin-bottom:14px}
 .off-bar .link-btn{color:#7A2414;text-decoration:underline;padding:0}
+
+/* catatan: bilah saring (pembicara atau kategori), penanda pembicara, baris klik, gambar */
+.nt-doc [hidden]{display:none!important}
+.nt-bar{position:sticky;top:0;z-index:5;margin:0 -16px 10px;padding:6px 0 6px;background:var(--malam);box-shadow:0 8px 10px -10px rgba(14,31,69,.35)}
+.nt-bar .nt-toc{position:static;z-index:auto;background:none;margin:0;padding:2px 16px 2px}
+.nt-fil{display:flex;gap:8px;overflow-x:auto;padding:2px 16px 8px;scrollbar-width:none}
+.nt-fil::-webkit-scrollbar{display:none}
+.nt-fil .chip{flex:none;white-space:nowrap;background:var(--malam-2);color:var(--teks);min-height:38px}
+.nt-fil .chip i{font-style:normal;font-family:var(--mono);font-size:11px;font-weight:700;margin-left:6px;opacity:.6}
+.nt-fil .chip.a{border-color:rgba(47,127,208,.6);color:#1D5B9C}
+.nt-fil .chip.y{border-color:rgba(176,112,0,.6);color:#7A4A00}
+.nt-fil .chip.on{background:var(--teks);color:#fff;border-color:var(--teks)}
+.nt-fil .chip.a.on{background:#1D5B9C;border-color:#1D5B9C;color:#fff}
+.nt-fil .chip.y.on{background:#8A5A00;border-color:#8A5A00;color:#fff}
+.nt-doc.dua .nt-spk,.nt-doc.dua .nt-h{scroll-margin-top:116px}
+.nt-doc[data-f="a"] [data-w="y"],.nt-doc[data-f="y"] [data-w="a"]{display:none}
+.nt-who{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;color:#fff;background:#1D5B9C;border-radius:6px;padding:2px 8px;margin-right:8px;vertical-align:1px}
+.nt-spk.y .nt-who{background:#8A5A00}
+.nt-spk.o .nt-who{background:var(--samar)}
+.nt-kepala>span:first-child{line-height:1.6}
+.nt-aksi.a{border-color:rgba(47,127,208,.75);background:#F4F9FF;color:#1D4B80}
+.nt-aksi.y{border-color:rgba(200,135,10,.9);background:#FFFAEC;color:#6B4200}
+.nt-aksi.a span{background:#1D5B9C}
+.nt-aksi.y span{background:#8A5A00}
+.nt-klik{display:flex;align-items:baseline;gap:8px;font-size:12.5px;line-height:1.45;color:var(--redup);margin:-4px 0 10px!important}
+.nt-klik span{flex:none;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.1em;border:1.5px solid currentColor;border-radius:5px;padding:0 5px;line-height:1.5}
+.nt-klik.a span{color:#1D5B9C}
+.nt-klik.y span{color:#8A5A00}
+.nt-kat{font-size:12.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--redup);margin:22px 0 10px}
+.nt-q summary .nt-qt{flex:1;min-width:0}
+.nt-q summary .nt-chip{flex:none;align-self:flex-start;margin:3px 0 0}
+.nt-img{margin:0 0 12px}
+.nt-img-b{display:block;width:100%;padding:0;border:1px solid var(--garis-2);border-radius:12px;overflow:hidden;background:#fff;cursor:zoom-in}
+.nt-img-b img{display:block;width:100%;height:auto;background:var(--malam-3)}
+.nt-img figcaption{font-size:12.5px;color:var(--redup);line-height:1.45;margin-top:6px}
+.nt-img.x .nt-img-b{border-style:dashed;background:var(--malam-3);cursor:default}
+.nt-img-x{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:120px;padding:18px;color:var(--redup);font-size:13px;line-height:1.45;text-align:center}
+.nt-img-x svg{width:22px;height:22px}
+.nt-zoom{position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;background:rgba(10,22,48,.97)}
+.nt-zoom-s{flex:1;min-height:0;display:flex;overflow:auto;-webkit-overflow-scrolling:touch;padding:10px;overscroll-behavior:contain}
+.nt-zoom-s img{flex:none;display:block;width:100%;height:auto;margin:auto;border-radius:6px;background:#fff;cursor:zoom-in}
+.nt-zoom[data-lv="1"] .nt-zoom-s img{width:220%}
+.nt-zoom[data-lv="2"] .nt-zoom-s img{width:380%;cursor:zoom-out}
+.nt-zoom-bar{display:flex;gap:10px;justify-content:center;padding:10px 16px calc(12px + var(--safe-b))}
+.nt-zoom-bar .btn{min-width:120px}

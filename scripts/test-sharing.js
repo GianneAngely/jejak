@@ -4,7 +4,7 @@
 const crypto = require("crypto");
 const db = require("../lib/db");
 const auth = require("../lib/auth");
-const H = { auth: require("../api/auth"), trips: require("../api/trips"), items: require("../api/items"), upload: require("../api/upload") };
+const H = { auth: require("../api/auth"), trips: require("../api/trips"), items: require("../api/items"), upload: require("../api/upload"), img: require("../api/img") };
 
 let pass = 0, fail = 0;
 function ok(cond, name) { if (cond) { pass++; console.log("  ok  " + name); } else { fail++; console.log("  GAGAL " + name); } }
@@ -33,7 +33,13 @@ async function mkUser(tag) {
     const sA = (await call("items", A, "POST", { t: "stops" }, { trip_id: t1, day: "2026-11-13", title: "Registrasi" })).body.item;
     const nA = (await call("items", A, "POST", { t: "notes" }, { trip_id: t1, title: "Naskah", body: "## Pembuka\n[ANGEL] Slide 1 | 0.15\nSelamat sore." })).body.item;
 
+    const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "base64");
+    const gA = await db.putNoteImage(A.id, t1, PNG, "image/png");
+
     console.log("Bukan anggota (C):");
+    ok((await call("img", C, "GET", { id: gA })).code === 404, "tidak bisa membuka gambar catatan");
+    ok((await call("img", null, "GET", { id: gA })).code === 401, "tanpa login tidak bisa membuka gambar catatan");
+    ok(await db.putNoteImage(C.id, t1, PNG, "image/png").then(() => false, e => e.code === 404), "tidak bisa menyimpan gambar ke perjalanan orang");
     ok((await call("trips", C, "GET", { id: t1 })).code === 404, "tidak bisa membaca perjalanan");
     ok(!(await call("trips", C, "GET")).body.trips.some(t => t.id === t1), "perjalanan tidak muncul di daftar");
     ok((await call("items", C, "POST", { t: "entries" }, { trip_id: t1, title: "x", amount: 1 })).code === 404, "tidak bisa menambah transaksi");
@@ -71,6 +77,11 @@ async function mkUser(tag) {
     ok((await call("trips", B, "PATCH", { id: t1 }, { day_notes: { "2026-11-13": "seru" } })).code === 200, "bisa menulis cerita harian");
     ok((await call("trips", B, "PATCH", { id: t1 }, { title: "Ganti" })).code === 403, "tidak bisa mengubah judul/tanggal");
     ok(gB && gB.notes.length === 1 && gB.notes[0].body.indexOf("Selamat sore.") > 0, "bisa membaca catatan");
+    const rB = await call("img", B, "GET", { id: gA });
+    ok(rB.code === 200 && rB.headers["Content-Type"] === "image/png" && Buffer.isBuffer(rB.body) && rB.body.equals(PNG) && /private/.test(rB.headers["Cache-Control"]), "bisa membuka gambar catatan (utuh, cache pribadi)");
+    ok((await call("img", B, "GET", { id: "0".repeat(32) })).code === 404 && (await call("img", B, "GET", { id: "../x" })).code === 404, "id gambar yang tidak dikenal ditolak");
+    ok((await call("img", B, "POST", { id: gA })).code === 405, "gambar catatan hanya bisa dibaca lewat API");
+    ok(await db.putNoteImage(B.id, t2, PNG, "image/png").then(() => false, e => e.code === 404), "tidak bisa menyimpan gambar ke perjalanan lain milik pemilik");
     const nB = (await call("items", B, "POST", { t: "notes" }, { trip_id: t1, title: "Tanya jawab", body: "??? 1. Data dari mana?\n[YOGA]\nDari simulasi." })).body.item;
     ok(nB && nB.user_id === B.id, "bisa menambah catatan");
     ok((await call("items", B, "PATCH", { t: "notes", id: nA.id }, { body: "## Pembuka\nDiubah anggota." })).body.item.body === "## Pembuka\nDiubah anggota.", "bisa mengubah catatan pemilik");
@@ -93,8 +104,11 @@ async function mkUser(tag) {
     ok((await call("trips", B, "GET", { id: t1 })).code === 404, "anggota yang dikeluarkan kehilangan akses");
     ok((await call("items", B, "POST", { t: "stops" }, { trip_id: t1, day: "2026-11-13", title: "x" })).code === 404, "anggota yang dikeluarkan tidak bisa menulis");
     ok((await call("items", B, "PATCH", { t: "notes", id: nA.id }, { body: "x" })).code === 404, "anggota yang dikeluarkan tidak bisa mengubah catatan");
+    ok((await call("img", B, "GET", { id: gA })).code === 404, "anggota yang dikeluarkan tidak bisa membuka gambar catatan");
+    ok((await call("img", A, "GET", { id: gA })).code === 200, "pemilik bisa membuka gambar catatan");
     ok((await call("items", A, "DELETE", { t: "notes", id: nA.id })).code === 200, "pemilik bisa menghapus catatan");
     ok((await call("trips", A, "DELETE", { id: t1 })).code === 200, "pemilik bisa menghapus perjalanan");
+    ok(!(await db.q("SELECT 1 FROM note_images WHERE id=$1", [gA])).length, "gambar catatan ikut terhapus bersama perjalanan");
     await call("trips", A, "DELETE", { id: t2 });
   } catch (e) { fail++; console.error("ERROR", e); }
   finally {
