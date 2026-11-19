@@ -35,6 +35,9 @@ nav .wrap{display:flex;align-items:center;gap:22px;height:66px}
 .logo b{color:var(--emas)}
 .nl{display:flex;gap:22px;flex:1;justify-content:flex-end;font-size:14.5px;font-weight:600;color:var(--redup)}
 .nl a{text-decoration:none}.nl a:hover{color:var(--teks)}
+.lang-t{display:inline-flex;align-items:center;gap:1px;font-family:var(--mono);font-size:12px;font-weight:700;color:var(--redup)}
+.lang-t button{background:none;border:0;padding:6px 5px;min-height:32px;font:inherit;color:inherit;cursor:pointer;border-radius:8px;letter-spacing:.08em}
+.lang-t button[aria-pressed="true"]{color:var(--teks);text-decoration:underline;text-decoration-color:var(--kuning);text-decoration-thickness:3px;text-underline-offset:4px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:13px;padding:12px 18px;font-weight:700;font-size:15px;border:1px solid var(--garis-2);background:var(--putih);text-decoration:none;min-height:46px;transition:transform .15s var(--ease)}
 .btn:active{transform:scale(.97)}
 .btn.pri{background:var(--kuning);color:var(--teks);border-color:rgba(160,120,0,.5)}
@@ -203,67 +206,67 @@ h1,h2,.feat h3,.kt,.logo{font-family:var(--disp);font-weight:700}
 <body>
 <nav id="nav"><div class="wrap">
   <a class="logo" href="/"><span data-brand></span><b>.</b></a>
-  <div class="nl"><a href="#cara">Cara kerja</a><a href="#fitur">Fitur</a><a href="#tanya">Tanya jawab</a><a class="btn" href="/app">Masuk</a></div>
+  <div class="nl"><a href="#cara" data-i="n1">Cara kerja</a><a href="#fitur" data-i="n2">Fitur</a><a href="#tanya" data-i="n3">Tanya jawab</a><span class="lang-t" role="group" aria-label="Bahasa / Language"><button type="button" data-lang="id">ID</button><span aria-hidden="true">·</span><button type="button" data-lang="en">EN</button></span><a class="btn" href="/app" data-i="n4">Masuk</a></div>
 </div></nav>
 
 <main>
 <div class="wrap">
   <section class="hero">
     <div>
-      <div class="eyebrow">Catatan dana perjalanan</div>
-      <h1>Dana lomba beres, <em>struknya</em> tidak tercecer.</h1>
-      <p class="lead"><span data-brand></span> mencatat dana perjalanan dari berangkat sampai pulang: dana masuk, pengeluaran, foto struk, dan jadwal kegiatan. Sepulang dinas, laporan pertanggungjawaban tinggal dicetak.</p>
-      <div class="cta"><a class="btn pri" href="/app?daftar">Buat akun gratis</a><a class="btn" href="#cara">Lihat cara kerjanya</a></div>
-      <p class="trust">Gratis, langsung dipakai dari browser HP. Tidak perlu mengunduh aplikasi.</p>
+      <div class="eyebrow" data-i="h0">Catatan dana perjalanan</div>
+      <h1 data-i="h1">Dana lomba beres, <em>struknya</em> tidak tercecer.</h1>
+      <p class="lead" data-i="h2"><span data-brand></span> mencatat dana perjalanan dari berangkat sampai pulang: dana masuk, pengeluaran, foto struk, dan jadwal kegiatan. Sepulang dinas, laporan pertanggungjawaban tinggal dicetak.</p>
+      <div class="cta"><a class="btn pri" href="/app?daftar" data-i="cta">Buat akun gratis</a><a class="btn" href="#cara" data-i="h3">Lihat cara kerjanya</a></div>
+      <p class="trust" data-i="h4">Gratis, langsung dipakai dari browser HP. Tidak perlu mengunduh aplikasi.</p>
     </div>
     <div class="karcis" aria-hidden="true">
-      <div class="k-top"><div class="eb"><span>4 – 6 Mar 2027</span><span>3 hari · WIB</span></div><div class="kt">Konferensi riset di Yogyakarta</div><div class="kr">Kampus tuan rumah, Yogyakarta</div></div>
-      <div class="lines">
+      <div class="k-top" data-i="k1"><div class="eb"><span>4 – 6 Mar 2027</span><span>3 hari · WIB</span></div><div class="kt">Konferensi riset di Yogyakarta</div><div class="kr">Kampus tuan rumah, Yogyakarta</div></div>
+      <div class="lines" data-i="k2">
         <div class="ln"><span>Dana masuk</span><span class="m">Rp2.500.000</span></div>
         <div class="ln"><span><span class="stamp paid">LUNAS</span>Kereta pulang-pergi</span><span class="m">Rp480.000</span></div>
         <div class="ln"><span><span class="stamp paid">LUNAS</span>Hotel 2 malam</span><span class="m">Rp620.000</span></div>
         <div class="ln"><span><span class="stamp plan">RENCANA</span>Konsumsi 3 hari</span><span class="m">Rp270.000</span></div>
       </div>
-      <div class="k-bot"><div class="eb"><span>Sisa dana</span><span>2 bukti</span></div><div class="big">Rp1.400.000</div></div>
+      <div class="k-bot"><div class="eb" data-i="k3"><span>Sisa dana</span><span>2 bukti</span></div><div class="big">Rp1.400.000</div></div>
     </div>
   </section>
 </div>
 
 <section id="masalah">
   <div class="wrap">
-    <div class="eyebrow reveal">Masalah yang sering terjadi</div>
-    <h2 class="reveal">Laporan dana sering tertunda karena <em>bukti</em> tercecer.</h2>
-    <p class="sub reveal">Dana perjalanan dari kampus atau kantor hampir selalu wajib dilaporkan. Masalahnya jarang ada di jumlah uang, tetapi di catatan dan bukti yang tidak lengkap.</p>
+    <div class="eyebrow reveal" data-i="m0">Masalah yang sering terjadi</div>
+    <h2 class="reveal" data-i="m1">Laporan dana sering tertunda karena <em>bukti</em> tercecer.</h2>
+    <p class="sub reveal" data-i="m2">Dana perjalanan dari kampus atau kantor hampir selalu wajib dilaporkan. Masalahnya jarang ada di jumlah uang, tetapi di catatan dan bukti yang tidak lengkap.</p>
     <div class="probs">
-      <div class="prob reveal"><div class="ill" aria-hidden="true"><span class="rc" style="left:22px;top:20px;transform:rotate(-12deg)"></span><span class="rc" style="left:70px;top:30px;transform:rotate(8deg)"></span><span class="q" style="right:28px;top:26px">?</span></div><h3>Struk hilang di tas</h3><p>Nota makan dan tiket parkir mudah terselip. Saat laporan dibuat, sebagian bukti sudah tidak ditemukan.</p></div>
-      <div class="prob reveal"><div class="ill" aria-hidden="true"><span class="bar" style="top:26px"><i style="width:72%"></i></span><span class="bar" style="top:52px"><i style="width:38%;background:rgba(194,59,34,.55)"></i></span></div><h3>Sisa dana tidak jelas</h3><p>Uang perjalanan bercampur dengan uang pribadi, sehingga sisa dana yang sebenarnya sulit dihitung.</p></div>
-      <div class="prob reveal"><div class="ill" aria-hidden="true"><span class="rc" style="left:22px;top:18px"></span><span class="clock"></span></div><h3>Laporan dikebut semalam</h3><p>Rekap disusun dari ingatan menjelang tenggat, dan angkanya sering tidak cocok dengan bukti.</p></div>
+      <div class="prob reveal"><div class="ill" aria-hidden="true"><span class="rc" style="left:22px;top:20px;transform:rotate(-12deg)"></span><span class="rc" style="left:70px;top:30px;transform:rotate(8deg)"></span><span class="q" style="right:28px;top:26px">?</span></div><h3 data-i="p1">Struk hilang di tas</h3><p data-i="p2">Nota makan dan tiket parkir mudah terselip. Saat laporan dibuat, sebagian bukti sudah tidak ditemukan.</p></div>
+      <div class="prob reveal"><div class="ill" aria-hidden="true"><span class="bar" style="top:26px"><i style="width:72%"></i></span><span class="bar" style="top:52px"><i style="width:38%;background:rgba(194,59,34,.55)"></i></span></div><h3 data-i="p3">Sisa dana tidak jelas</h3><p data-i="p4">Uang perjalanan bercampur dengan uang pribadi, sehingga sisa dana yang sebenarnya sulit dihitung.</p></div>
+      <div class="prob reveal"><div class="ill" aria-hidden="true"><span class="rc" style="left:22px;top:18px"></span><span class="clock"></span></div><h3 data-i="p5">Laporan dikebut semalam</h3><p data-i="p6">Rekap disusun dari ingatan menjelang tenggat, dan angkanya sering tidak cocok dengan bukti.</p></div>
     </div>
   </div>
 </section>
 
 <section class="how" id="cara">
   <div class="wrap">
-    <div class="eyebrow reveal">Cara kerja</div>
-    <h2 class="reveal">Empat langkah dari berangkat sampai lapor.</h2>
+    <div class="eyebrow reveal" data-i="n1">Cara kerja</div>
+    <h2 class="reveal" data-i="s0">Empat langkah dari berangkat sampai lapor.</h2>
     <ol class="steps">
-      <li class="reveal"><span class="n">1</span><div><h3>Buat perjalanan</h3><p>Isi nama acara, kota, dan tanggal. Kalender dan jadwal langsung menyesuaikan tanggal tersebut.</p></div></li>
-      <li class="reveal"><span class="n">2</span><div><h3>Catat dana masuk</h3><p>Masukkan dana dari kampus, kantor, atau sponsor. Sisa dana terhitung otomatis.</p></div></li>
-      <li class="reveal"><span class="n">3</span><div><h3>Foto struk saat membayar</h3><p>Ketuk Foto struk, isi nominal, lalu simpan. Foto bukti menempel pada transaksinya.</p></div></li>
-      <li class="reveal"><span class="n">4</span><div><h3>Cetak laporan</h3><p>Buka laporan, lalu simpan sebagai PDF. Semua bukti tersusun sebagai lampiran berlabel.</p></div></li>
+      <li class="reveal"><span class="n">1</span><div data-i="s1"><h3>Buat perjalanan</h3><p>Isi nama acara, kota, dan tanggal. Kalender dan jadwal langsung menyesuaikan tanggal tersebut.</p></div></li>
+      <li class="reveal"><span class="n">2</span><div data-i="s2"><h3>Catat dana masuk</h3><p>Masukkan dana dari kampus, kantor, atau sponsor. Sisa dana terhitung otomatis.</p></div></li>
+      <li class="reveal"><span class="n">3</span><div data-i="s3"><h3>Foto struk saat membayar</h3><p>Ketuk Foto struk, isi nominal, lalu simpan. Foto bukti menempel pada transaksinya.</p></div></li>
+      <li class="reveal"><span class="n">4</span><div data-i="s4"><h3>Cetak laporan</h3><p>Buka laporan, lalu simpan sebagai PDF. Semua bukti tersusun sebagai lampiran berlabel.</p></div></li>
     </ol>
   </div>
 </section>
 
 <section id="fitur">
   <div class="wrap">
-    <div class="eyebrow reveal">Fitur</div>
-    <h2 class="reveal">Semua kebutuhan perjalanan dinas dalam satu tempat.</h2>
+    <div class="eyebrow reveal" data-i="n2">Fitur</div>
+    <h2 class="reveal" data-i="f0">Semua kebutuhan perjalanan dinas dalam satu tempat.</h2>
 
     <div class="feat reveal">
-      <div class="txt"><h3>Sisa dana selalu terlihat</h3><p>Angka terbesar di layar adalah sisa dana. Pengeluaran dipisah menjadi sudah dibayar dan rencana, sehingga kebutuhan yang belum dibayar tetap terhitung.</p>
+      <div class="txt" data-i="f1"><h3>Sisa dana selalu terlihat</h3><p>Angka terbesar di layar adalah sisa dana. Pengeluaran dipisah menjadi sudah dibayar dan rencana, sehingga kebutuhan yang belum dibayar tetap terhitung.</p>
         <ul><li>Batas aman makan per hari dihitung dari sisa dana dan sisa hari.</li><li>Ringkasan per kategori: transportasi, penginapan, makan, cetak.</li></ul></div>
-      <div class="mock" aria-hidden="true">
+      <div class="mock" aria-hidden="true" data-i="f2">
         <div class="mini-k"><div class="top">Konferensi riset di Yogyakarta</div><div class="bot"><small>SISA DANA</small><b>Rp1.400.000</b></div></div>
         <div class="cbar"><span>Transport</span><span class="b"><i class="p" style="width:62%"></i></span><span class="mono">Rp480.000</span></div>
         <div class="cbar"><span>Penginapan</span><span class="b"><i class="p" style="width:80%"></i></span><span class="mono">Rp620.000</span></div>
@@ -272,9 +275,9 @@ h1,h2,.feat h3,.kt,.logo{font-family:var(--disp);font-weight:700}
     </div>
 
     <div class="feat rev reveal">
-      <div class="txt"><h3>Foto bukti menempel pada transaksi</h3><p>Ambil foto langsung dari kamera atau pilih dari galeri. Satu transaksi dapat memiliki beberapa foto, misalnya struk dan bukti transfer.</p>
+      <div class="txt" data-i="f3"><h3>Foto bukti menempel pada transaksi</h3><p>Ambil foto langsung dari kamera atau pilih dari galeri. Satu transaksi dapat memiliki beberapa foto, misalnya struk dan bukti transfer.</p>
         <ul><li>Transaksi tanpa bukti diberi tanda merah.</li><li>Foto dikecilkan otomatis agar hemat kuota.</li></ul></div>
-      <div class="mock" aria-hidden="true">
+      <div class="mock" aria-hidden="true" data-i="f4">
         <div class="m-row"><span class="m-ic"></span><span class="t">Hotel 2 malam<small>Penginapan · 4 Mar</small><span class="tag ok">2 foto bukti</span></span><b class="mono">Rp620.000</b></div>
         <div class="m-row"><span class="m-ic"></span><span class="t">Makan siang tim<small>Makan · 5 Mar</small><span class="tag warn">Belum ada foto bukti</span></span><b class="mono">Rp85.000</b></div>
         <div class="thumbs"><div class="thumb"><span class="rc"></span><span class="lb">L1</span></div><div class="thumb"><span class="rc"></span><span class="lb">L2</span></div><div class="thumb"><span class="rc"></span><span class="lb">L3</span></div></div>
@@ -282,9 +285,9 @@ h1,h2,.feat h3,.kt,.logo{font-family:var(--disp);font-weight:700}
     </div>
 
     <div class="feat reveal">
-      <div class="txt"><h3>Jadwal dengan petunjuk arah</h3><p>Susun agenda per jam beserta lokasinya. Agenda yang sedang berlangsung ditandai, dan satu ketukan membuka rute di Google Maps.</p>
+      <div class="txt" data-i="f5"><h3>Jadwal dengan petunjuk arah</h3><p>Susun agenda per jam beserta lokasinya. Agenda yang sedang berlangsung ditandai, dan satu ketukan membuka rute di Google Maps.</p>
         <ul><li>Jadwal dapat diubah kapan saja dari HP.</li><li>Petunjuk arah memakai Google Maps tanpa biaya tambahan.</li></ul></div>
-      <div class="mock" aria-hidden="true"><div class="tl">
+      <div class="mock" aria-hidden="true" data-i="f6"><div class="tl">
         <div class="tl-i"><b>07.30</b>Tiba di stasiun<small>Stasiun Yogyakarta</small></div>
         <span class="tl-dir">Petunjuk arah</span>
         <div class="tl-i now"><b>09.00</b>Registrasi peserta<small>Gedung pusat kampus</small></div>
@@ -293,9 +296,9 @@ h1,h2,.feat h3,.kt,.logo{font-family:var(--disp);font-weight:700}
     </div>
 
     <div class="feat rev reveal">
-      <div class="txt"><h3>Diari foto per hari</h3><p>Simpan foto kegiatan dalam kalender perjalanan. Catatan setiap foto boleh ditulis belakangan, saat sudah sempat.</p>
+      <div class="txt" data-i="f7"><h3>Diari foto per hari</h3><p>Simpan foto kegiatan dalam kalender perjalanan. Catatan setiap foto boleh ditulis belakangan, saat sudah sempat.</p>
         <ul><li>Setiap hari punya ruang cerita sendiri.</li><li>Agenda hari itu tampil di bawah foto sebagai pengingat.</li></ul></div>
-      <div class="mock" aria-hidden="true"><div class="cal">
+      <div class="mock" aria-hidden="true" data-i="f8"><div class="cal">
         <span class="wd">Sn</span><span class="wd">Sl</span><span class="wd">Rb</span><span class="wd">Km</span><span class="wd">Jm</span><span class="wd">Sb</span><span class="wd">Mg</span>
         <span>1</span><span>2</span><span>3</span><span class="ph">4</span><span class="ph">5</span><span class="tr">6</span><span>7</span>
         <span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span>
@@ -306,12 +309,12 @@ h1,h2,.feat h3,.kt,.logo{font-family:var(--disp);font-weight:700}
 
 <section class="how" id="untuk">
   <div class="wrap">
-    <div class="eyebrow reveal">Pengguna</div>
-    <h2 class="reveal">Dibuat untuk orang yang wajib melaporkan dana perjalanan.</h2>
+    <div class="eyebrow reveal" data-i="w0">Pengguna</div>
+    <h2 class="reveal" data-i="w1">Dibuat untuk orang yang wajib melaporkan dana perjalanan.</h2>
     <div class="who">
-      <div class="reveal"><span class="k">Lomba</span><h3>Mahasiswa peserta lomba</h3><p>Dana dari kampus harus dilaporkan dengan struk. Foto setiap struk saat itu juga, lalu laporan tersusun sendiri.</p></div>
-      <div class="reveal"><span class="k">Dinas</span><h3>Pegawai yang sering dinas</h3><p>Setiap perjalanan punya catatan dana terpisah, sehingga uang dinas tidak bercampur dengan uang pribadi.</p></div>
-      <div class="reveal"><span class="k">Acara</span><h3>Panitia dan pengurus organisasi</h3><p>Bendahara acara dapat mencatat belanja kegiatan, menyimpan nota, dan menyerahkan rekap yang rapi.</p></div>
+      <div class="reveal" data-i="w2"><span class="k">Lomba</span><h3>Mahasiswa peserta lomba</h3><p>Dana dari kampus harus dilaporkan dengan struk. Foto setiap struk saat itu juga, lalu laporan tersusun sendiri.</p></div>
+      <div class="reveal" data-i="w3"><span class="k">Dinas</span><h3>Pegawai yang sering dinas</h3><p>Setiap perjalanan punya catatan dana terpisah, sehingga uang dinas tidak bercampur dengan uang pribadi.</p></div>
+      <div class="reveal" data-i="w4"><span class="k">Acara</span><h3>Panitia dan pengurus organisasi</h3><p>Bendahara acara dapat mencatat belanja kegiatan, menyimpan nota, dan menyerahkan rekap yang rapi.</p></div>
     </div>
   </div>
 </section>
@@ -319,16 +322,16 @@ h1,h2,.feat h3,.kt,.logo{font-family:var(--disp);font-weight:700}
 <section id="laporan">
   <div class="wrap lap">
     <div>
-      <div class="eyebrow reveal">Laporan pertanggungjawaban</div>
-      <h2 class="reveal">Laporan siap cetak, lengkap dengan lampiran.</h2>
+      <div class="eyebrow reveal" data-i="r0">Laporan pertanggungjawaban</div>
+      <h2 class="reveal" data-i="r1">Laporan siap cetak, lengkap dengan lampiran.</h2>
       <ul class="checks">
-        <li class="reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Rekap dana diterima, pengeluaran, dan sisa dana dalam satu halaman.</li>
-        <li class="reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Setiap foto bukti diberi label L1, L2, dan seterusnya, lalu dicetak sebagai lampiran.</li>
-        <li class="reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Daftar transaksi tanpa bukti muncul sebelum laporan diserahkan.</li>
-        <li class="reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Data juga dapat diunduh dalam format CSV untuk diolah di Excel.</li>
+        <li class="reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i="r2">Rekap dana diterima, pengeluaran, dan sisa dana dalam satu halaman.</span></li>
+        <li class="reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i="r3">Setiap foto bukti diberi label L1, L2, dan seterusnya, lalu dicetak sebagai lampiran.</span></li>
+        <li class="reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i="r4">Daftar transaksi tanpa bukti muncul sebelum laporan diserahkan.</span></li>
+        <li class="reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i="r5">Data juga dapat diunduh dalam format CSV untuk diolah di Excel.</span></li>
       </ul>
     </div>
-    <div class="paper reveal" aria-hidden="true">
+    <div class="paper reveal" aria-hidden="true" data-i="r6">
       <h4>Laporan Penggunaan Dana</h4>
       <div class="meta">Konferensi riset di Yogyakarta · 4–6 Maret 2027</div>
       <table>
@@ -344,9 +347,9 @@ h1,h2,.feat h3,.kt,.logo{font-family:var(--disp);font-weight:700}
 
 <section class="how" id="tanya">
   <div class="wrap">
-    <div class="eyebrow reveal">Tanya jawab</div>
-    <h2 class="reveal">Pertanyaan yang sering diajukan.</h2>
-    <div class="faq">
+    <div class="eyebrow reveal" data-i="n3">Tanya jawab</div>
+    <h2 class="reveal" data-i="q0">Pertanyaan yang sering diajukan.</h2>
+    <div class="faq" data-i="q1">
       <details><summary>Apakah <span data-brand></span> berbayar?</summary><p>Tidak. <span data-brand></span> dapat dipakai gratis melalui browser di HP maupun laptop.</p></details>
       <details><summary>Apakah foto dari kamera otomatis tersimpan di galeri HP?</summary><p>Tidak otomatis. Browser tidak diizinkan menulis langsung ke galeri. Setelah memotret, ketuk "Simpan ke galeri" untuk menyimpan cadangan. Cara lain: potret dengan aplikasi kamera HP, lalu unggah melalui "Pilih dari galeri".</p></details>
       <details><summary>Apakah <span data-brand></span> bisa dipakai tanpa internet?</summary><p>Belum bisa. Koneksi internet diperlukan untuk menyimpan transaksi dan mengunggah foto.</p></details>
@@ -360,13 +363,94 @@ h1,h2,.feat h3,.kt,.logo{font-family:var(--disp);font-weight:700}
 <div class="wrap">
   <div class="end reveal">
     <span class="stub l"></span><span class="stub r"></span>
-    <h2>Mulai catat perjalanan berikutnya.</h2>
-    <p>Buat akun dalam satu menit, lalu catat dana masuk sebelum berangkat. Struk pertama tinggal difoto saat membayar.</p>
-    <a class="btn pri" href="/app?daftar">Buat akun gratis</a>
+    <h2 data-i="e1">Mulai catat perjalanan berikutnya.</h2>
+    <p data-i="e2">Buat akun dalam satu menit, lalu catat dana masuk sebelum berangkat. Struk pertama tinggal difoto saat membayar.</p>
+    <a class="btn pri" href="/app?daftar" data-i="cta">Buat akun gratis</a>
   </div>
-  <footer><span><span data-brand></span> · dibuat oleh Gianne Angely</span><a href="/app">Masuk ke akun</a></footer>
+  <footer><span data-i="ft1"><span data-brand></span> · dibuat oleh Gianne Angely</span><a href="/app" data-i="ft2">Masuk ke akun</a></footer>
 </div>
 </main>
+<script>
+/* bahasa halaman depan: "id" (asli di HTML) dan "en". Kunci "jejak.lang" sama dengan app. */
+(function () {
+  var LK = "jejak.lang", EN = {
+    n1: "How it works", n2: "Features", n3: "FAQ", n4: "Log in",
+    h0: "Travel fund tracker",
+    h1: "Trip money sorted, <em>receipts</em> kept safe.",
+    h2: "<span data-brand></span> tracks your trip money from departure to return: incoming funds, expenses, receipt photos, and your schedule. When you get back, the expense report is ready to print.",
+    cta: "Create a free account", h3: "See how it works",
+    h4: "Free, and it runs right in your phone's browser. Nothing to install.",
+    k1: '<div class="eb"><span>4 – 6 Mar 2027</span><span>3 days · WIB</span></div><div class="kt">Research conference in Yogyakarta</div><div class="kr">Host campus, Yogyakarta</div>',
+    k2: '<div class="ln"><span>Funds received</span><span class="m">Rp2.500.000</span></div><div class="ln"><span><span class="stamp paid">PAID</span>Return train tickets</span><span class="m">Rp480.000</span></div><div class="ln"><span><span class="stamp paid">PAID</span>Hotel, 2 nights</span><span class="m">Rp620.000</span></div><div class="ln"><span><span class="stamp plan">PLANNED</span>Meals, 3 days</span><span class="m">Rp270.000</span></div>',
+    k3: "<span>Funds left</span><span>2 receipts</span>",
+    m0: "The usual problem",
+    m1: "Fund reports get delayed because <em>receipts</em> go missing.",
+    m2: "Travel money from a campus or office almost always has to be accounted for. The trouble is rarely the amount itself. It's the notes and receipts that end up incomplete.",
+    p1: "Receipts lost in a bag", p2: "Meal receipts and parking tickets slip away easily. By the time the report is due, some of them are gone.",
+    p3: "No clear balance", p4: "Trip money gets mixed with personal money, so it's hard to tell how much is really left.",
+    p5: "A report rushed overnight", p6: "The summary gets pieced together from memory right before the deadline, and the numbers rarely match the receipts.",
+    s0: "Four steps from departure to report.",
+    s1: "<h3>Create a trip</h3><p>Add the event name, city, and dates. The calendar and schedule follow those dates.</p>",
+    s2: "<h3>Record incoming funds</h3><p>Enter the money from your campus, office, or sponsor. The balance updates on its own.</p>",
+    s3: "<h3>Snap the receipt as you pay</h3><p>Tap Snap receipt, enter the amount, and save. The photo stays attached to that transaction.</p>",
+    s4: "<h3>Print the report</h3><p>Open the report and save it as a PDF. Every receipt is included as a labelled attachment.</p>",
+    f0: "Everything a work trip needs, in one place.",
+    f1: "<h3>Always know what's left</h3><p>The biggest number on screen is your remaining balance. Expenses are split into paid and planned, so costs you haven't paid yet still count.</p><ul><li>A safe daily meal budget, worked out from the balance and the days left.</li><li>Totals by category: transport, lodging, meals, printing.</li></ul>",
+    f2: '<div class="mini-k"><div class="top">Research conference in Yogyakarta</div><div class="bot"><small>FUNDS LEFT</small><b>Rp1.400.000</b></div></div><div class="cbar"><span>Transport</span><span class="b"><i class="p" style="width:62%"></i></span><span class="mono">Rp480.000</span></div><div class="cbar"><span>Lodging</span><span class="b"><i class="p" style="width:80%"></i></span><span class="mono">Rp620.000</span></div><div class="cbar"><span>Meals</span><span class="b"><i class="r" style="width:35%"></i></span><span class="mono">Rp270.000</span></div>',
+    f3: "<h3>Receipts stay with each transaction</h3><p>Take a photo with the camera or pick one from your gallery. One transaction can hold several photos, such as a receipt and a transfer slip.</p><ul><li>Transactions without a receipt are flagged in red.</li><li>Photos are resized automatically to save data.</li></ul>",
+    f4: '<div class="m-row"><span class="m-ic"></span><span class="t">Hotel, 2 nights<small>Lodging · 4 Mar</small><span class="tag ok">2 receipt photos</span></span><b class="mono">Rp620.000</b></div><div class="m-row"><span class="m-ic"></span><span class="t">Team lunch<small>Meals · 5 Mar</small><span class="tag warn">No receipt photo yet</span></span><b class="mono">Rp85.000</b></div><div class="thumbs"><div class="thumb"><span class="rc"></span><span class="lb">L1</span></div><div class="thumb"><span class="rc"></span><span class="lb">L2</span></div><div class="thumb"><span class="rc"></span><span class="lb">L3</span></div></div>',
+    f5: "<h3>A schedule with directions</h3><p>Plan your agenda hour by hour, with a place for each item. Whatever is happening now is highlighted, and one tap opens the route in Google Maps.</p><ul><li>Change the schedule any time from your phone.</li><li>Directions use Google Maps at no extra cost.</li></ul>",
+    f6: '<div class="tl"><div class="tl-i"><b>07.30</b>Arrive at the station<small>Yogyakarta Station</small></div><span class="tl-dir">Directions</span><div class="tl-i now"><b>09.00</b>Participant check-in<small>Main campus building</small></div><div class="tl-i"><b>13.00</b>Paper presentation<small>Seminar room, 3rd floor</small></div></div>',
+    f7: "<h3>A photo diary for each day</h3><p>Keep activity photos in a calendar of the trip. Captions can wait until you have a moment.</p><ul><li>Every day has room for its own story.</li><li>That day's agenda appears under the photos as a reminder.</li></ul>",
+    f8: '<div class="cal"><span class="wd">Mo</span><span class="wd">Tu</span><span class="wd">We</span><span class="wd">Th</span><span class="wd">Fr</span><span class="wd">Sa</span><span class="wd">Su</span><span>1</span><span>2</span><span>3</span><span class="ph">4</span><span class="ph">5</span><span class="tr">6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span></div>',
+    w0: "Who it's for", w1: "Made for people who have to account for travel funds.",
+    w2: '<span class="k">Competitions</span><h3>Students at competitions</h3><p>Campus funding has to be reported with receipts. Snap each one on the spot and the report builds itself.</p>',
+    w3: '<span class="k">Work travel</span><h3>Staff who travel often</h3><p>Each trip gets its own record, so work money never mixes with personal money.</p>',
+    w4: '<span class="k">Events</span><h3>Event committees and organisers</h3><p>Treasurers can log event spending, keep invoices, and hand over a clean summary.</p>',
+    r0: "Expense report", r1: "A print-ready report, attachments included.",
+    r2: "Funds received, expenses, and the remaining balance on one page.",
+    r3: "Every receipt photo is labelled L1, L2, and so on, then printed as an attachment.",
+    r4: "Transactions missing a receipt are listed before you hand the report in.",
+    r5: "The data can also be downloaded as CSV for Excel.",
+    r6: '<h4>Fund Usage Report</h4><div class="meta">Research conference in Yogyakarta · 4–6 March 2027</div><table><tr><th>No.</th><th>Description</th><th>Amount</th><th>Receipt</th></tr><tr><td>1</td><td>Return train tickets</td><td class="n">Rp480.000</td><td>L1</td></tr><tr><td>2</td><td>Hotel, 2 nights</td><td class="n">Rp620.000</td><td>L2, L3</td></tr><tr><td colspan="2"><b>Total</b></td><td class="n"><b>Rp1.100.000</b></td><td></td></tr></table><div class="att"><span>L1</span><span>L2</span><span>L3</span></div>',
+    q0: "Frequently asked questions.",
+    q1: '<details><summary>Does <span data-brand></span> cost anything?</summary><p>No. <span data-brand></span> is free to use in the browser on your phone or laptop.</p></details>' +
+      '<details><summary>Are camera photos saved to my phone\'s gallery?</summary><p>Not automatically. Browsers aren\'t allowed to write straight to the gallery. After taking a photo, tap "Save to gallery" to keep a copy. Or take the photo with your phone\'s camera app and upload it with "Choose from gallery".</p></details>' +
+      '<details><summary>Does <span data-brand></span> work without internet?</summary><p>Not yet. You need a connection to save transactions and upload photos.</p></details>' +
+      '<details><summary>How do I add <span data-brand></span> to my home screen?</summary><p>Open <span data-brand></span> in your browser. On iPhone, tap Share and choose "Add to Home Screen". On Android, open the Chrome menu and choose "Install app" or "Add to Home screen".</p></details>' +
+      '<details><summary>Who can see my trip data?</summary><p>Your trip data can only be opened from your account. Receipt photos are stored at random addresses that can\'t be guessed.</p></details>' +
+      '<details><summary>What format is the report in?</summary><p>The report is a print-ready page. Choose "Save as PDF" in your browser\'s print dialog and send that PDF. Transaction data can also be downloaded as CSV.</p></details>',
+    e1: "Start tracking your next trip.", e2: "Create an account in a minute and record your funds before you leave. When you pay, just snap the first receipt.",
+    ft1: "<span data-brand></span> · made by Gianne Angely", ft2: "Log in to your account"
+  };
+  var META = { id: {}, en: { t: ": travel fund tracker with receipt photos", d: "Track travel funds for work trips and competitions, keep receipt photos as proof, plan your schedule, then print an expense report." } };
+  var brand = ((document.querySelector(".logo [data-brand]") || {}).textContent || "").trim();
+  var desc = document.querySelector('meta[name="description"]');
+  META.id = { title: document.title, d: desc ? desc.content : "" };
+  function apply(l) {
+    document.documentElement.lang = l;
+    document.querySelectorAll("[data-i]").forEach(function (el) {
+      if (el._id == null) el._id = el.innerHTML;
+      var k = el.getAttribute("data-i");
+      el.innerHTML = l === "en" && EN[k] ? EN[k] : el._id;
+    });
+    document.querySelectorAll("[data-brand]").forEach(function (b) { if (!b.textContent && brand) b.textContent = brand; });
+    document.querySelectorAll("[data-lang]").forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false"); });
+    document.title = l === "en" ? brand + META.en.t : META.id.title;
+    if (desc) desc.content = l === "en" ? META.en.d : META.id.d;
+  }
+  var q = (location.search.match(/[?&]lang=(id|en)\b/) || [])[1], s, lang;
+  if (q) { lang = q; try { localStorage.setItem(LK, q); } catch (e) {} }
+  else {
+    try { s = localStorage.getItem(LK); } catch (e) {}
+    lang = s === "id" || s === "en" ? s : (/^id\b/i.test(navigator.language || "") ? "id" : "en");
+  }
+  apply(lang);
+  document.querySelectorAll("[data-lang]").forEach(function (b) {
+    b.onclick = function () { var l = b.getAttribute("data-lang"); try { localStorage.setItem(LK, l); } catch (e) {} apply(l); };
+  });
+})();
+</script>
 <script>
 (function () {
   var nav = document.getElementById("nav");

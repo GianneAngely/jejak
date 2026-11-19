@@ -206,6 +206,11 @@ textarea.in-t{min-height:76px;resize:vertical;line-height:1.45}
 .auth .brand{font-size:38px;font-weight:800;letter-spacing:.02em}
 .auth .brand b{color:var(--emas)}
 .auth p.lead{color:var(--redup);line-height:1.55;margin:6px 0 26px}
+.auth-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.lang-t{display:inline-flex;align-items:center;gap:2px;font-family:var(--mono);font-size:12px;font-weight:700;color:var(--samar)}
+.f .lang-t{align-self:flex-start;margin-left:-6px}
+.lang-t button{background:none;border:0;padding:6px 6px;min-height:32px;font:inherit;color:inherit;cursor:pointer;border-radius:8px;letter-spacing:.08em}
+.lang-t button.on{color:var(--teks);text-decoration:underline;text-decoration-color:var(--kuning);text-decoration-thickness:3px;text-underline-offset:4px}
 .link-btn{background:none;border:0;color:var(--emas);font-weight:700;cursor:pointer;padding:6px 0;font-size:14px}
 
 .menu-list{display:flex;flex-direction:column;gap:8px}
