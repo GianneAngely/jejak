@@ -8,7 +8,7 @@ Jejak is a mobile-first web app for students and staff who travel on someone els
 
 ![Jejak landing page: a trip card with funds received, paid and planned expenses, and the remaining balance](docs/landing.jpg)
 
-*The interface is in Indonesian, because it was built for Indonesian campus and office travel reports.*
+*The interface comes in English and Indonesian. It follows the phone's language, and the ID · EN switch on the landing page, the login screen and the Account sheet changes it at any time.*
 
 ## Why
 
@@ -27,9 +27,21 @@ Every competition trip ends the same way. Receipts get crumpled in a bag, travel
 | **Report** | A printable accountability report: funds received, spent and remaining, a numbered expense table, and every receipt as a labelled attachment (L1, L2, ...). Saves as PDF through the browser's print dialog and exports to CSV for Excel. |
 | **Shared trips** | Invite teammates with a join code. Members see the same trip, each entry shows who recorded it, and only the owner can delete the trip. |
 
-![Remaining balance and per-category summary, and expenses with attached receipt photos](docs/sisa-dana.jpg)
+## Inside the app
 
-![Printable report with numbered expenses and receipt attachments](docs/laporan.jpg)
+![Funds tab with the remaining balance, meal budget and spending by category; paid expenses with receipt photos; the trip schedule with directions](docs/app-funds-schedule.jpg)
+
+*Funds: the remaining balance, a reminder for the one expense without a receipt, today's meal budget, spending by category, and paid expenses with their receipt photos. Schedule: the day's agenda with directions.*
+
+![Notes tab with a categorised Q&A, and the Report tab with totals, PDF and CSV export, and the list of expenses still missing a receipt](docs/app-notes-report.jpg)
+
+*Notes: a Q&A practice note with category filters and collapsible answers. Report: totals, PDF and CSV export, and the expenses that still need a receipt photo.*
+
+The screenshots come from a local demo server with a fictional trip (`node scripts/demo-server.js`), so no real account or data is involved.
+
+## On the landing page
+
+![Landing page section: always know what's left, and receipts stay with each transaction](docs/sisa-dana.jpg)
 
 ## How it works
 
@@ -95,7 +107,7 @@ node --env-file=.env.local scripts/test-sharing.js
 - **web/**: the app: `app.js`, `app.css`, `index.html`, the service worker and icons
 - **api/**: the serverless API listed above
 - **lib/**: database, auth and branding
-- **scripts/**: deploy helper, the sharing test, and one-off scripts to seed an account and fill trip notes
+- **scripts/**: deploy helper, the sharing test, the local demo server used for the screenshots, and one-off scripts to seed an account and fill trip notes
 - **docs/**: the images in this README
 
 ## Built with
