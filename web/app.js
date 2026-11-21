@@ -246,7 +246,7 @@
   ART.buku = '<rect x="42" y="16" width="70" height="84" rx="6" fill="#FFF0CC" stroke="#0E1F45" stroke-width="3"/><path d="M54 16v84" stroke="#0E1F45" stroke-width="3"/><path d="M64 36h36M64 48h36M64 60h26" stroke="#0E1F45" stroke-width="2.5" stroke-linecap="round" opacity=".55"/><rect x="96" y="10" width="12" height="26" fill="#E0604A" stroke="#0E1F45" stroke-width="2.5"/><path d="M96 36l6-6 6 6" fill="#E0604A" stroke="#0E1F45" stroke-width="2.5" stroke-linejoin="round"/><circle cx="122" cy="80" r="14" fill="#DDEBFB" stroke="#0E1F45" stroke-width="3"/><path d="M116 80h12M122 74v12" stroke="#2F7FD0" stroke-width="3" stroke-linecap="round"/>';
   function art(n, cls) { return '<svg class="art ' + (cls || "") + '" viewBox="0 0 160 110" aria-hidden="true">' + ART[n] + "</svg>"; }
   function emptyArt(n, text, btn) { return '<div class="empty art-empty">' + art(n) + "<p>" + text + "</p>" + (btn || "") + "</div>"; }
-  function tabHero(n, title, sub) { return '<div class="tab-hero">' + art(n, "sm") + '<div><h2 class="disp">' + title + "</h2><p>" + sub + "</p></div></div>"; }
+  function tabHero(n, title, sub) { return '<p class="tab-hint">' + sub + "</p>"; }
   /* cincin pemakaian dana per kategori */
   function ring(tot) {
     var keys = OUT_CATS.concat(Object.keys(tot.cats).filter(function (k) { return OUT_CATS.indexOf(k) < 0; })).filter(function (k) { return tot.cats[k]; });
@@ -529,7 +529,7 @@
   function entryRow(e) {
     var isIn = e.kind === "in", n = (e.proofs || []).length, plan = e.status === "plan", cc = catOf(e);
     var proof = isIn ? "" : (n ? '<span class="tag ok">' + ic("clip") + T("{n} foto bukti", { n: n }) + "</span>" : (plan ? "" : '<span class="tag warn">' + ic("clip") + T("Belum ada foto bukti") + "</span>"));
-    var stamp = isIn ? '<span class="stamp in">' + T("Diterima") + '</span>' : '<span class="stamp ' + (plan ? "plan" : "paid") + (S.pop === e.id ? " pop" : "") + '">' + (plan ? T("Rencana") : T("Lunas")) + "</span>";
+    var stamp = isIn ? "" : plan ? '<span class="stamp plan">' + T("Rencana") + "</span>" : S.pop === e.id ? '<span class="stamp paid pop">' + T("Lunas") + "</span>" : "";
     return '<button class="row" data-e="' + e.id + '"><span class="ci" style="background:' + cc.bg + '">' + catIcon(e) + '</span><span class="mid"><span class="t">' + esc(e.title) + '</span><span class="s">' +
       "<span>" + esc(catName(e.category)) + (e.date ? " · " + esc(fmtDay(e.date, { day: "numeric", month: "short" })) : "") + (byLine(e) ? " · " + esc(byLine(e)) : "") + "</span>" + proof +
       (e.flag ? '<span class="flag">' + esc(e.flag) + "</span>" : "") + '</span></span><span class="amt-col"><span class="amt' + (isIn ? " in" : "") + '">' + (isIn ? "+" : "") + rp(e.amount) + "</span>" + stamp + "</span></button>";
@@ -1050,7 +1050,7 @@
   function renderLapor(t) {
     var tot = totals(t), paidOut = t.entries.filter(function (e) { return e.kind === "out" && e.status === "paid"; });
     var proofs = t.entries.reduce(function (a, e) { return a + (e.proofs || []).length; }, 0);
-    var html = tabHero("struk", T("Laporan pertanggungjawaban"), T("Rekap transaksi dengan foto bukti sebagai lampiran.")) + '<p class="muted" style="font-size:14px;line-height:1.55;margin:0 0 14px">' + T("Laporan berisi rekap transaksi dan semua foto bukti sebagai lampiran. Buka laporan, lalu pilih <b>Simpan sebagai PDF</b> pada menu cetak. Format CSV dapat dibuka di Excel.") + "</p>" +
+    var html = '<p class="muted" style="font-size:14px;line-height:1.55;margin:0 0 14px">' + T("Laporan berisi rekap transaksi dan semua foto bukti sebagai lampiran. Buka laporan, lalu pilih <b>Simpan sebagai PDF</b> pada menu cetak. Format CSV dapat dibuka di Excel.") + "</p>" +
       '<div class="cats"><div class="cat-row"><span>' + T("Dana masuk") + '</span><span></span><b class="mono">' + rp(tot.in) + '</b></div><div class="cat-row"><span>' + T("Sudah dibayar") + '</span><span></span><b class="mono">' + rp(tot.paid) + '</b></div><div class="cat-row"><span>' + T("Sisa dana") + '</span><span></span><b class="mono">' + rp(tot.left) + '</b></div><div class="cat-row"><span>' + T("Foto bukti§pl") + '</span><span></span><b class="mono">' + proofs + "</b></div></div>" +
       '<div class="btns" style="margin-top:14px"><a class="btn pri" href="#/lapor/' + t.id + '">' + ic("doc") + T("Buka laporan PDF") + '</a><button class="btn" id="csv">' + ic("dl") + T("Unduh CSV") + "</button></div>";
     if (tot.noProof.length) html += '<div class="sec">' + T("Belum ada foto bukti") + '<span class="act mono">' + tot.noProof.length + "</span></div><p class=\"hint\" style=\"margin:-4px 0 10px\">" + T("Ketuk transaksi untuk melampirkan foto.") + "</p><div class=\"list\">" + tot.noProof.map(entryRow).join("") + "</div>";

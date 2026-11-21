@@ -292,11 +292,11 @@ details.more[open] summary{margin-bottom:6px}
 .save-bar{position:sticky;bottom:calc(-22px - var(--safe-b));margin:0 -18px;padding:12px 18px calc(12px + var(--safe-b));background:linear-gradient(transparent,var(--malam-2) 30%)}
 
 /* v3: karakter visual (karcis, cap, album) */
-:root{--disp:"Fraunces",Georgia,serif;--langit:#2F7FD0;--koral:#E0604A}
-.disp{font-family:var(--disp);font-weight:700;letter-spacing:.005em;font-variation-settings:"opsz" 60}
+:root{--disp:"Bricolage Grotesque","Plus Jakarta Sans",system-ui,sans-serif;--langit:#2F7FD0;--koral:#E0604A}
+.disp{font-family:var(--disp);font-weight:800;letter-spacing:0}
 .view{animation:viewIn .24s var(--ease)}
 @keyframes viewIn{from{opacity:0;transform:translateY(8px)}}
-.k-title.disp{font-size:23px;font-weight:700}
+.k-title.disp{font-size:22px;font-weight:800}
 .karcis .k-top{position:relative}
 .karcis .k-title,.karcis .k-route{padding-right:70px}
 .barcode{position:absolute;right:18px;bottom:16px;width:56px;height:30px;border-radius:2px;
@@ -320,9 +320,7 @@ details.more[open] summary{margin-bottom:6px}
 .art-empty .art{width:120px}
 .art-empty p{margin:4px 0 6px;max-width:26em}
 .welcome .art{width:140px;margin:0 0 6px -6px}
-.tab-hero{display:flex;align-items:center;gap:14px;margin:0 0 14px;padding:12px 14px;border-radius:18px;background:var(--malam-2);border:1px solid var(--garis)}
-.tab-hero h2{margin:0;font-size:20px}
-.tab-hero p{margin:3px 0 0;font-size:13.5px;color:var(--redup);line-height:1.45}
+.tab-hint{margin:2px 2px 14px;font-size:13.5px;color:var(--redup);line-height:1.5}
 .ring-card{display:flex;gap:16px;align-items:center;background:var(--malam-2);border:1px solid var(--garis);border-radius:var(--r);padding:14px}
 .ring{width:104px;height:104px;flex:none}
 .ring circle{transition:stroke-dasharray .6s var(--ease)}
@@ -362,13 +360,13 @@ details.more[open] summary{margin-bottom:6px}
 .ph{background:#fff;border:1px solid rgba(14,31,69,.12);border-radius:4px;padding:8px 8px 0;transform:rotate(var(--r,0deg));box-shadow:0 14px 24px -16px rgba(14,31,69,.55);transition:transform .2s var(--ease)}
 .ph:active{transform:rotate(0) scale(.98)}
 .ph img{aspect-ratio:1;border-radius:2px}
-.ph p{font-family:var(--disp);font-style:italic;font-weight:500;font-size:14px;padding:8px 2px 12px;min-height:44px}
+.ph p{font-family:var(--disp);font-weight:500;font-size:14px;padding:8px 2px 12px;min-height:44px}
 .ph p.later{font-family:var(--sans);font-style:normal;font-size:12px}
 .tabbar a.on{position:relative}
 .tabbar a.on:after{content:"";position:absolute;top:-6px;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:var(--kuning)}
 .welcome h2.disp{font-size:24px}
-.auth .brand{font-family:var(--disp);font-weight:700}
-.top h1{font-family:var(--disp);text-transform:none;letter-spacing:.01em;font-size:22px;color:var(--teks)}
+.auth .brand{font-family:var(--disp);font-weight:800}
+.top h1{font-family:var(--disp);font-weight:800;text-transform:none;letter-spacing:0;font-size:22px;color:var(--teks)}
 @media(prefers-reduced-motion:reduce){.stop.now .dot{animation:none}}
 
 /* v4: berbagi perjalanan */
