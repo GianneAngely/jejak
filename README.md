@@ -107,7 +107,7 @@ node --env-file=.env.local scripts/test-sharing.js
 - **web/**: the app: `app.js`, `app.css`, `index.html`, the service worker and icons
 - **api/**: the serverless API listed above
 - **lib/**: database, auth and branding
-- **scripts/**: deploy helper, the sharing test, the local demo server used for the screenshots, and one-off scripts to seed an account and fill trip notes
+- **scripts/**: deploy helper, the sharing test, and the local demo server used for the screenshots
 - **docs/**: the images in this README
 
 ## Built with
