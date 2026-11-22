@@ -6,7 +6,7 @@ Jejak is a mobile-first web app for students and staff who travel on someone els
 
 **Live:** https://jejak-trip.vercel.app &nbsp;·&nbsp; Runs in the phone's browser and installs to the home screen. No app store needed.
 
-![Jejak landing page: the headline next to a printed trip receipt with funds received, expenses and the remaining balance](docs/landing.jpg)
+![Jejak landing page: the headline next to a pinned trip receipt with funds received, expenses and the remaining balance](docs/landing.jpg)
 
 *The interface comes in English and Indonesian. It follows the phone's language, and the ID · EN switch on the landing page, the login screen and the Account sheet changes it at any time.*
 

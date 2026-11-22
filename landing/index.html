@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0E1F45">
+<meta name="theme-color" content="#F3F5F9">
 <title>{B}: catatan dana perjalanan dan bukti struk</title>
 <meta name="description" content="Catat dana perjalanan dinas dan lomba, simpan foto struk sebagai bukti, susun jadwal kegiatan, lalu cetak laporan pertanggungjawaban.">
 <meta property="og:title" content="{B}: catatan dana perjalanan dan bukti struk">
@@ -15,360 +15,411 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,600..900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--kertas:#EEF3FA;--putih:#FFFFFF;--struk:#FFFEFA;--navy:#0E1F45;--navy-2:#16295A;--garis:rgba(14,31,69,.1);--garis-2:rgba(14,31,69,.2);--teks:#0E1F45;--redup:#4A5D88;--kuning:#FFD60A;--emas:#8A6400;--hijau:#0B7A52;--merah:#C23B22;--biru-m:#9DB7E8;
-  --sans:"Plus Jakarta Sans",system-ui,sans-serif;--disp:"Bricolage Grotesque","Plus Jakarta Sans",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace;--ease:cubic-bezier(.2,.9,.3,1);--pegas:cubic-bezier(.3,1.5,.5,1)}
+:root{--kertas:#F3F5F9;--putih:#FFFFFF;--struk:#FFFEFA;--navy:#0E1F45;--garis:rgba(14,31,69,.12);--garis-2:rgba(14,31,69,.24);--redup:#4A5D88;--kuning:#FFD60A;--merah:#C8432A;--hijau:#0B7A52;
+  --sans:"Plus Jakarta Sans",system-ui,sans-serif;--disp:"Archivo","Plus Jakarta Sans",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace;--ease:cubic-bezier(.2,.9,.3,1);--pegas:cubic-bezier(.3,1.6,.5,1);interpolate-size:allow-keywords}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-html,body{margin:0;background:var(--navy);color:var(--teks);font-family:var(--sans);font-weight:500;-webkit-font-smoothing:antialiased;overflow-x:clip}
+html,body{margin:0;background:var(--kertas);color:var(--navy);font-family:var(--sans);font-weight:500;-webkit-font-smoothing:antialiased;overflow-x:clip}
 a{color:inherit}
-:focus-visible{outline:2px solid var(--kuning);outline-offset:3px;border-radius:8px}
+:focus-visible{outline:2px solid var(--navy);outline-offset:3px;border-radius:6px}
 .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
-h1,h2,h3,.logo{font-family:var(--disp)}
+h1,h2,h3,.logo{font-family:var(--disp);font-stretch:112%;letter-spacing:0}
+.mono{font-family:var(--mono)}
+
+/* tepi sobekan struk di atas section */
+.sobek{position:relative}
+.sobek:before{content:"";position:absolute;left:0;right:0;top:-14px;height:14px;background:linear-gradient(-45deg,var(--bg) 7px,transparent 0) 0 100%/14px 14px repeat-x,linear-gradient(45deg,var(--bg) 7px,transparent 0) 0 100%/14px 14px repeat-x;pointer-events:none}
 
 /* navigasi */
-nav{position:sticky;top:0;z-index:30;background:var(--navy);color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
-nav .wrap{display:flex;align-items:center;gap:22px;height:66px}
-.logo{font-weight:800;font-size:24px;text-decoration:none}
-.logo b{color:var(--kuning)}
-.nl{display:flex;gap:22px;flex:1;justify-content:flex-end;align-items:center;font-size:14.5px;font-weight:600;color:var(--biru-m)}
-.nl a{text-decoration:none}.nl a:hover{color:#fff}
-.lang-t{display:inline-flex;align-items:center;gap:1px;font-size:14.5px;font-weight:600}
-.lang-t button{background:none;border:0;padding:6px 5px;min-height:32px;font:inherit;color:inherit;cursor:pointer;border-radius:8px;letter-spacing:.06em}
-.lang-t button[aria-pressed="true"]{color:#fff;text-decoration:underline;text-decoration-color:var(--kuning);text-decoration-thickness:3px;text-underline-offset:4px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:12px 22px;font-weight:700;font-size:15px;border:2px solid var(--navy);background:var(--putih);color:var(--navy);text-decoration:none;min-height:48px;transition:transform .2s var(--pegas),box-shadow .2s var(--ease)}
-.btn:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--navy)}
-.btn:active{transform:none;box-shadow:none}
-.btn.pri{background:var(--kuning)}
-.btn.hantu{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
-.btn.hantu:hover{box-shadow:4px 4px 0 var(--kuning);border-color:#fff}
-nav .btn{min-height:40px;padding:8px 18px;border-color:#fff}
-nav .btn:hover{box-shadow:3px 3px 0 var(--kuning)}
-
-/* lembar: setiap bagian menumpuk di atas bagian sebelumnya */
-.lembar{position:relative;border-radius:36px 36px 0 0;margin-top:-36px;box-shadow:0 -22px 40px -26px rgba(5,12,30,.55)}
+#nav{position:sticky;top:0;z-index:50;background:rgba(243,245,249,.88);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .3s}
+#nav.gulir{border-color:var(--garis)}
+#nav .wrap{display:flex;align-items:center;justify-content:space-between;height:66px}
+.logo{display:inline-flex;align-items:center;gap:8px;font-weight:850;font-size:23px;text-decoration:none}
+.logo svg{width:15px;height:24px;color:var(--navy)}.logo svg+svg{margin:8px 0 0 -10px}
+.nl{display:flex;align-items:center;gap:26px;font-size:14.5px;font-weight:600}
+.nl>a:not(.btn){text-decoration:none;color:var(--redup);background:linear-gradient(var(--kuning),var(--kuning)) no-repeat 0 100%/0 6px;transition:color .2s,background-size .3s var(--ease)}
+.nl>a:not(.btn):hover{color:var(--navy);background-size:100% 6px}
+.lang-t{display:inline-flex;align-items:center;gap:6px;color:var(--redup);line-height:1}
+.lang-t button{font:inherit;font-weight:700;color:inherit;background:none;border:0;padding:4px 2px;cursor:pointer;line-height:1}
+.lang-t button[aria-pressed="true"]{color:var(--navy);box-shadow:inset 0 -3px var(--kuning)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:700;text-decoration:none;border-radius:999px;padding:11px 20px;background:var(--navy);color:#fff;border:2px solid var(--navy);transition:transform .25s var(--pegas),background .2s,color .2s;cursor:pointer}
+.btn:hover{transform:translateY(-2px)}
+.btn.pri{background:var(--kuning);color:var(--navy);border-color:var(--kuning)}
+.btn.garis{background:transparent;color:var(--navy);border-color:var(--garis-2)}
+.btn.garis:hover{border-color:var(--navy)}
+.nl .btn{padding:8px 18px}
 
 /* hero */
-.hero-s{position:relative;color:#fff;padding:64px 0 150px;overflow:hidden;
-  background-color:var(--navy);background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:36px 36px}
-.hero{display:grid;grid-template-columns:1.12fr .88fr;gap:48px;align-items:center}
-.hero h1{font-size:clamp(44px,6.4vw,80px);line-height:1;font-weight:800;margin:0 0 26px;letter-spacing:-.01em}
-.hero h1 .kn{color:var(--kuning)}
-.sc{position:relative;display:inline-block}
-.sc:after{content:"";position:absolute;left:-2%;right:-2%;bottom:-.16em;height:.3em;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M3 13 C 40 4, 80 4, 118 9 S 175 17, 197 6' fill='none' stroke='%23FFD60A' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 100% no-repeat;
-  clip-path:inset(0 0 0 0)}
-.js .sc:after{clip-path:inset(0 100% 0 0);transition:clip-path .9s var(--ease) .9s}
-.js .muat .sc:after{clip-path:inset(0 0 0 0)}
-.lead{font-size:18px;line-height:1.62;color:#C9D6F2;margin:0 0 30px;max-width:31em}
-.cta{display:flex;gap:12px;flex-wrap:wrap}
-.trust{margin-top:18px;font-size:13.5px;color:var(--biru-m)}
+.hero-s{position:relative;overflow:hidden;padding:54px 0 70px}
+.tapak{position:absolute;inset:0;pointer-events:none;z-index:0}
+.tapak svg{position:absolute;width:19px;height:30px;margin:-15px 0 0 -9px;color:var(--navy);opacity:0;animation:tapak 2.8s ease-out forwards}
+@keyframes tapak{0%{opacity:0;transform:var(--t) scale(.6)}8%{opacity:.3;transform:var(--t) scale(1)}60%{opacity:.2}100%{opacity:0;transform:var(--t) scale(1)}}
+.hero{position:relative;z-index:1;display:grid;grid-template-columns:1.12fr .88fr;gap:40px;align-items:center}
+.judul{position:relative}
+.judul h1{font-size:clamp(40px,5.1vw,70px);line-height:1.1;font-weight:850;margin:0 0 28px}
+.stabilo{background:linear-gradient(var(--kuning),var(--kuning)) no-repeat 0 88%/100% 34%;padding:0 .06em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.lead{font-size:18px;line-height:1.75;color:var(--redup);max-width:530px;margin:0 0 34px}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.cta .btn{padding:14px 24px;font-size:16px}
+.trust{font-size:13.5px;line-height:1.6;color:var(--redup);margin:18px 0 0}
+.petunjuk{position:relative;z-index:1;margin-top:54px;font-family:var(--mono);font-size:12px;color:var(--redup);display:flex;align-items:center;gap:8px}
+.petunjuk svg{width:12px;height:16px}
 
-/* kata naik satu per satu */
-.wm{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
-.w{display:inline-block}
-.js .naik .w{transform:translateY(105%) rotate(6deg);transform-origin:0 100%;transition:transform .8s var(--ease);transition-delay:calc(var(--i) * 60ms)}
-.js .naik.in .w,.js .muat .naik .w{transform:none}
-
-/* struk */
-.struk{position:relative;background:var(--struk);font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--teks);padding:26px 24px 20px;font-size:13px;line-height:1.5}
-.struk:after{content:"";position:absolute;left:0;right:0;bottom:-9px;height:10px;
-  background:linear-gradient(-45deg,transparent 7px,var(--struk) 0) 0 0/14px 10px repeat-x,linear-gradient(45deg,transparent 7px,var(--struk) 0) 0 0/14px 10px repeat-x}
-.bayang{filter:drop-shadow(0 24px 28px rgba(5,12,30,.35)) drop-shadow(0 2px 3px rgba(5,12,30,.2))}
+/* struk tergantung */
+.gantung-w{position:relative;display:flex;justify-content:center;padding:0 0 40px}
+.tali{position:absolute;left:-10%;right:-10%;top:18px;height:2px;background:var(--garis-2);border-radius:2px}
+.gantung{position:relative;margin-top:6px;width:360px;transform-origin:50% 14px;will-change:transform}
+.jepit{position:absolute;left:50%;top:-4px;width:56px;margin-left:-28px;z-index:2}
+.bayang{filter:drop-shadow(0 18px 24px rgba(14,31,69,.16)) drop-shadow(0 2px 3px rgba(14,31,69,.12))}
+.struk{position:relative;background:var(--struk);font-family:var(--mono);font-size:13.5px;color:#24304F;padding:46px 24px 26px}
+.struk:after{content:"";position:absolute;left:0;right:0;bottom:-10px;height:10px;background:linear-gradient(-45deg,transparent 7px,var(--struk) 0) 0 0/14px 10px repeat-x,linear-gradient(45deg,transparent 7px,var(--struk) 0) 0 0/14px 10px repeat-x}
 .struk .c{text-align:center}
-.struk .nm{font-weight:700;font-size:17px;letter-spacing:.2em}
-.struk .ket{color:var(--redup);font-size:12px}
-.struk hr{border:0;border-top:1.5px dashed rgba(14,31,69,.35);margin:14px 0}
-.struk .r{display:flex;justify-content:space-between;gap:14px;padding:3px 0}
-.struk .r.rc{color:var(--redup)}
-.struk .tot{display:flex;justify-content:space-between;align-items:baseline;font-weight:700}
-.struk .tot b{font-size:27px}
-.struk .bkt{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11.5px;color:var(--redup)}
-.struk .bkt i{font-style:normal;font-weight:700;color:var(--teks);border:1px solid var(--garis-2);border-radius:4px;padding:0 5px}
-.struk .bkt i.no{color:var(--merah);border-color:rgba(194,59,34,.45);border-style:dashed}
-.cap{position:absolute;font-family:var(--mono);font-weight:700;letter-spacing:.14em;border:3px solid;border-radius:8px;padding:5px 11px;text-transform:uppercase;pointer-events:none;opacity:.85;mix-blend-mode:multiply;color:var(--hijau);box-shadow:inset 0 0 0 2px var(--struk),inset 0 0 0 3.5px currentColor;transform:rotate(-13deg)}
+.struk .nm{font-weight:700;letter-spacing:.3em;font-size:15px;margin-bottom:4px}
+.struk .ket{font-size:11.5px;color:#6A7593}
+.struk hr{border:0;border-top:1.5px dashed #C9CFDC;margin:12px 0}
+.struk .r{display:flex;justify-content:space-between;gap:10px;padding:3px 0;white-space:nowrap}
+.struk .r b{font-weight:500}
+.struk .r.no b{color:var(--merah)}
+.struk .r .bk{font-size:10.5px;padding:1px 5px;border-radius:4px;margin-left:6px;background:#E3F2EA;color:var(--hijau)}
+.struk .r.no .bk{background:#FBE7E2;color:var(--merah)}
+.struk .tot{display:flex;justify-content:space-between;align-items:baseline;margin-top:2px}
+.struk .tot b{font-size:24px;font-weight:700;color:var(--navy)}
+.tk{display:inline-block;overflow:hidden;vertical-align:bottom}
+html.js .ketik .tk{width:0}
+html.js .ketik .r b,html.js .ketik .r .bk,html.js .ketik .tot{opacity:0}
+.muat .ketik .tk{animation:ketik calc(var(--n) * 32ms) steps(var(--n)) forwards;animation-delay:var(--d)}
+.muat .ketik .r b,.muat .ketik .r .bk,.muat .ketik .tot{animation:pop .2s ease forwards;animation-delay:var(--d2)}
+@keyframes ketik{to{width:calc(var(--n) * 1ch)}}
+@keyframes pop{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+.lingkar{position:absolute;inset:-8px -14px -8px -16px;pointer-events:none}
+.lingkar path{fill:none;stroke:var(--merah);stroke-width:2.2;stroke-linecap:round;stroke-dasharray:420;stroke-dashoffset:420}
+.lingkar.on path{transition:stroke-dashoffset .8s var(--ease);stroke-dashoffset:0}
 
-.cetak{justify-self:center;width:100%;max-width:340px;position:relative}
-.celah{height:14px;border-radius:7px;background:#06102A;border:1px solid rgba(255,255,255,.14);margin:0 -14px;position:relative;z-index:2}
-.keluar{overflow:hidden;padding:0 44px 64px;margin:0 -44px}
-.hero .struk{padding-bottom:70px}
-.js .keluar .struk{transform:translateY(-101%)}
-.js .muat .keluar .struk{transform:none;transition:transform 1.6s var(--ease) .3s}
-.hero .cap{right:20px;bottom:84px;font-size:20px}
-.js .hero .cap{opacity:0;transform:rotate(-13deg) scale(1.7)}
-.js .muat .hero .cap{opacity:.85;transform:rotate(-13deg);transition:opacity .2s 1.9s,transform .35s var(--pegas) 1.9s}
+/* judul dicetak baris demi baris */
+html.js .cetak-j{clip-path:inset(0 0 100% 0)}
+html.js .cetak-j.in,html.js .muat .cetak-j{clip-path:inset(0 0 -10% 0);transition:clip-path .9s steps(9)}
+html.js .muat .cetak-j{transition-duration:1.1s;transition-timing-function:steps(12)}
+html.js .hero .lead,html.js .hero .cta,html.js .hero .trust{opacity:0;transform:translateY(10px)}
+.muat .lead,.muat .cta,.muat .trust{opacity:1!important;transform:none!important;transition:opacity .6s ease,transform .6s var(--ease)}
+.muat .lead{transition-delay:1s}.muat .cta{transition-delay:1.15s}.muat .trust{transition-delay:1.3s}
+html.js .muncul{opacity:0;transform:translateY(14px)}
+html.js .muncul.in{opacity:1;transform:none;transition:opacity .7s ease,transform .7s var(--ease)}
 
-/* stiker yang bisa digeser */
-.stk{position:absolute;z-index:5;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;translate:var(--x,0) var(--y,0);transition:scale .2s var(--pegas)}
-.stk:hover{scale:1.06}
-.stk.seret{cursor:grabbing;scale:1.1;transition:none}
-.stk-bin{left:-46px;top:30px;width:64px;height:64px;color:var(--kuning);animation:putar 14s linear infinite}
-.stk-l1{right:-34px;top:150px;background:var(--kuning);color:var(--navy);font-family:var(--mono);font-weight:700;font-size:14px;padding:6px 12px 6px 18px;border-radius:6px;transform:rotate(9deg);box-shadow:3px 3px 0 #06102A}
-.stk-l1:before{content:"";position:absolute;left:6px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:var(--navy)}
-.stk-rp{left:-78px;bottom:150px;width:66px;height:66px;border-radius:50%;background:#fff;border:3px solid var(--navy);display:grid;place-items:center;font-family:var(--disp);font-weight:800;font-size:22px;color:var(--navy);box-shadow:4px 4px 0 var(--kuning);transform:rotate(-12deg)}
-@keyframes putar{to{rotate:360deg}}
-.geser{position:absolute;right:-6px;bottom:22px;font-size:12px;color:var(--biru-m);font-family:var(--mono);transform:rotate(-4deg)}
+/* rute: cara kerja */
+.rute-s{--bg:#DDE8FA;background:var(--bg);padding:96px 0 110px}
+.kep{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end}
+h2{font-size:clamp(32px,4.4vw,56px);line-height:1.12;font-weight:850;margin:0}
+.sub{font-size:17px;line-height:1.8;color:var(--redup);margin:0}
+.rute{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;margin-top:72px;align-items:start}
+.henti{position:relative;list-style:none;margin:0;padding:0 0 0 70px}
+.jalur{position:absolute;left:23px;top:10px;bottom:40px;width:2px;background:repeating-linear-gradient(to bottom,var(--garis-2) 0 7px,transparent 7px 14px)}
+.jalur i{position:absolute;left:0;top:0;width:2px;height:calc(var(--p,1) * 100%);background:repeating-linear-gradient(to bottom,var(--navy) 0 7px,transparent 7px 14px)}
+.pelancong{position:absolute;left:-16px;top:calc(var(--p,1) * 100%);width:34px;height:34px;margin-top:-17px;border-radius:50%;background:var(--kuning);border:2px solid var(--navy);display:grid;place-items:center;transition:transform .3s var(--pegas)}
+.pelancong svg{width:12px;height:18px}
+.henti li{position:relative;padding:0 0 64px;transition:opacity .4s ease}
+.henti li:last-child{padding-bottom:10px}
+.halte{position:absolute;left:-56px;top:2px;width:20px;height:20px;border-radius:50%;background:var(--putih);border:2px solid var(--garis-2);transition:background .3s,border-color .3s,transform .4s var(--pegas)}
+.henti .wk{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--redup);margin-bottom:8px}
+.henti h3{font-size:25px;line-height:1.25;font-weight:800;margin:0 0 12px}
+.henti p{font-size:16px;line-height:1.8;color:var(--redup);margin:0;max-width:470px}
+.kode{font-family:var(--mono);font-size:.9em;background:var(--kuning);color:var(--navy);padding:1px 6px;border-radius:4px}
+.hidup .henti li{opacity:.35}
+.hidup .henti li.lewat{opacity:1}
+.henti li.lewat .halte,.henti:not(.dijaga) .halte{background:var(--navy);border-color:var(--navy)}
+.henti li.lewat .halte{transform:scale(1.15)}
 
-/* pita miring */
-.pita{position:absolute;left:-5%;right:-5%;overflow:hidden;white-space:nowrap;font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:20px;letter-spacing:.02em;padding:12px 0}
-.pita span{display:inline-block;will-change:transform}
-.pita i{font-style:normal;margin:0 18px}
-.pita-1{bottom:70px;background:var(--kuning);color:var(--navy);transform:rotate(-2.2deg);z-index:2}
-.pita-2{bottom:72px;background:#fff;color:var(--navy);transform:rotate(1.8deg);z-index:1;opacity:.95}
+.struk-jalan{position:sticky;top:96px}
+.struk-jalan .struk{padding-top:26px}
+.struk-jalan .bar{display:flex;justify-content:space-between;gap:10px;padding:4px 0;white-space:nowrap}
+.struk-jalan .bar.rc span:first-child:after{content:"*";color:#6A7593}
+.struk-jalan .bar.info{color:#6A7593}
+.struk-jalan .bar.pot{justify-content:center;color:#9AA3B9;letter-spacing:.1em}
+.hidup .struk-jalan .bar{display:none}
+.hidup .struk-jalan .bar.on{display:flex;animation:baris .5s steps(5) both}
+@keyframes baris{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.struk-jalan .tot b{transition:color .3s}
+.struk-jalan .tot b.turun{color:var(--merah)}
 
-/* alur: kartu menumpuk saat digulir */
-.alur-s{background:var(--putih);padding:96px 0 110px;z-index:2}
-.alur-g{display:grid;grid-template-columns:.8fr 1.2fr;gap:64px;align-items:start}
-.alur-g .kiri{position:sticky;top:110px}
-h2{font-size:clamp(34px,4.4vw,54px);line-height:1.02;font-weight:800;margin:0 0 18px;letter-spacing:-.01em}
-.sub{font-size:16.5px;line-height:1.65;color:var(--redup);margin:0}
-.alur{list-style:none;margin:0;padding:0}
-.alur li{position:sticky;background:var(--putih);border:2px solid var(--navy);border-radius:22px;padding:24px 24px 26px;margin-bottom:22px;box-shadow:6px 6px 0 var(--navy);display:grid;grid-template-columns:auto 1fr;gap:4px 18px}
-.alur li:nth-child(1){top:96px;transform:rotate(-1deg)}
-.alur li:nth-child(2){top:110px;transform:rotate(.8deg);background:var(--kuning)}
-.alur li:nth-child(3){top:124px;transform:rotate(-.6deg)}
-.alur li:nth-child(4){top:138px;transform:rotate(1deg);background:var(--kertas)}
-.alur li:nth-child(5){top:152px;transform:rotate(-.4deg);background:var(--navy);color:#fff;box-shadow:6px 6px 0 var(--kuning)}
-.alur .no{grid-row:1 / span 3;font-family:var(--disp);font-weight:800;font-size:46px;line-height:.9}
-.alur .wk{font-size:12px;font-weight:700;font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;opacity:.7}
-.alur h3{margin:0;font-size:24px;font-weight:800;line-height:1.15}
-.alur p{margin:6px 0 0;line-height:1.6;font-size:15.5px;max-width:34em;opacity:.85}
-.kode{display:inline-block;font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.14em;background:var(--navy);color:var(--kuning);border-radius:6px;padding:1px 8px}
-.alur li:nth-child(4) .kode{background:var(--kuning);color:var(--navy)}
+/* laporan: struk berserakan masuk lampiran */
+.lap-s{--bg:var(--kuning);background:var(--bg);padding:100px 0 120px}
+.lap-s .sub,.lap-s .catat{color:rgba(14,31,69,.8)}
+.lap{display:grid;grid-template-columns:.9fr 1.1fr;gap:64px;align-items:center}
+.lap .sub{margin-top:26px}
+.catat{margin-top:24px;font-family:var(--mono);font-size:12.5px;color:var(--redup);display:flex;align-items:center;gap:10px}
+.catat i{display:inline-block;width:26px;height:2px;background:var(--navy)}
+.meja{--k:0;--s:1;position:relative}
+.a4{position:relative;background:#fff;border-radius:4px;padding:28px 28px 24px;box-shadow:0 1px 2px rgba(14,31,69,.1),0 26px 50px -18px rgba(14,31,69,.28);font-size:12.5px}
+.a4 h4{font-family:var(--disp);font-stretch:112%;font-size:19px;font-weight:800;margin:0 0 2px}
+.a4 .meta{color:var(--redup);font-size:11.5px;margin-bottom:14px}
+.a4 .rek{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.a4 .rek div{border:1px solid var(--garis);border-radius:6px;padding:7px 9px}
+.a4 .rek small{display:block;color:var(--redup);font-size:10.5px}
+.a4 .rek b{font-family:var(--mono);font-size:13px}
+.a4 table{width:100%;border-collapse:collapse;font-size:11.5px}
+.a4 th,.a4 td{border:1px solid var(--garis);padding:5px 7px;text-align:left}
+.a4 th{background:var(--kertas);font-weight:700}
+.a4 .n{text-align:right;font-family:var(--mono)}
+.lamp-j{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--redup);margin:16px 0 8px}
+.lamp{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.slot{position:relative;height:96px;border:1.5px dashed rgba(14,31,69,.3);border-radius:4px}
+.slot>em{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--mono);font-style:normal;font-size:11px;color:var(--garis-2)}
+.slip{position:absolute;inset:-1px;z-index:2;background:var(--struk);font-family:var(--mono);font-size:9.5px;line-height:1.35;color:#24304F;padding:20px 7px 6px;box-shadow:0 6px 14px -4px rgba(14,31,69,.3);
+  transform:translate(calc(var(--dx) * var(--k) * var(--s)),calc(var(--dy) * var(--k) * var(--s))) rotate(calc(var(--r) * var(--k)));will-change:transform}
+.slip .lb{position:absolute;left:6px;top:5px;font-size:9px;font-weight:700;background:var(--navy);color:#fff;padding:1px 5px;border-radius:3px}
+.slip .r{display:flex;justify-content:space-between}
+.cap{position:absolute;right:22px;top:20px;font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--merah);border:2.5px solid var(--merah);border-radius:6px;padding:5px 10px;transform:rotate(-9deg);opacity:0;scale:1.6;transition:opacity .2s,scale .35s var(--pegas)}
+.meja.rapi .cap{opacity:.9;scale:1}
+.meja.rapi .slot{border-color:transparent}
 
-/* laporan */
-.lap-s{background:var(--kertas);padding:110px 0 120px;z-index:3}
-.lap{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
-.meja{position:relative;padding:0 0 20px}
-.a4{position:relative;z-index:2;background:#fff;border-radius:3px;padding:26px 24px 22px;font-size:12px;box-shadow:0 30px 50px -30px rgba(14,31,69,.45),0 1px 2px rgba(14,31,69,.12);transform:rotate(-1.2deg)}
-.a4 h4{margin:0 0 3px;font-size:15px;font-weight:800}
-.a4 .meta{color:#5a6478;margin-bottom:14px}
-.a4 .rek{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
-.a4 .rek div{border:1px solid #dadde4;border-radius:4px;padding:6px 8px}
-.a4 .rek small{display:block;color:#5a6478;font-size:10px}
-.a4 .rek b{font-family:var(--mono);font-size:12.5px}
-.a4 table{width:100%;border-collapse:collapse}
-.a4 th,.a4 td{border:1px solid #dadde4;padding:5px 6px;text-align:left}
-.a4 th{background:#f4f5f8;font-weight:700}
-.a4 td.n{text-align:right;font-family:var(--mono);white-space:nowrap}
-.a4 .cap{right:20px;top:20px;font-size:16px}
-.lamp{display:flex;justify-content:center;gap:16px;margin-top:-10px;position:relative;z-index:3}
-.slip{width:124px;padding:16px 12px 12px;font-size:10px}
-.slip .r{padding:1px 0}
-.slip .lb{position:absolute;left:10px;top:-9px;background:var(--navy);color:#fff;font-weight:700;font-size:10px;border-radius:4px;padding:1px 6px;letter-spacing:.06em}
-.lamp>div{transition:transform .7s var(--pegas),opacity .4s}
-.lamp>div:nth-child(1){--r:-4deg}.lamp>div:nth-child(2){--r:2.5deg}.lamp>div:nth-child(3){--r:-1.5deg}
-.lamp>div{transform:rotate(var(--r))}
-.js .meja .lamp>div{opacity:0;transform:translateY(-120px) rotate(calc(var(--r) * 6))}
-.js .meja.in .lamp>div{opacity:1;transform:rotate(var(--r))}
-.js .meja.in .lamp>div:nth-child(2){transition-delay:.12s}.js .meja.in .lamp>div:nth-child(3){transition-delay:.24s}
-.js .meja .a4 .cap{opacity:0;transform:rotate(-13deg) scale(1.8)}
-.js .meja.in .a4 .cap{opacity:.85;transform:rotate(-13deg);transition:opacity .15s .75s,transform .35s var(--pegas) .75s}
-
-/* tanya jawab */
-.faq-s{background:var(--navy);color:#fff;padding:100px 0 110px;z-index:4}
-.faq-s h2{color:#fff}
-.faq{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;margin-top:30px;align-items:start}
-.faq details{border-top:1.5px dashed rgba(255,255,255,.22)}
-.faq summary{cursor:pointer;list-style:none;padding:20px 40px 20px 0;font-weight:700;font-size:16.5px;line-height:1.45;position:relative}
+/* tanya jawab: satu struk panjang */
+.faq-s{--bg:var(--putih);background:var(--bg);padding:100px 0 120px}
+.faq-s .kep2{display:flex;justify-content:space-between;align-items:end;gap:24px;max-width:780px;margin:0 auto 36px}
+.faq-s .kep2 .mono{font-size:12px;color:var(--redup)}
+.faq-w{max-width:780px;margin:0 auto}
+.faq{counter-reset:q;background:var(--struk);padding:10px 30px 18px;position:relative;box-shadow:0 1px 2px rgba(14,31,69,.08),0 24px 40px -24px rgba(14,31,69,.25)}
+.faq:before,.faq:after{content:"";position:absolute;left:0;right:0;height:10px}
+.faq:before{top:-10px;background:linear-gradient(-135deg,transparent 7px,var(--struk) 0) 0 0/14px 10px repeat-x,linear-gradient(135deg,transparent 7px,var(--struk) 0) 0 0/14px 10px repeat-x}
+.faq:after{bottom:-10px;background:linear-gradient(-45deg,transparent 7px,var(--struk) 0) 0 0/14px 10px repeat-x,linear-gradient(45deg,transparent 7px,var(--struk) 0) 0 0/14px 10px repeat-x}
+.faq details{border-bottom:1.5px dashed #D3D8E3}
+.faq details:last-child{border-bottom:0}
+.faq summary{counter-increment:q;list-style:none;cursor:pointer;position:relative;display:block;padding:20px 40px 20px 46px;font-weight:700;font-size:17px;line-height:1.5}
 .faq summary::-webkit-details-marker{display:none}
-.faq summary:after{content:"+";position:absolute;right:2px;top:15px;width:28px;height:28px;border-radius:50%;background:var(--kuning);color:var(--navy);display:grid;place-items:center;font-family:var(--mono);font-size:17px;transition:transform .3s var(--pegas)}
-.faq details[open] summary:after{transform:rotate(45deg)}
-.faq p{margin:-6px 0 22px;color:#C9D6F2;line-height:1.62;font-size:15px}
+.faq summary:before{content:counter(q,decimal-leading-zero);position:absolute;left:0;top:23px;font-family:var(--mono);font-size:13px;font-weight:500;color:var(--redup)}
+.faq summary:after{content:"[+]";position:absolute;right:0;top:23px;font-family:var(--mono);font-size:13px;color:var(--redup);text-align:right;transition:color .2s}
+.faq details[open] summary:after{content:"[–]";color:var(--navy)}
+.faq summary:hover{color:var(--redup)}
+.faq details p{margin:0;padding:0 34px 24px 46px;font-size:15.5px;line-height:1.8;color:var(--redup)}
+.faq details::details-content{block-size:0;overflow:hidden;transition:block-size .35s var(--ease),content-visibility .35s allow-discrete}
+.faq details[open]::details-content{block-size:auto}
 
-/* penutup */
-.akhir-s{background:var(--kuning);padding:96px 0 0;z-index:5;overflow:hidden}
-.akhir{display:grid;grid-template-columns:1fr auto;gap:30px;align-items:end}
-.akhir h2{margin:0 0 12px;max-width:13em}
-.akhir .sub{color:var(--navy);opacity:.8}
-.akhir .btn{background:var(--navy);color:#fff}
-.akhir .btn:hover{box-shadow:4px 4px 0 #fff}
-footer{padding:46px 0 0;color:var(--navy);font-size:13.5px;font-weight:600;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-footer .fl{display:flex;gap:18px}
-.merek{font-family:var(--disp);font-weight:800;font-size:clamp(110px,26vw,340px);line-height:.78;letter-spacing:-.03em;color:var(--navy);margin:28px 0 0;white-space:nowrap;text-align:center;transform:translateY(.08em)}
-.merek b{color:#fff}
+/* penutup: tiket */
+.akhir-s{--bg:var(--navy);background:var(--bg);color:#fff;padding:100px 0 0;overflow:hidden}
+.akhir-s h2{color:#fff;max-width:640px}
+.akhir-s .sub{color:#B5C3E3;margin-top:22px;max-width:520px}
+.tiket{display:flex;margin:48px 0 0;max-width:860px;filter:drop-shadow(0 30px 40px rgba(0,0,0,.35));color:var(--navy)}
+.tk-u{flex:1;background:var(--struk);border-radius:14px 0 0 14px;padding:26px 30px;display:grid;grid-template-columns:repeat(2,1fr);gap:18px 28px;
+  -webkit-mask:radial-gradient(circle 12px at 100% 0,transparent 98%,#000) top/100% 51% no-repeat,radial-gradient(circle 12px at 100% 100%,transparent 98%,#000) bottom/100% 51% no-repeat;
+  mask:radial-gradient(circle 12px at 100% 0,transparent 98%,#000) top/100% 51% no-repeat,radial-gradient(circle 12px at 100% 100%,transparent 98%,#000) bottom/100% 51% no-repeat}
+.tk-u .rt{grid-column:1/-1;display:flex;align-items:center;gap:16px;font-family:var(--disp);font-stretch:118%;font-weight:900;font-size:clamp(26px,3.4vw,40px);line-height:1}
+.tk-u .rt .tp{flex:1;display:flex;justify-content:space-around;color:var(--redup)}
+.tk-u .rt .tp svg{width:14px;height:22px;opacity:.45}
+.tk-u .rt .tp svg:nth-child(odd){transform:rotate(90deg) translateX(-5px)}
+.tk-u .rt .tp svg:nth-child(even){transform:rotate(90deg) translateX(5px)}
+.tk-u small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--redup);text-transform:uppercase;margin-bottom:3px}
+.tk-u b{font-size:15.5px}
+.tk-s{position:relative;width:240px;flex:none;background:var(--kuning);border-radius:0 14px 14px 0;padding:24px 22px;display:flex;flex-direction:column;justify-content:space-between;gap:16px;text-decoration:none;color:var(--navy);transform-origin:0 100%;transition:transform .45s var(--pegas);
+  -webkit-mask:radial-gradient(circle 12px at 0 0,transparent 98%,#000) top/100% 51% no-repeat,radial-gradient(circle 12px at 0 100%,transparent 98%,#000) bottom/100% 51% no-repeat;
+  mask:radial-gradient(circle 12px at 0 0,transparent 98%,#000) top/100% 51% no-repeat,radial-gradient(circle 12px at 0 100%,transparent 98%,#000) bottom/100% 51% no-repeat}
+.tk-s:before{content:"";position:absolute;left:0;top:16px;bottom:16px;border-left:2px dashed rgba(14,31,69,.35)}
+.tk-s:hover,.tk-s:focus-visible{transform:rotate(6deg) translate(8px,-4px)}
+.tk-s .kb{height:54px;background:repeating-linear-gradient(90deg,var(--navy) 0 2px,transparent 2px 4px,var(--navy) 4px 7px,transparent 7px 9px,var(--navy) 9px 10px,transparent 10px 13px)}
+.tk-s .btn{width:100%;pointer-events:none}
+.tk-s .ss{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase}
+footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:13.5px;color:#9FB0D6;padding:72px 0 28px;border-bottom:1px solid rgba(255,255,255,.1)}
+footer .fl{display:flex;gap:20px}
+footer a{text-decoration:none}footer a:hover{color:#fff}
+.pergi{position:relative;height:110px}
+.pergi svg{position:absolute;width:18px;height:28px;color:#fff;opacity:0}
+.pergi.in svg{animation:pergi .5s ease forwards;animation-delay:calc(var(--i) * .16s)}
+@keyframes pergi{to{opacity:.28}}
 
-/* muncul saat digulir */
-.js .muncul{opacity:0;transform:translateY(36px) rotate(-1.5deg);transition:opacity .7s var(--ease),transform .8s var(--ease)}
-.js .muncul.in{opacity:1;transform:none}
-
-@media(prefers-reduced-motion:reduce){
+/* layar kecil */
+@media (max-width:860px){
+  .nl>a:not(.btn){display:none}
+  .nl{gap:16px}
+  .hero{grid-template-columns:1fr;gap:10px}
+  .gantung-w{padding:20px 0 10px}
+  .petunjuk{display:none}
+  .kep,.rute,.lap{grid-template-columns:1fr;gap:28px}
+  .rute{margin-top:48px}
+  .struk-jalan{position:relative;top:0;order:-1}
+  .henti{padding-left:58px}
+  .halte{left:-46px}
+  .jalur{left:19px}
+  .meja{--s:.55}
+  .faq{padding:6px 18px 14px}
+  .faq summary{padding:18px 34px 18px 36px;font-size:16px}
+  .faq details p{padding:0 0 20px 36px}
+  .tiket{flex-direction:column}
+  .tk-u{border-radius:14px 14px 0 0;grid-template-columns:1fr 1fr;-webkit-mask:none;mask:none}
+  .tk-s{width:auto;border-radius:0 0 14px 14px;-webkit-mask:none;mask:none}
+  .tk-s:before{left:16px;right:16px;top:0;bottom:auto;border-left:0;border-top:2px dashed rgba(14,31,69,.35)}
+  .tk-s:hover{transform:none}
+}
+@media (max-width:520px){.tk-u .rt{font-size:22px;justify-content:space-between}.tk-u .rt .tp{display:none}.lamp{grid-template-columns:repeat(2,1fr)}.slot{height:84px}.gantung{width:300px}.struk{font-size:12px}}
+@media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .js .naik .w,.js .muncul,.js .keluar .struk,.js .hero .cap,.js .meja .lamp>div,.js .meja .a4 .cap{transform:none!important;opacity:1!important;transition:none!important}
-  .js .hero .cap,.js .meja .a4 .cap{transform:rotate(-13deg)!important;opacity:.85!important}
-  .js .meja .lamp>div{transform:rotate(var(--r))!important}
-  .js .sc:after{clip-path:none;transition:none}
-  .stk-bin{animation:none}
+  *,*:before,*:after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important}
 }
-
-@media(max-width:860px){
-  .hero-s{padding:34px 0 140px}
-  .hero{grid-template-columns:1fr;gap:40px}
-  .cetak{max-width:300px}
-  .stk-bin{left:-20px;top:-10px}
-  .stk-l1{right:-14px}
-  .stk-rp{left:-14px}
-  .geser{display:none}
-  .alur-g,.lap{grid-template-columns:1fr;gap:34px}
-  .alur-g .kiri{position:static}
-  .alur li{top:80px!important}
-  .faq{grid-template-columns:1fr}
-  .akhir{grid-template-columns:1fr}
-  .nl a:not(.btn){display:none}
-  .alur-s{padding:80px 0 70px}
-  .lap-s,.faq-s{padding:80px 0}
-  .pita{font-size:16px}
-}
-@media(max-width:420px){.lamp{gap:8px}.slip{width:30%}.a4 .rek{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 <script>document.documentElement.className += " js";</script>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="kaki" viewBox="0 0 20 32"><g fill="currentColor"><circle cx="14.6" cy="5.4" r="2.7"/><circle cx="9.9" cy="3.4" r="2"/><circle cx="6.3" cy="4.4" r="1.7"/><circle cx="3.6" cy="6.8" r="1.45"/><circle cx="2.2" cy="10" r="1.25"/><path d="M11.2 10.2c4 0 6.4 3.2 6.4 8 0 4-1.4 6.1-2.5 8.5-1 2.3-2.4 4.3-5.2 4.3-3.2 0-4.8-2.4-4.8-5.4 0-2.4 1.3-4 1.1-6.6-.2-4.1 1.1-8.8 5-8.8z"/></g></symbol></svg>
 <nav id="nav"><div class="wrap">
-  <a class="logo" href="/"><span data-brand></span><b>.</b></a>
+  <a class="logo" href="/"><svg aria-hidden="true" style="transform:scaleX(-1) rotate(-8deg)"><use href="#kaki"/></svg><svg aria-hidden="true" style="transform:rotate(8deg)"><use href="#kaki"/></svg><span data-brand></span></a>
   <div class="nl"><a href="#cara" data-i="n1">Cara kerja</a><a href="#laporan" data-i="n2">Laporan</a><a href="#tanya" data-i="n3">Tanya jawab</a><span class="lang-t" role="group" aria-label="Bahasa / Language"><button type="button" data-lang="id">ID</button><span aria-hidden="true">·</span><button type="button" data-lang="en">EN</button></span><a class="btn" href="/app" data-i="n4">Masuk</a></div>
 </div></nav>
 
 <main>
 <section class="hero-s" id="atas">
+  <div class="tapak" aria-hidden="true"></div>
   <div class="wrap hero">
     <div>
-      <h1 class="naik" data-i="h1">Dana lomba beres, <span class="kn">struknya tidak <span class="sc">tercecer.</span></span></h1>
+      <div class="judul"><h1 class="cetak-j" data-i="h1">Dana lomba beres, struknya <span class="stabilo">tidak tercecer.</span></h1></div>
       <p class="lead" data-i="h2"><span data-brand></span> mencatat dana perjalanan dari berangkat sampai pulang. Setiap pengeluaran tersimpan bersama foto struknya, sehingga laporan pertanggungjawaban siap dicetak sepulang perjalanan.</p>
-      <div class="cta"><a class="btn pri" href="/app?daftar" data-i="cta">Buat akun gratis</a><a class="btn hantu" href="#cara" data-i="h3">Lihat cara kerjanya</a></div>
+      <div class="cta"><a class="btn pri" href="/app?daftar" data-i="cta">Buat akun gratis</a><a class="btn garis" href="#cara" data-i="h3">Lihat cara kerjanya</a></div>
       <p class="trust" data-i="h4">Gratis dan langsung jalan di browser HP, tanpa mengunduh aplikasi.</p>
     </div>
-    <div class="cetak">
-      <div class="celah" aria-hidden="true"></div>
-      <div class="keluar" aria-hidden="true"><div class="bayang"><div class="struk" data-i="k1">
-        <div class="c nm">JEJAK</div>
-        <div class="c ket">Konferensi riset · Yogyakarta</div>
-        <div class="c ket">04–06 MAR 2027 · 3 hari</div>
-        <hr>
-        <div class="r"><span>DANA MASUK</span><span>2.500.000</span></div>
-        <div class="r"><span>Kereta PP</span><span>-480.000</span></div>
-        <div class="r"><span>Hotel 2 malam</span><span>-620.000</span></div>
-        <div class="r rc"><span>Makan 3 hari*</span><span>-270.000</span></div>
-        <hr>
-        <div class="tot"><span>SISA</span><b>Rp1.130.000</b></div>
-        <div class="ket">*rencana, sudah dihitung</div>
-        <hr>
-        <div class="bkt">BUKTI <i>L1</i><i>L2</i><i>L3</i><i class="no">makan: belum</i></div>
-      </div></div></div>
-      <span class="cap" aria-hidden="true" data-i="k2">Lunas</span>
-      <svg class="stk stk-bin" viewBox="0 0 64 64" aria-hidden="true"><path fill="currentColor" d="M32 2c2 16 8 26 30 30-22 4-28 14-30 30-2-16-8-26-30-30C24 28 30 18 32 2z"/></svg>
-      <span class="stk stk-l1" aria-hidden="true">L1</span>
-      <span class="stk stk-rp" aria-hidden="true">Rp</span>
-      <span class="geser" aria-hidden="true" data-i="k3">geser stikernya ↗</span>
+    <div class="gantung-w" aria-hidden="true">
+      <div class="tali"></div>
+      <div class="gantung">
+        <svg class="jepit" viewBox="0 0 70 44"><circle cx="35" cy="18" r="11" fill="#0E1F45"/><circle cx="31.5" cy="14.5" r="3.2" fill="#fff" opacity=".35"/><path d="M35 29v6" stroke="#0E1F45" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <div class="bayang"><div class="struk struk-h ketik" data-i="k1">
+          <div class="c nm">JEJAK</div>
+          <div class="c ket">Konferensi riset · Yogyakarta</div>
+          <div class="c ket">04–06 MAR 2027 · 3 hari</div>
+          <hr>
+          <div class="r"><span class="tk">DANA KAMPUS</span><b>+2.500.000</b></div>
+          <div class="r"><span><span class="tk">Kereta PP</span><i class="bk">foto</i></span><b>-480.000</b></div>
+          <div class="r"><span><span class="tk">Hotel 2 malam</span><i class="bk">foto</i></span><b>-620.000</b></div>
+          <div class="r no"><span><span class="tk">Makan siang</span><i class="bk">tanpa foto</i></span><b>-45.000</b></div>
+          <hr>
+          <div class="tot"><span>SISA</span><b class="angka" data-dari="2500000" data-ke="1355000">Rp1.355.000</b><svg class="lingkar" viewBox="0 0 300 60" preserveAspectRatio="none"><path d="M150 4C80 2 8 10 6 30s70 28 144 26 146-8 144-28S210 2 140 6"/></svg></div>
+        </div></div>
+      </div>
     </div>
   </div>
-  <div class="pita pita-2" aria-hidden="true"><span data-i="p2"></span></div>
-  <div class="pita pita-1" aria-hidden="true"><span data-i="p1"></span></div>
+  <div class="wrap"><div class="petunjuk" aria-hidden="true"><svg><use href="#kaki"/></svg><span data-i="k3">gerakkan kursor untuk meninggalkan jejak</span></div></div>
 </section>
 
-<section class="alur-s lembar" id="cara">
-  <div class="wrap alur-g">
-    <div class="kiri">
-      <h2 class="naik" data-i="a0">Dari berangkat sampai lapor.</h2>
+<section class="rute-s sobek" id="cara">
+  <div class="wrap">
+    <div class="kep">
+      <h2 class="cetak-j" data-i="a0">Dari berangkat sampai lapor.</h2>
       <p class="sub muncul" data-i="a1">Laporan dana jarang tertunda karena jumlah uangnya. Biasanya struk makan sudah terselip di tas, uang perjalanan bercampur dengan uang pribadi, lalu rekap disusun dari ingatan semalam sebelum tenggat. <span data-brand></span> memindahkan pekerjaan itu ke saat membayar.</p>
     </div>
-    <ol class="alur">
-      <li data-i="a2"><span class="no">01</span><span class="wk">Sebelum berangkat</span><h3>Catat dana yang masuk</h3><p>Isi nama acara, kota, dan tanggal, lalu masukkan dana dari kampus, kantor, atau sponsor. Pengeluaran yang sudah pasti, seperti tiket pulang, bisa dicatat sebagai rencana sejak awal.</p></li>
-      <li data-i="a3"><span class="no">02</span><span class="wk">Saat membayar</span><h3>Foto struk di depan kasir</h3><p>Ketuk Foto struk, isi nominal, lalu simpan. Satu transaksi boleh berisi beberapa foto, misalnya struk dan bukti transfer, dan transaksi tanpa bukti ditandai merah.</p></li>
-      <li data-i="a4"><span class="no">03</span><span class="wk">Selama perjalanan</span><h3>Sisa dana selalu di atas</h3><p>Angka terbesar di layar adalah sisa dana setelah rencana pengeluaran ikut dihitung. Dari angka itu juga keluar batas aman uang makan untuk hari ini.</p></li>
-      <li data-i="a5"><span class="no">04</span><span class="wk">Bersama tim</span><h3>Satu perjalanan, dipegang bersama</h3><p>Ajak rekan setim dengan kode undangan seperti <span class="kode">JJK4TEAM</span>. Jadwal dengan petunjuk arah, diari foto, dan catatan seperti naskah presentasi bisa dibuka semua anggota, dan setiap transaksi mencatat siapa yang memasukkannya.</p></li>
-      <li data-i="a6"><span class="no">05</span><span class="wk">Sepulang</span><h3>Cetak laporannya</h3><p>Buka tab Laporan, lalu simpan sebagai PDF. Rekap dana dan semua foto struk sudah tersusun sebagai lampiran berlabel.</p></li>
-    </ol>
+    <div class="rute">
+      <ol class="henti">
+        <span class="jalur" aria-hidden="true"><i></i><span class="pelancong"><svg><use href="#kaki"/></svg></span></span>
+        <li data-s="1"><span class="halte" aria-hidden="true"></span><div data-i="a2"><span class="wk">Halte 1 · Sebelum berangkat</span><h3>Catat dana yang masuk</h3><p>Isi nama acara, kota, dan tanggal, lalu masukkan dana dari kampus, kantor, atau sponsor. Pengeluaran yang sudah pasti, seperti tiket pulang, bisa dicatat sebagai rencana sejak awal.</p></div></li>
+        <li data-s="2"><span class="halte" aria-hidden="true"></span><div data-i="a3"><span class="wk">Halte 2 · Saat membayar</span><h3>Foto struk di depan kasir</h3><p>Ketuk Foto struk, isi nominal, lalu simpan. Satu transaksi boleh berisi beberapa foto, misalnya struk dan bukti transfer, dan transaksi tanpa bukti ditandai merah.</p></div></li>
+        <li data-s="3"><span class="halte" aria-hidden="true"></span><div data-i="a4"><span class="wk">Halte 3 · Selama perjalanan</span><h3>Sisa dana selalu di atas</h3><p>Angka terbesar di layar adalah sisa dana setelah rencana pengeluaran ikut dihitung. Dari angka itu juga keluar batas aman uang makan untuk hari ini.</p></div></li>
+        <li data-s="4"><span class="halte" aria-hidden="true"></span><div data-i="a5"><span class="wk">Halte 4 · Bersama tim</span><h3>Satu perjalanan, dipegang bersama</h3><p>Ajak rekan setim dengan kode undangan seperti <span class="kode">JJK4TEAM</span>. Jadwal dengan petunjuk arah, diari foto, dan catatan seperti naskah presentasi bisa dibuka semua anggota, dan setiap transaksi mencatat siapa yang memasukkannya.</p></div></li>
+        <li data-s="5"><span class="halte" aria-hidden="true"></span><div data-i="a6"><span class="wk">Halte 5 · Sepulang</span><h3>Cetak laporannya</h3><p>Buka tab Laporan, lalu simpan sebagai PDF. Rekap dana dan semua foto struk sudah tersusun sebagai lampiran berlabel.</p></div></li>
+      </ol>
+      <div class="struk-jalan" aria-hidden="true"><div class="bayang"><div class="struk" data-i="j1">
+        <div class="c nm">JEJAK</div>
+        <div class="c ket">Struk perjalanan · Yogyakarta</div>
+        <hr>
+        <div class="bar" data-s="1" data-v="2500000"><span>DANA KAMPUS</span><span>+2.500.000</span></div>
+        <div class="bar rc" data-s="1" data-v="-480000"><span>TIKET PULANG</span><span>-480.000</span></div>
+        <div class="bar" data-s="2" data-v="-45000"><span>MAKAN SIANG ✓</span><span>-45.000</span></div>
+        <div class="bar" data-s="2" data-v="-28500"><span>OJEK KE VENUE ✓</span><span>-28.500</span></div>
+        <div class="bar info" data-s="3"><span>AMAN MAKAN/HARI</span><span>120.000</span></div>
+        <div class="bar info" data-s="4"><span>+ YOGA BERGABUNG</span><span>JJK4TEAM</span></div>
+        <div class="bar pot" data-s="5"><span>✂ - - - - - - - - - - - -</span></div>
+        <div class="bar" data-s="5"><span>LAPORAN.PDF</span><span>2 LAMPIRAN</span></div>
+        <hr>
+        <div class="tot"><span>SISA</span><b class="sisa-j">Rp1.946.500</b></div>
+        <div class="ket">*rencana, sudah dihitung</div>
+      </div></div></div>
+    </div>
   </div>
 </section>
 
-<section class="lap-s lembar" id="laporan">
+<section class="lap-s sobek" id="laporan">
   <div class="wrap lap">
+    <div>
+      <h2 class="cetak-j" data-i="r2">Laporan yang bisa langsung diserahkan.</h2>
+      <p class="sub muncul" data-i="r3">Halaman pertama berisi dana diterima, total pengeluaran, dan sisa dana. Di bawahnya ada tabel transaksi bernomor, lalu setiap foto struk dicetak sebagai lampiran L1, L2, dan seterusnya. Sebelum mencetak, <span data-brand></span> menunjukkan transaksi yang belum punya bukti agar bisa dilengkapi dulu. Datanya juga bisa diunduh sebagai CSV untuk Excel.</p>
+      <p class="catat muncul"><i></i><span data-i="r5">gulir pelan, struknya akan menyusun diri</span></p>
+    </div>
     <div class="meja" aria-hidden="true">
       <div class="a4">
         <div data-i="r1">
           <h4>Laporan Penggunaan Dana</h4>
           <div class="meta">Konferensi riset di Yogyakarta · 4–6 Maret 2027</div>
-          <div class="rek"><div><small>Diterima</small><b>2.500.000</b></div><div><small>Terpakai</small><b>1.100.000</b></div><div><small>Sisa</small><b>1.400.000</b></div></div>
+          <div class="rek"><div><small>Diterima</small><b>2.500.000</b></div><div><small>Terpakai</small><b>1.145.000</b></div><div><small>Sisa</small><b>1.355.000</b></div></div>
           <table>
             <tr><th>No.</th><th>Uraian</th><th>Nominal</th><th>Bukti</th></tr>
             <tr><td>1</td><td>Kereta pulang-pergi</td><td class="n">480.000</td><td>L1</td></tr>
             <tr><td>2</td><td>Hotel 2 malam</td><td class="n">620.000</td><td>L2, L3</td></tr>
-            <tr><td colspan="2"><b>Jumlah</b></td><td class="n"><b>1.100.000</b></td><td></td></tr>
+            <tr><td>3</td><td>Makan siang</td><td class="n">45.000</td><td>L4</td></tr>
           </table>
         </div>
-        <span class="cap" data-i="k4">Siap</span>
+        <div class="lamp-j" data-i="r4">LAMPIRAN</div>
+        <div class="lamp">
+          <div class="slot"><em>L1</em><div class="slip" style="--dx:-190px;--dy:-280px;--r:-24deg"><span class="lb">L1</span><div>KAI EKS</div><div class="r"><span>2 org</span><span>480.000</span></div></div></div>
+          <div class="slot"><em>L2</em><div class="slip" style="--dx:-120px;--dy:150px;--r:18deg"><span class="lb">L2</span><div>HTL MAWAR</div><div class="r"><span>2 mlm</span><span>620.000</span></div></div></div>
+          <div class="slot"><em>L3</em><div class="slip" style="--dx:150px;--dy:-340px;--r:-12deg"><span class="lb">L3</span><div>BANK TRF</div><div class="r"><span>OK</span><span>620.000</span></div></div></div>
+          <div class="slot"><em>L4</em><div class="slip" style="--dx:90px;--dy:120px;--r:28deg"><span class="lb">L4</span><div>WARUNG</div><div class="r"><span>1x</span><span>45.000</span></div></div></div>
+        </div>
+        <span class="cap" data-i="k4">Siap diserahkan</span>
       </div>
-      <div class="lamp">
-        <div class="bayang"><div class="struk slip"><span class="lb">L1</span><div class="r"><span>KAI</span></div><div class="r"><span>EKS</span><span>480.000</span></div></div></div>
-        <div class="bayang"><div class="struk slip"><span class="lb">L2</span><div class="r"><span>HOTEL</span></div><div class="r"><span>2 mlm</span><span>620.000</span></div></div></div>
-        <div class="bayang"><div class="struk slip"><span class="lb">L3</span><div class="r"><span>TRANSFER</span></div><div class="r"><span>BERHASIL</span></div></div></div>
-      </div>
-    </div>
-    <div>
-      <h2 class="naik" data-i="r2">Laporan yang bisa langsung diserahkan.</h2>
-      <p class="sub muncul" data-i="r3">Halaman pertama berisi dana diterima, total pengeluaran, dan sisa dana. Di bawahnya ada tabel transaksi bernomor, lalu setiap foto struk dicetak sebagai lampiran L1, L2, dan seterusnya. Sebelum mencetak, <span data-brand></span> menunjukkan transaksi yang belum punya bukti agar bisa dilengkapi dulu. Datanya juga bisa diunduh sebagai CSV untuk Excel.</p>
     </div>
   </div>
 </section>
 
-<section class="faq-s lembar" id="tanya">
+<section class="faq-s sobek" id="tanya">
   <div class="wrap">
-    <h2 class="naik" data-i="q0">Tanya jawab</h2>
-    <div class="faq muncul" data-i="q1">
+    <div class="kep2"><h2 class="cetak-j" data-i="q0">Tanya jawab</h2><span class="mono" data-i="q2">6 PERTANYAAN</span></div>
+    <div class="faq-w muncul"><div class="faq" data-i="q1">
       <details><summary>Apakah <span data-brand></span> berbayar?</summary><p>Tidak. <span data-brand></span> dapat dipakai gratis melalui browser di HP maupun laptop.</p></details>
       <details><summary>Apakah foto dari kamera otomatis tersimpan di galeri HP?</summary><p>Tidak otomatis. Browser tidak diizinkan menulis langsung ke galeri. Setelah memotret, ketuk "Simpan ke galeri" untuk menyimpan cadangan. Cara lain: potret dengan aplikasi kamera HP, lalu unggah melalui "Pilih dari galeri".</p></details>
       <details><summary>Apakah <span data-brand></span> bisa dipakai tanpa internet?</summary><p>Belum bisa. Koneksi internet diperlukan untuk menyimpan transaksi dan mengunggah foto.</p></details>
       <details><summary>Bagaimana cara memasang <span data-brand></span> di layar utama HP?</summary><p>Buka <span data-brand></span> di browser. Di iPhone, ketuk tombol Bagikan lalu pilih "Tambahkan ke Layar Utama". Di Android, buka menu Chrome lalu pilih "Instal aplikasi" atau "Tambahkan ke layar utama".</p></details>
       <details><summary>Siapa yang dapat melihat data perjalanan saya?</summary><p>Hanya kamu dan anggota yang kamu undang. Foto bukti disimpan dengan alamat acak yang tidak dapat ditebak.</p></details>
       <details><summary>Dalam bentuk apa laporan diserahkan?</summary><p>Laporan berbentuk halaman siap cetak. Pilih "Simpan sebagai PDF" pada menu cetak browser, lalu kirim berkas PDF tersebut. Data transaksi juga dapat diunduh dalam format CSV.</p></details>
-    </div>
+    </div></div>
   </div>
 </section>
 
-<section class="akhir-s lembar">
+<section class="akhir-s sobek">
   <div class="wrap">
-    <div class="akhir">
-      <div>
-        <h2 class="naik" data-i="e1">Mulai dari perjalanan berikutnya.</h2>
-        <p class="sub" data-i="e2">Buat akun dalam satu menit, lalu catat dana masuk sebelum berangkat.</p>
+    <h2 class="cetak-j" data-i="e1">Mulai dari perjalanan berikutnya.</h2>
+    <p class="sub muncul" data-i="e2">Buat akun dalam satu menit, lalu catat dana masuk sebelum berangkat.</p>
+    <div class="tiket muncul">
+      <div class="tk-u" data-i="t1">
+        <div class="rt"><span>DANA</span><span class="tp" aria-hidden="true"><svg><use href="#kaki"/></svg><svg><use href="#kaki"/></svg><svg><use href="#kaki"/></svg><svg><use href="#kaki"/></svg><svg><use href="#kaki"/></svg><svg><use href="#kaki"/></svg></span><span>LAPOR</span></div>
+        <div><small>Penumpang</small><b>Kamu dan tim</b></div>
+        <div><small>Berangkat</small><b>Perjalanan berikutnya</b></div>
+        <div><small>Bawaan</small><b>Semua struk, rapi</b></div>
+        <div><small>Kelas</small><b>Gratis</b></div>
       </div>
-      <a class="btn" href="/app?daftar" data-i="cta">Buat akun gratis</a>
+      <a class="tk-s" href="/app?daftar"><span class="ss" data-i="t2">Sobek di sini</span><span class="kb" aria-hidden="true"></span><span class="btn" data-i="cta">Buat akun gratis</span></a>
     </div>
     <footer><span data-i="ft1"><span data-brand></span> · dibuat oleh Gianne Angely</span><span class="fl"><a href="https://github.com/GianneAngely/jejak" data-i="ft3">Kode sumber</a><a href="/app" data-i="ft2">Masuk ke akun</a></span></footer>
   </div>
-  <div class="merek" aria-hidden="true"><span data-brand></span><b>.</b></div>
+  <div class="pergi" aria-hidden="true"></div>
 </section>
 </main>
 <script>
 /* bahasa halaman depan: "id" (asli di HTML) dan "en". Kunci "jejak.lang" sama dengan app. */
 (function () {
-  var ID = {
-    p1: "Catat dana masuk ✦ Foto struk di kasir ✦ Pantau sisa dana ✦ Cetak laporan ✦ ",
-    p2: "Struk tidak tercecer ✦ Laporan tepat waktu ✦ Dana tidak bercampur ✦ "
-  };
   var LK = "jejak.lang", EN = {
     n1: "How it works", n2: "Report", n3: "FAQ", n4: "Log in",
-    h1: 'Trip money sorted, <span class="kn">receipts kept <span class="sc">safe.</span></span>',
+    h1: 'Trip money sorted, receipts <span class="stabilo">kept together.</span>',
     h2: "<span data-brand></span> tracks your trip money from departure to return. Every expense is saved with a photo of its receipt, so the accountability report is ready to print when you get home.",
     cta: "Create a free account", h3: "See how it works",
     h4: "Free, and it runs right in your phone's browser. Nothing to install.",
-    k1: '<div class="c nm">JEJAK</div><div class="c ket">Research conference · Yogyakarta</div><div class="c ket">04–06 MAR 2027 · 3 days</div><hr><div class="r"><span>FUNDS IN</span><span>2.500.000</span></div><div class="r"><span>Train, return</span><span>-480.000</span></div><div class="r"><span>Hotel, 2 nights</span><span>-620.000</span></div><div class="r rc"><span>Meals, 3 days*</span><span>-270.000</span></div><hr><div class="tot"><span>LEFT</span><b>Rp1.130.000</b></div><div class="ket">*planned, already counted</div><hr><div class="bkt">RECEIPTS <i>L1</i><i>L2</i><i>L3</i><i class="no">meals: missing</i></div>',
-    k2: "Paid", k3: "drag the stickers ↗", k4: "Ready",
-    p1: "Record funds in ✦ Snap the receipt ✦ Watch the balance ✦ Print the report ✦ ",
-    p2: "No lost receipts ✦ Reports on time ✦ Trip money kept apart ✦ ",
+    k1: '<div class="c nm">JEJAK</div><div class="c ket">Research conference · Yogyakarta</div><div class="c ket">04–06 MAR 2027 · 3 days</div><hr><div class="r"><span class="tk">CAMPUS GRANT</span><b>+2.500.000</b></div><div class="r"><span><span class="tk">Train, return</span><i class="bk">photo</i></span><b>-480.000</b></div><div class="r"><span><span class="tk">Hotel, 2 nights</span><i class="bk">photo</i></span><b>-620.000</b></div><div class="r no"><span><span class="tk">Lunch</span><i class="bk">no photo</i></span><b>-45.000</b></div><hr><div class="tot"><span>LEFT</span><b class="angka" data-dari="2500000" data-ke="1355000">Rp1.355.000</b><svg class="lingkar" viewBox="0 0 300 60" preserveAspectRatio="none"><path d="M150 4C80 2 8 10 6 30s70 28 144 26 146-8 144-28S210 2 140 6"/></svg></div>',
+    k3: "move your cursor to leave a trail", k4: "Ready to submit",
     a0: "From departure to report.",
     a1: "Fund reports are rarely late because of the money itself. Usually the meal receipt is lost somewhere in a bag, trip money is mixed with personal money, and the summary gets rebuilt from memory the night before it is due. <span data-brand></span> moves that work to the moment you pay.",
-    a2: '<span class="no">01</span><span class="wk">Before you leave</span><h3>Record the money coming in</h3><p>Add the event name, city and dates, then enter the funds from your campus, office or sponsor. Costs you already know about, such as the ticket home, can be added as planned right away.</p>',
-    a3: '<span class="no">02</span><span class="wk">When you pay</span><h3>Snap the receipt at the counter</h3><p>Tap Snap receipt, enter the amount and save. One expense can hold several photos, such as a receipt and a transfer slip, and expenses without proof are flagged in red.</p>',
-    a4: '<span class="no">03</span><span class="wk">During the trip</span><h3>The balance stays on top</h3><p>The biggest number on screen is what is left once planned costs are counted. The same number gives you a safe meal budget for today.</p>',
-    a5: '<span class="no">04</span><span class="wk">With your team</span><h3>One trip, shared</h3><p>Invite teammates with a join code like <span class="kode">JJK4TEAM</span>. The schedule with directions, the photo diary and notes such as a presentation script are open to every member, and each expense shows who recorded it.</p>',
-    a6: '<span class="no">05</span><span class="wk">Back home</span><h3>Print the report</h3><p>Open the Report tab and save it as a PDF. The fund summary and every receipt photo are already laid out as labelled attachments.</p>',
-    r1: '<h4>Fund Usage Report</h4><div class="meta">Research conference in Yogyakarta · 4–6 March 2027</div><div class="rek"><div><small>Received</small><b>2.500.000</b></div><div><small>Spent</small><b>1.100.000</b></div><div><small>Left</small><b>1.400.000</b></div></div><table><tr><th>No.</th><th>Description</th><th>Amount</th><th>Receipt</th></tr><tr><td>1</td><td>Return train tickets</td><td class="n">480.000</td><td>L1</td></tr><tr><td>2</td><td>Hotel, 2 nights</td><td class="n">620.000</td><td>L2, L3</td></tr><tr><td colspan="2"><b>Total</b></td><td class="n"><b>1.100.000</b></td><td></td></tr></table>',
+    a2: '<span class="wk">Stop 1 · Before you leave</span><h3>Record the money coming in</h3><p>Add the event name, city and dates, then enter the funds from your campus, office or sponsor. Costs you already know about, such as the ticket home, can be added as planned right away.</p>',
+    a3: '<span class="wk">Stop 2 · When you pay</span><h3>Snap the receipt at the counter</h3><p>Tap Snap receipt, enter the amount and save. One expense can hold several photos, such as a receipt and a transfer slip, and expenses without proof are flagged in red.</p>',
+    a4: '<span class="wk">Stop 3 · During the trip</span><h3>The balance stays on top</h3><p>The biggest number on screen is what is left once planned costs are counted. The same number gives you a safe meal budget for today.</p>',
+    a5: '<span class="wk">Stop 4 · With your team</span><h3>One trip, shared</h3><p>Invite teammates with a join code like <span class="kode">JJK4TEAM</span>. The schedule with directions, the photo diary and notes such as a presentation script are open to every member, and each expense shows who recorded it.</p>',
+    a6: '<span class="wk">Stop 5 · Back home</span><h3>Print the report</h3><p>Open the Report tab and save it as a PDF. The fund summary and every receipt photo are already laid out as labelled attachments.</p>',
+    j1: '<div class="c nm">JEJAK</div><div class="c ket">Trip receipt · Yogyakarta</div><hr><div class="bar" data-s="1" data-v="2500000"><span>CAMPUS GRANT</span><span>+2.500.000</span></div><div class="bar rc" data-s="1" data-v="-480000"><span>TICKET HOME</span><span>-480.000</span></div><div class="bar" data-s="2" data-v="-45000"><span>LUNCH ✓</span><span>-45.000</span></div><div class="bar" data-s="2" data-v="-28500"><span>RIDE TO VENUE ✓</span><span>-28.500</span></div><div class="bar info" data-s="3"><span>SAFE MEALS/DAY</span><span>120.000</span></div><div class="bar info" data-s="4"><span>+ YOGA JOINED</span><span>JJK4TEAM</span></div><div class="bar pot" data-s="5"><span>✂ - - - - - - - - - - - -</span></div><div class="bar" data-s="5"><span>REPORT.PDF</span><span>2 ATTACHMENTS</span></div><hr><div class="tot"><span>LEFT</span><b class="sisa-j">Rp1.946.500</b></div><div class="ket">*planned, already counted</div>',
+    r1: '<h4>Fund Usage Report</h4><div class="meta">Research conference in Yogyakarta · 4–6 March 2027</div><div class="rek"><div><small>Received</small><b>2.500.000</b></div><div><small>Spent</small><b>1.145.000</b></div><div><small>Left</small><b>1.355.000</b></div></div><table><tr><th>No.</th><th>Description</th><th>Amount</th><th>Receipt</th></tr><tr><td>1</td><td>Return train tickets</td><td class="n">480.000</td><td>L1</td></tr><tr><td>2</td><td>Hotel, 2 nights</td><td class="n">620.000</td><td>L2, L3</td></tr><tr><td>3</td><td>Lunch</td><td class="n">45.000</td><td>L4</td></tr></table>',
     r2: "A report you can hand in as it is.",
     r3: "The first page shows the funds received, the total spent and what is left. Below it comes a numbered table of expenses, and every receipt photo is printed as attachment L1, L2 and so on. Before you print, <span data-brand></span> lists the expenses that still have no proof so you can fill them in first. The data also downloads as CSV for Excel.",
-    q0: "FAQ",
+    r4: "ATTACHMENTS", r5: "scroll slowly and the receipts sort themselves",
+    q0: "FAQ", q2: "6 QUESTIONS",
     q1: '<details><summary>Does <span data-brand></span> cost anything?</summary><p>No. <span data-brand></span> is free to use in the browser on your phone or laptop.</p></details>' +
       '<details><summary>Are camera photos saved to my phone\'s gallery?</summary><p>Not automatically. Browsers aren\'t allowed to write straight to the gallery. After taking a photo, tap "Save to gallery" to keep a copy. Or take the photo with your phone\'s camera app and upload it with "Choose from gallery".</p></details>' +
       '<details><summary>Does <span data-brand></span> work without internet?</summary><p>Not yet. You need a connection to save transactions and upload photos.</p></details>' +
@@ -376,46 +427,31 @@ footer .fl{display:flex;gap:18px}
       '<details><summary>Who can see my trip data?</summary><p>Only you and the members you invite. Receipt photos are stored at random addresses that can\'t be guessed.</p></details>' +
       '<details><summary>What format is the report in?</summary><p>The report is a print-ready page. Choose "Save as PDF" in your browser\'s print dialog and send that PDF. Transaction data can also be downloaded as CSV.</p></details>',
     e1: "Start with your next trip.", e2: "Create an account in a minute and record your funds before you leave.",
+    t1: '<div class="rt"><span>FUNDS</span><span class="tp" aria-hidden="true"><svg><use href="#kaki"/></svg><svg><use href="#kaki"/></svg><svg><use href="#kaki"/></svg><svg><use href="#kaki"/></svg><svg><use href="#kaki"/></svg><svg><use href="#kaki"/></svg></span><span>REPORT</span></div><div><small>Passenger</small><b>You and your team</b></div><div><small>Departs</small><b>Your next trip</b></div><div><small>Luggage</small><b>Every receipt, in order</b></div><div><small>Class</small><b>Free</b></div>',
+    t2: "Tear here",
     ft1: "<span data-brand></span> · made by Gianne Angely", ft2: "Log in to your account", ft3: "Source code"
   };
-  var META = { id: {}, en: { t: ": travel fund tracker with receipt photos", d: "Track travel funds for work trips and competitions, keep receipt photos as proof, plan your schedule, then print an expense report." } };
+  var META = { en: { t: ": travel fund tracker with receipt photos", d: "Track travel funds for work trips and competitions, keep receipt photos as proof, plan your schedule, then print an expense report." } };
   var brand = ((document.querySelector(".logo [data-brand]") || {}).textContent || "").trim();
   var desc = document.querySelector('meta[name="description"]');
   META.id = { title: document.title, d: desc ? desc.content : "" };
-
-  /* pecah judul menjadi kata agar bisa naik satu per satu */
-  function pecah(el) {
-    var n = 0;
-    (function jalan(node) {
-      Array.prototype.slice.call(node.childNodes).forEach(function (c) {
-        if (c.nodeType === 3) {
-          var f = document.createDocumentFragment();
-          c.textContent.split(/(\s+)/).forEach(function (t) {
-            if (!t) return;
-            if (/^\s+$/.test(t)) { f.appendChild(document.createTextNode(t)); return; }
-            var m = document.createElement("span"); m.className = "wm";
-            var w = document.createElement("span"); w.className = "w"; w.style.setProperty("--i", n++); w.textContent = t;
-            m.appendChild(w); f.appendChild(m);
-          });
-          node.replaceChild(f, c);
-        } else if (c.nodeType === 1 && c.className !== "wm") jalan(c);
-      });
-    })(el);
-  }
+  var pertama = true;
 
   function apply(l) {
     document.documentElement.lang = l;
     document.querySelectorAll("[data-i]").forEach(function (el) {
       if (el._id == null) el._id = el.innerHTML;
       var k = el.getAttribute("data-i");
-      el.innerHTML = l === "en" && EN[k] ? EN[k] : (ID[k] || el._id);
+      el.innerHTML = l === "en" && EN[k] ? EN[k] : el._id;
     });
     document.querySelectorAll("[data-brand]").forEach(function (b) { if (!b.textContent && brand) b.textContent = brand; });
-    document.querySelectorAll(".naik").forEach(pecah);
-    document.querySelectorAll(".pita span").forEach(function (s) { s.textContent = s.textContent.repeat(6); });
     document.querySelectorAll("[data-lang]").forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false"); });
     document.title = l === "en" ? brand + META.en.t : META.id.title;
     if (desc) desc.content = l === "en" ? META.en.d : META.id.d;
+    /* setelah ganti bahasa, struk hero langsung tampil penuh tanpa diketik ulang */
+    if (!pertama) { var h = document.querySelector(".struk-h"); h.classList.remove("ketik"); var lg = h.querySelector(".lingkar"); if (lg) lg.classList.add("on"); }
+    pertama = false;
+    document.dispatchEvent(new Event("jejak:bahasa"));
   }
   var q = (location.search.match(/[?&]lang=(id|en)\b/) || [])[1], s, lang;
   if (q) { lang = q; try { localStorage.setItem(LK, q); } catch (e) {} }
@@ -431,49 +467,167 @@ footer .fl{display:flex;gap:18px}
 </script>
 <script>
 (function () {
+  var diam = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var halus = matchMedia("(pointer: fine)").matches;
+  var lebar = matchMedia("(min-width: 861px)");
   var hero = document.getElementById("atas");
+  var rp = function (n) { return "Rp" + Math.round(n).toLocaleString("id-ID"); };
+  function hitung(el, dari, ke, ms) {
+    if (diam) { el.textContent = rp(ke); return; }
+    var t0 = performance.now();
+    (function f(t) { var p = Math.min((t - t0) / ms, 1); el.textContent = rp(dari + (ke - dari) * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(f); })(t0);
+  }
+
+  /* navigasi diberi garis setelah halaman digulir */
+  var nav = document.getElementById("nav");
+  addEventListener("scroll", function () { nav.classList.toggle("gulir", scrollY > 8); }, { passive: true });
+
+  /* struk hero: setiap baris diketik bergantian, lalu sisa dana dihitung turun */
+  (function () {
+    var h = document.querySelector(".struk-h"), d = 1.3;
+    h.querySelectorAll(".r").forEach(function (r) {
+      var tk = r.querySelector(".tk"), n = tk.textContent.length;
+      tk.style.setProperty("--n", n); tk.style.setProperty("--d", d + "s");
+      d += n * 0.032;
+      r.querySelectorAll("b,.bk").forEach(function (x) { x.style.setProperty("--d2", d + "s"); });
+      d += 0.25;
+    });
+    var tot = h.querySelector(".tot"); tot.style.setProperty("--d2", d + "s");
+    var a = h.querySelector(".angka");
+    setTimeout(function () {
+      if (!h.classList.contains("ketik")) return;
+      hitung(a, +a.dataset.dari, +a.dataset.ke, 900);
+      setTimeout(function () { var lg = h.querySelector(".lingkar"); if (lg) lg.classList.add("on"); }, 950);
+    }, diam ? 0 : d * 1000);
+  })();
   requestAnimationFrame(function () { requestAnimationFrame(function () { hero.classList.add("muat"); }); });
 
-  /* muncul saat digulir; tanpa IntersectionObserver semuanya langsung tampil */
-  var els = document.querySelectorAll(".naik, .muncul, .meja");
+  /* struk tergantung ikut berayun saat kursor lewat */
+  var g = document.querySelector(".gantung");
+  if (!diam) {
+    var sudut = 0, laju = 0, lx = null;
+    hero.addEventListener("pointermove", function (e) {
+      if (lx != null) laju += Math.max(-3, Math.min(3, (e.clientX - lx) * 0.03));
+      lx = e.clientX;
+    });
+    hero.addEventListener("pointerleave", function () { lx = null; });
+    (function ayun() {
+      laju += -sudut * 0.035; laju *= 0.93; sudut += laju;
+      sudut = Math.max(-12, Math.min(12, sudut));
+      g.style.transform = "rotate(" + sudut.toFixed(2) + "deg)";
+      requestAnimationFrame(ayun);
+    })();
+  }
+
+  /* jejak kaki di hero: berjalan masuk saat dibuka, lalu mengikuti kursor */
+  var tapak = document.querySelector(".tapak"), kiri = false;
+  function injak(x, y, rad) {
+    kiri = !kiri;
+    var o = kiri ? -8 : 8, px = x + Math.cos(rad) * o, py = y + Math.sin(rad) * o;
+    var s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    s.setAttribute("viewBox", "0 0 20 32");
+    s.innerHTML = '<use href="#kaki"/>';
+    s.style.left = px + "px"; s.style.top = py + "px";
+    s.style.setProperty("--t", "rotate(" + (rad * 180 / Math.PI) + "deg)" + (kiri ? " scaleX(-1)" : ""));
+    s.addEventListener("animationend", function () { s.remove(); });
+    tapak.appendChild(s);
+  }
+  if (!diam) {
+    var r0 = hero.getBoundingClientRect(), W = r0.width, H = r0.height, i = 0, N = 16;
+    var P = [[W * 0.04, H * 0.98], [W * 0.3, H * 0.62], [W * 0.5, H * 1.02], [W * 0.68, H * 0.84]];
+    function titik(t) { var u = 1 - t; return [u * u * u * P[0][0] + 3 * u * u * t * P[1][0] + 3 * u * t * t * P[2][0] + t * t * t * P[3][0], u * u * u * P[0][1] + 3 * u * u * t * P[1][1] + 3 * u * t * t * P[2][1] + t * t * t * P[3][1]]; }
+    (function langkah() {
+      if (i > N) return;
+      var a = titik(i / N), b = titik(Math.min(1, (i + 0.5) / N));
+      injak(a[0], a[1] - 20, Math.atan2(b[1] - a[1], b[0] - a[0]) + Math.PI / 2);
+      i++; setTimeout(langkah, 170);
+    })();
+    if (halus) {
+      var ax = null, ay = 0;
+      hero.addEventListener("pointermove", function (e) {
+        var r = hero.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+        if (ax == null) { ax = x; ay = y; return; }
+        var dx = x - ax, dy = y - ay;
+        if (dx * dx + dy * dy < 44 * 44) return;
+        injak(x, y, Math.atan2(dy, dx) + Math.PI / 2); ax = x; ay = y;
+      });
+    } else document.querySelector(".petunjuk").style.display = "none";
+  } else document.querySelector(".petunjuk").style.display = "none";
+
+  /* muncul saat digulir */
+  var els = document.querySelectorAll(".cetak-j:not(.hero .cetak-j), .muncul, .pergi");
   if (!("IntersectionObserver" in window)) els.forEach(function (e) { e.classList.add("in"); });
   else {
-    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { rootMargin: "0px 0px -10% 0px" });
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { rootMargin: "0px 0px -12% 0px" });
     els.forEach(function (e) { io.observe(e); });
   }
 
-  var diam = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  /* pita berjalan, makin cepat saat halaman digulir */
-  var p1 = document.querySelector(".pita-1 span"), p2 = document.querySelector(".pita-2 span");
-  var x1 = 0, x2 = 0, ly = scrollY, dorong = 0;
-  function jalan() {
-    var dy = scrollY - ly; ly = scrollY;
-    dorong = dorong * 0.9 + Math.min(Math.abs(dy), 80) * 0.1;
-    var v = 0.6 + dorong * 0.5;
-    var w1 = p1.scrollWidth / 6, w2 = p2.scrollWidth / 6;
-    x1 = (x1 - v) % (w1 || 1); x2 = (x2 + v * 0.8) % (w2 || 1);
-    p1.style.transform = "translateX(" + x1 + "px)";
-    p2.style.transform = "translateX(" + (x2 - w2) + "px)";
-    requestAnimationFrame(jalan);
+  /* jejak kaki pergi ke kanan di ujung halaman */
+  var pg = document.querySelector(".pergi");
+  for (var k = 0; k < 14; k++) {
+    var s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    s.setAttribute("viewBox", "0 0 20 32"); s.innerHTML = '<use href="#kaki"/>';
+    s.style.left = (6 + k * 7) + "%"; s.style.top = (k % 2 ? 50 : 26) + "px";
+    s.style.transform = "rotate(90deg)" + (k % 2 ? "" : " scaleX(-1)");
+    s.style.setProperty("--i", k);
+    pg.appendChild(s);
   }
-  if (!diam) requestAnimationFrame(jalan);
 
-  /* stiker bisa diseret */
-  document.querySelectorAll(".stk").forEach(function (st) {
-    var sx, sy, ox = 0, oy = 0;
-    st.addEventListener("pointerdown", function (e) {
-      st.setPointerCapture(e.pointerId); st.classList.add("seret");
-      sx = e.clientX - ox; sy = e.clientY - oy;
+  /* rute: garis tergambar, halte menyala, struk bertambah baris */
+  var rute = document.querySelector(".rute"), henti = document.querySelector(".henti"), jal = document.querySelector(".jalur");
+  var akhir = 0;
+  function hidupkan() {
+    var on = lebar.matches && !diam;
+    rute.classList.toggle("hidup", on);
+    henti.classList.toggle("dijaga", on);
+    if (!on) { jal.style.setProperty("--p", 1); henti.querySelectorAll("li").forEach(function (li) { li.classList.add("lewat"); }); }
+  }
+  function rutePerbarui() {
+    if (!rute.classList.contains("hidup")) return;
+    var r = jal.getBoundingClientRect(), garisY = innerHeight * 0.55;
+    var p = Math.max(0, Math.min(1, (garisY - r.top) / r.height));
+    jal.style.setProperty("--p", p.toFixed(4));
+    var maks = 0;
+    henti.querySelectorAll("li").forEach(function (li) {
+      var lw = li.getBoundingClientRect().top + 12 <= garisY;
+      li.classList.toggle("lewat", lw);
+      if (lw) maks = +li.dataset.s;
     });
-    st.addEventListener("pointermove", function (e) {
-      if (!st.classList.contains("seret")) return;
-      ox = e.clientX - sx; oy = e.clientY - sy;
-      st.style.setProperty("--x", ox + "px"); st.style.setProperty("--y", oy + "px");
+    var sum = 0;
+    document.querySelectorAll(".struk-jalan .bar").forEach(function (b) {
+      var on = +b.dataset.s <= maks; b.classList.toggle("on", on);
+      if (on && b.dataset.v) sum += +b.dataset.v;
     });
-    function lepas() { st.classList.remove("seret"); }
-    st.addEventListener("pointerup", lepas); st.addEventListener("pointercancel", lepas);
-  });
+    if (maks !== akhir) {
+      var t = document.querySelector(".sisa-j");
+      t.textContent = rp(sum);
+      t.classList.toggle("turun", maks > akhir && maks === 2);
+      setTimeout(function () { t.classList.remove("turun"); }, 500);
+      akhir = maks;
+    }
+  }
+  hidupkan(); rutePerbarui();
+  lebar.addEventListener ? lebar.addEventListener("change", function () { hidupkan(); rutePerbarui(); }) : 0;
+  document.addEventListener("jejak:bahasa", function () { akhir = -1; rutePerbarui(); });
+
+  /* laporan: struk berserakan masuk ke kolom lampiran saat digulir */
+  var meja = document.querySelector(".meja");
+  function mejaPerbarui() {
+    if (diam) { meja.classList.add("rapi"); return; }
+    var r = meja.getBoundingClientRect(), vh = innerHeight;
+    var p = Math.max(0, Math.min(1, (vh * 0.9 - r.top) / (vh * 0.5)));
+    var k = 1 - p; k = k * k;
+    meja.style.setProperty("--k", k.toFixed(4));
+    meja.classList.toggle("rapi", k < 0.01);
+  }
+  mejaPerbarui();
+
+  var antri = false;
+  addEventListener("scroll", function () {
+    if (antri) return; antri = true;
+    requestAnimationFrame(function () { antri = false; rutePerbarui(); mejaPerbarui(); });
+  }, { passive: true });
+  addEventListener("resize", function () { rutePerbarui(); mejaPerbarui(); });
 })();
 </script>
 </body>
